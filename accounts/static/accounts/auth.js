@@ -58,6 +58,21 @@
   var publishBtn = composerForm.querySelector("[data-publish-btn]");
   if (!textarea || !counter || !publishBtn) return;
 
+  var replyButtons = document.querySelectorAll(".reply-btn[data-reply-handle]");
+  replyButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      var handle = button.getAttribute("data-reply-handle");
+      if (!handle) return;
+      if (!textarea.value.startsWith(handle)) {
+        textarea.value = handle + " " + textarea.value;
+      }
+      textarea.focus();
+      textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+      updateCounter();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+
   function updateCounter() {
     var length = textarea.value.length;
     counter.textContent = length + "/280";

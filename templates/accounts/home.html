@@ -44,7 +44,7 @@
 
     {% if posts %}
       {% for post in posts %}
-        <article class="tweet-card">
+        <article class="tweet-card" id="post-{{ post.id }}">
           <p class="tweet-author">
             {{ post.author_display_name }}
             <span>{{ post.author_handle }}</span>
@@ -53,9 +53,46 @@
           </p>
           <p class="tweet-text">{{ post.content }}</p>
           <div class="tweet-actions">
-            <button type="button" disabled>Repondre</button>
-            <button type="button" disabled>Reposter</button>
-            <button type="button" disabled>Aimer</button>
+            <button
+              type="button"
+              class="action-btn reply-btn"
+              data-reply-handle="{{ post.author_handle }}"
+            >
+              Repondre
+            </button>
+
+            <form method="post" action="{% url 'accounts:post_action' post.id 'repost' %}" class="inline-form">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{% url 'accounts:home' %}#post-{{ post.id }}">
+              <button
+                type="submit"
+                class="action-btn {% if post.reposted_by_me %}is-active{% endif %}"
+              >
+                Reposter {% if post.repost_count %}{{ post.repost_count }}{% endif %}
+              </button>
+            </form>
+
+            <form method="post" action="{% url 'accounts:post_action' post.id 'like' %}" class="inline-form">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{% url 'accounts:home' %}#post-{{ post.id }}">
+              <button
+                type="submit"
+                class="action-btn {% if post.liked_by_me %}is-active{% endif %}"
+              >
+                Aimer {% if post.like_count %}{{ post.like_count }}{% endif %}
+              </button>
+            </form>
+
+            <form method="post" action="{% url 'accounts:post_action' post.id 'report' %}" class="inline-form">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{% url 'accounts:home' %}#post-{{ post.id }}">
+              <button
+                type="submit"
+                class="action-btn report-btn {% if post.reported_by_me %}is-reported{% endif %}"
+              >
+                {% if post.reported_by_me %}Reporte{% else %}Reporter{% endif %}
+              </button>
+            </form>
           </div>
         </article>
       {% endfor %}
