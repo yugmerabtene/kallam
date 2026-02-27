@@ -31,8 +31,11 @@ jobs:
       - name: Django checks
         run: python manage.py check
 
-      - name: Django tests
-        run: python manage.py test
+      - name: Unit tests
+        run: python manage.py test accounts.tests_unit
+
+      - name: Integration tests
+        run: python manage.py test accounts.tests
 
       - name: Build Docker image
         run: docker build -t kallam:ci .
