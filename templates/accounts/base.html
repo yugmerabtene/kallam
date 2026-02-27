@@ -32,7 +32,7 @@
     </div>
   </header>
 
-  <main class="site-main">
+<main class="site-main">
     {% if messages %}
       <ul class="messages" aria-live="polite">
         {% for message in messages %}
@@ -42,6 +42,13 @@
     {% endif %}
     {% block content %}{% endblock %}
   </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p>Projet d'école - Excellence européenne en cybersécurité et liberté d'expression.</p>
+      <a href="/mentions-legales/">Mentions légales</a>
+    </div>
+  </footer>
 
   <script src="{% static 'accounts/auth.js' %}"></script>
 </body>
