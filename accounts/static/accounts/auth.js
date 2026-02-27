@@ -58,6 +58,15 @@
   var publishBtn = composerForm.querySelector("[data-publish-btn]");
   if (!textarea || !counter || !publishBtn) return;
 
+  var jumpComposerBtn = document.querySelector("[data-composer-jump]");
+  if (jumpComposerBtn) {
+    jumpComposerBtn.addEventListener("click", function () {
+      var composer = document.getElementById("composer");
+      if (composer) composer.scrollIntoView({ behavior: "smooth", block: "start" });
+      textarea.focus();
+    });
+  }
+
   var replyButtons = document.querySelectorAll(".reply-btn[data-reply-handle]");
   replyButtons.forEach(function (button) {
     button.addEventListener("click", function () {
