@@ -1,11 +1,14 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
+from django.db.models import Count, Exists, OuterRef
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_http_methods
 
 from .forms import LoginForm, PostForm, RegisterForm
-from .models import Post
+from .models import Post, PostLike, PostReport, PostRepost
 
 
 @login_required
@@ -22,7 +25,22 @@ def home_view(request):
             return redirect("accounts:home")
         messages.error(request, "Impossible de publier ce message.")
 
-    posts = Post.objects.select_related("author")[:50]
+    posts = (
+        Post.objects.select_related("author")
+        .annotate(
+            like_count=Count("likes", distinct=True),
+            repost_count=Count("reposts", distinct=True),
+            liked_by_me=Exists(
+                PostLike.objects.filter(post=OuterRef("pk"), user=request.user)
+            ),
+            reposted_by_me=Exists(
+                PostRepost.objects.filter(post=OuterRef("pk"), user=request.user)
+            ),
+            reported_by_me=Exists(
+                PostReport.objects.filter(post=OuterRef("pk"), reporter=request.user)
+            ),
+        )[:50]
+    )
     return render(
         request,
         "accounts/home.html",
@@ -73,3 +91,33 @@ def logout_view(request):
     logout(request)
     messages.info(request, "Vous etes deconnecte.")
     return redirect("accounts:login")
+
+
+@login_required
+@require_http_methods(["POST"])
+def post_action_view(request, post_id, action):
+    post = get_object_or_404(Post, id=post_id)
+
+    if action == "like":
+        like, created = PostLike.objects.get_or_create(post=post, user=request.user)
+        if not created:
+            like.delete()
+    elif action == "repost":
+        repost, created = PostRepost.objects.get_or_create(post=post, user=request.user)
+        if not created:
+            repost.delete()
+    elif action == "report":
+        _, created = PostReport.objects.get_or_create(post=post, reporter=request.user)
+        if created:
+            messages.info(request, "Publication signalee.")
+        else:
+            messages.info(request, "Publication deja signalee.")
+    else:
+        messages.error(request, "Action non supportee.")
+
+    next_url = request.POST.get("next") or reverse("accounts:home")
+    if not url_has_allowed_host_and_scheme(
+        url=next_url, allowed_hosts={request.get_host()}
+    ):
+        next_url = reverse("accounts:home")
+    return redirect(next_url)
