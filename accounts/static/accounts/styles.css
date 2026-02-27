@@ -468,6 +468,10 @@ button.secondary:hover {
   border-bottom: 1px solid #d4e0eb;
 }
 
+.composer {
+  padding-top: 1.28rem;
+}
+
 #composer,
 .tweet-card {
   scroll-margin-top: 112px;
