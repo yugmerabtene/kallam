@@ -304,11 +304,12 @@ button.secondary {
   padding: 0.62rem 0.7rem;
 }
 
-.app-shell {
+.backoffice-shell {
   display: grid;
-  grid-template-columns: 250px minmax(0, 1fr) 310px;
-  gap: 1rem;
-  align-items: start;
+  grid-template-columns: 260px minmax(0, 1fr) 320px;
+  gap: 1.2rem;
+  align-items: flex-start;
+  min-height: calc(100vh - 120px);
 }
 
 .left-rail,
@@ -319,44 +320,153 @@ button.secondary {
 
 .rail-card {
   border: 1px solid var(--x-line);
-  border-radius: 16px;
+  border-radius: 18px;
   background: var(--x-surface);
-  padding: 0.95rem;
+  padding: 1rem;
+  box-shadow: 0 16px 28px rgba(15, 20, 25, 0.05);
 }
 
-.left-rail .rail-card {
-  position: sticky;
-  top: 74px;
+.rail-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+  font-size: 1.1rem;
 }
 
-.rail-card h2,
-.rail-card h3 {
-  margin: 0 0 0.65rem;
-}
-
-.rail-nav {
-  display: grid;
+.rail-nav.vertical {
+  display: flex;
+  flex-direction: column;
   gap: 0.2rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .rail-nav a {
-  display: block;
+  padding: 0.65rem 0.7rem;
+  border-radius: 12px;
   text-decoration: none;
   color: var(--x-text);
-  padding: 0.56rem 0.62rem;
-  border-radius: 10px;
   font-weight: 600;
 }
 
-.rail-nav a:hover,
 .rail-nav a.active {
-  background: #e8f5fe;
+  background: rgba(29, 155, 240, 0.12);
   color: var(--x-blue);
 }
 
 .rail-button {
   width: 100%;
+  margin-top: 0.4rem;
+}
+
+.rail-mini-info {
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.timeline {
+  border: 1px solid var(--x-line);
+  border-radius: 18px;
+  background: var(--x-surface);
+  overflow: hidden;
+  box-shadow: 0 12px 24px rgba(15, 20, 25, 0.08);
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.2rem;
+  border-bottom: 1px solid var(--x-line);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.timeline-meta {
+  font-size: 0.85rem;
+  color: var(--x-muted);
+}
+
+.composer {
+  padding: 1rem 1.2rem;
+  border-bottom: 1px solid var(--x-line);
+  background: #fdfdfd;
+}
+
+.composer-form {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.composer-footer {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.posts-grid {
+  display: flex;
+  flex-direction: column;
+}
+
+.tweet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tweet-time {
+  margin: 0;
+  color: var(--x-muted);
+  font-size: 0.82rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.tweet-time span:last-child {
+  color: var(--x-muted);
+}
+
+.right-rail .rail-card {
+  position: sticky;
+  top: 74px;
+}
+
+.stat-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.stat-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.stat-list strong {
+  font-size: 1.4rem;
+}
+
+.trends.modern {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.trends.modern li {
+  padding: 0.5rem 0.65rem;
+  border-radius: 10px;
+  background: #f5f8fa;
+  border: 1px solid #e1e8ed;
+  font-weight: 600;
 }
 
 .timeline {
