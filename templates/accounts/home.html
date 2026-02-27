@@ -4,48 +4,48 @@
 {% block body_class %}x-theme app-page{% endblock %}
 
 {% block content %}
-<section class="backoffice-shell">
+<section class="x-layout">
   <aside class="left-rail">
-    <div class="rail-card">
-      <div class="rail-logo">
-        <span class="site-logo-mark">K</span>
-        <span>KALLAM</span>
+    <div class="rail-card profile-card">
+      <div class="profile-head">
+        <span class="avatar-badge">{{ user.first_name|default:user.username|slice:":1"|upper }}</span>
+        <div>
+          <p class="profile-name">{{ user.first_name }} {{ user.last_name }}</p>
+          <p class="profile-handle">{{ user.username }}</p>
+        </div>
       </div>
-      <nav class="rail-nav vertical">
+      <div class="quick-post">
+        <button type="button" class="primary rail-post-btn" data-composer-jump>Publier</button>
+      </div>
+    </div>
+
+    <div class="rail-card nav-card">
+      <nav class="rail-nav" aria-label="Navigation secondaire">
         <a class="active" href="{% url 'accounts:home' %}">Accueil</a>
         <a href="#">Explorer</a>
         <a href="#">Messages</a>
-        <a href="#">Communautés</a>
+        <a href="#">Communautes</a>
       </nav>
-      <div class="rail-mini-info">
-        <p class="muted">Membres</p>
-        <strong>{{ user.posts.count }}</strong>
-      </div>
       <form method="post" action="{% url 'accounts:logout' %}">
         {% csrf_token %}
-        <button type="submit" class="primary rail-button">Deconnexion</button>
+        <button type="submit" class="secondary rail-logout-btn">Deconnexion</button>
       </form>
     </div>
   </aside>
 
-  <section class="timeline">
+  <section class="timeline" aria-label="Fil principal">
     <header class="timeline-header">
-      <div>
-        <p class="eyebrow">Fil</p>
-        <h1>Accueil</h1>
-      </div>
-      <div class="timeline-meta">
-        <span>{{ posts|length }} posts en avance</span>
-        <span>·</span>
-        <span>Temps reel</span>
-      </div>
+      <h1>Accueil</h1>
+      <p class="timeline-sub">Bienvenue sur ton fil Kallam</p>
     </header>
 
-    <section class="composer">
-      <h3>Publier</h3>
+    <section class="composer" id="composer">
       <form method="post" class="composer-form" data-composer-form>
         {% csrf_token %}
-        {{ post_form.content }}
+        <div class="composer-top">
+          <span class="avatar-badge muted-avatar">{{ user.first_name|default:user.username|slice:":1"|upper }}</span>
+          {{ post_form.content }}
+        </div>
         {% if post_form.content.errors %}
           <small class="error">{{ post_form.content.errors|striptags }}</small>
         {% endif %}
@@ -67,26 +67,21 @@
                   {{ post.author_display_name }}
                   <span>{{ post.author_handle }}</span>
                 </p>
-                <p class="tweet-time">{{ post.created_at|timesince }} · <span>{{ post.like_count }} likes</span></p>
+                <p class="tweet-time">{{ post.created_at|timesince }} · {{ post.like_count }} likes</p>
               </div>
             </header>
+
             <p class="tweet-text">{{ post.content }}</p>
+
             <div class="tweet-actions">
-              <button
-                type="button"
-                class="action-btn reply-btn"
-                data-reply-handle="{{ post.author_handle }}"
-              >
+              <button type="button" class="action-btn reply-btn" data-reply-handle="{{ post.author_handle }}">
                 Repondre
               </button>
 
               <form method="post" action="{% url 'accounts:post_action' post.id 'repost' %}" class="inline-form">
                 {% csrf_token %}
                 <input type="hidden" name="next" value="{% url 'accounts:home' %}#post-{{ post.id }}">
-                <button
-                  type="submit"
-                  class="action-btn {% if post.reposted_by_me %}is-active{% endif %}"
-                >
+                <button type="submit" class="action-btn {% if post.reposted_by_me %}is-active{% endif %}">
                   Reposter {% if post.repost_count %}{{ post.repost_count }}{% endif %}
                 </button>
               </form>
@@ -94,10 +89,7 @@
               <form method="post" action="{% url 'accounts:post_action' post.id 'like' %}" class="inline-form">
                 {% csrf_token %}
                 <input type="hidden" name="next" value="{% url 'accounts:home' %}#post-{{ post.id }}">
-                <button
-                  type="submit"
-                  class="action-btn {% if post.liked_by_me %}is-active{% endif %}"
-                >
+                <button type="submit" class="action-btn {% if post.liked_by_me %}is-active{% endif %}">
                   Aimer {% if post.like_count %}{{ post.like_count }}{% endif %}
                 </button>
               </form>
@@ -105,10 +97,7 @@
               <form method="post" action="{% url 'accounts:post_action' post.id 'report' %}" class="inline-form">
                 {% csrf_token %}
                 <input type="hidden" name="next" value="{% url 'accounts:home' %}#post-{{ post.id }}">
-                <button
-                  type="submit"
-                  class="action-btn report-btn {% if post.reported_by_me %}is-reported{% endif %}"
-                >
+                <button type="submit" class="action-btn report-btn {% if post.reported_by_me %}is-reported{% endif %}">
                   {% if post.reported_by_me %}Reporte{% else %}Reporter{% endif %}
                 </button>
               </form>
@@ -124,22 +113,22 @@
   </section>
 
   <aside class="right-rail">
-    <div class="rail-card">
+    <div class="rail-card stat-card">
       <p class="eyebrow">Statistiques</p>
-      <h3>Performance</h3>
       <ul class="stat-list">
-        <li><strong>{{ posts|length }}</strong><span>Posts recents</span></li>
-        <li><strong>{{ posts|length|add:"0" }}</strong><span>Audience active</span></li>
-        <li><strong>{{ user.posts.count }}</strong><span>Historique total</span></li>
+        <li><strong>{{ user.posts.count }}</strong><span>Publications</span></li>
+        <li><strong>{{ posts|length }}</strong><span>Dans le fil</span></li>
+        <li><strong>100%</strong><span>Visibilite locale</span></li>
       </ul>
     </div>
-    <div class="rail-card">
+
+    <div class="rail-card trend-card">
       <p class="eyebrow">Tendances</p>
       <ul class="trends modern">
         <li>#Kallam</li>
-        <li>#Privacy</li>
-        <li>#SansAlgorithme</li>
-        <li>#Communautés</li>
+        <li>#Citoyens</li>
+        <li>#LibreExpression</li>
+        <li>#Campus</li>
       </ul>
     </div>
   </aside>
