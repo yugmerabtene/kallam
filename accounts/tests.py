@@ -1,5 +1,9 @@
+import tempfile
+
 from django.contrib.auth import get_user_model
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
+from django.test import override_settings
 from django.urls import reverse
 
 from .models import Post
@@ -146,3 +150,57 @@ class AuthFlowTests(TestCase):
         self.assertEqual(response_2.status_code, 200)
         self.assertContains(response_2, "Publication deja signalee.")
         self.assertEqual(Post.objects.get(id=post.id).reports.count(), 1)
+
+    def test_user_can_publish_image_only(self):
+        user = User.objects.create_user(
+            username="image@example.com",
+            first_name="Img",
+            last_name="User",
+            email="image@example.com",
+            password="VeryStrongPass123!",
+        )
+        self.client.force_login(user)
+        image = SimpleUploadedFile(
+            "tiny.gif",
+            (
+                b"GIF89a\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00"
+                b"\xff\xff\xff!\xf9\x04\x00\x00\x00\x00\x00,\x00\x00"
+                b"\x00\x00\x01\x00\x01\x00\x00\x02\x02L\x01\x00;"
+            ),
+            content_type="image/gif",
+        )
+        with tempfile.TemporaryDirectory() as tmp_media:
+            with override_settings(MEDIA_ROOT=tmp_media):
+                response = self.client.post(
+                    reverse("accounts:home"),
+                    data={"content": "", "youtube_url": "", "image": image},
+                    follow=True,
+                )
+
+        self.assertEqual(response.status_code, 200)
+        post = Post.objects.filter(author=user).latest("id")
+        self.assertTrue(bool(post.image))
+        self.assertContains(response, "/media/posts/images/")
+
+    def test_user_can_publish_youtube_link_and_render_embed(self):
+        user = User.objects.create_user(
+            username="video@example.com",
+            first_name="Video",
+            last_name="User",
+            email="video@example.com",
+            password="VeryStrongPass123!",
+        )
+        self.client.force_login(user)
+        response = self.client.post(
+            reverse("accounts:home"),
+            data={
+                "content": "",
+                "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            },
+            follow=True,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        post = Post.objects.filter(author=user).latest("id")
+        self.assertEqual(post.youtube_url, "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+        self.assertContains(response, "youtube.com/embed/dQw4w9WgXcQ")

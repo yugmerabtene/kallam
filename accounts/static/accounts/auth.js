@@ -54,6 +54,8 @@
   var composerForm = document.querySelector("[data-composer-form]");
   if (!composerForm) return;
   var textarea = composerForm.querySelector("textarea[name='content']");
+  var imageInput = composerForm.querySelector("input[name='image']");
+  var youtubeInput = composerForm.querySelector("input[name='youtube_url']");
   var counter = composerForm.querySelector("[data-char-count]");
   var publishBtn = composerForm.querySelector("[data-publish-btn]");
   if (!textarea || !counter || !publishBtn) return;
@@ -85,10 +87,15 @@
   function updateCounter() {
     var length = textarea.value.length;
     counter.textContent = length + "/280";
-    var canPublish = length > 0 && length <= 280;
+    var hasImage = imageInput && imageInput.files && imageInput.files.length > 0;
+    var hasYoutube = youtubeInput && youtubeInput.value.trim().length > 0;
+    var hasText = length > 0 && length <= 280;
+    var canPublish = hasText || hasImage || hasYoutube;
     publishBtn.disabled = !canPublish;
   }
 
   textarea.addEventListener("input", updateCounter);
+  if (imageInput) imageInput.addEventListener("change", updateCounter);
+  if (youtubeInput) youtubeInput.addEventListener("input", updateCounter);
   updateCounter();
 })();

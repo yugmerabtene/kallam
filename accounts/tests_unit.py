@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from .forms import PostForm, RegisterForm
-from .models import Post
+from .models import Post, extract_youtube_video_id
 
 User = get_user_model()
 
@@ -49,14 +49,41 @@ class PostModelUnitTests(TestCase):
         self.assertEqual(post.author_handle, "@writer")
         self.assertEqual(post.author_display_name, "Amina K")
 
+    def test_extract_youtube_video_id(self):
+        self.assertEqual(
+            extract_youtube_video_id("https://www.youtube.com/watch?v=dQw4w9WgXcQ"),
+            "dQw4w9WgXcQ",
+        )
+        self.assertEqual(
+            extract_youtube_video_id("https://youtu.be/dQw4w9WgXcQ"),
+            "dQw4w9WgXcQ",
+        )
+        self.assertEqual(
+            extract_youtube_video_id("https://youtube.com/shorts/dQw4w9WgXcQ"),
+            "dQw4w9WgXcQ",
+        )
+        self.assertEqual(
+            extract_youtube_video_id("https://example.com/video?id=dQw4w9WgXcQ"),
+            "",
+        )
+
 
 class PostFormUnitTests(TestCase):
     def test_post_form_rejects_blank_content(self):
         form = PostForm(data={"content": "   "})
         self.assertFalse(form.is_valid())
-        self.assertIn("content", form.errors)
+        self.assertIn("__all__", form.errors)
 
     def test_post_form_trims_content(self):
         form = PostForm(data={"content": "  Test message  "})
         self.assertTrue(form.is_valid())
         self.assertEqual(form.cleaned_data["content"], "Test message")
+
+    def test_post_form_accepts_youtube_without_text(self):
+        form = PostForm(data={"content": "", "youtube_url": "https://youtu.be/dQw4w9WgXcQ"})
+        self.assertTrue(form.is_valid())
+
+    def test_post_form_rejects_invalid_youtube(self):
+        form = PostForm(data={"content": "", "youtube_url": "https://example.com/nope"})
+        self.assertFalse(form.is_valid())
+        self.assertIn("youtube_url", form.errors)
