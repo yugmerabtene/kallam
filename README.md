@@ -6,6 +6,7 @@ Projet Django open source.
 
 ```bash
 python3 -m pip install --break-system-packages -r requirements.txt
+cp .env.example .env
 python3 manage.py migrate
 python3 manage.py runserver
 ```
