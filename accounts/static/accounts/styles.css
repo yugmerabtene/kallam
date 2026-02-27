@@ -469,12 +469,12 @@ button.secondary:hover {
 }
 
 .composer {
-  padding-top: 1.28rem;
+  padding-top: 1.85rem;
 }
 
 #composer,
 .tweet-card {
-  scroll-margin-top: 112px;
+  scroll-margin-top: 148px;
 }
 
 .composer-top {
@@ -789,7 +789,7 @@ button.secondary:hover {
 
   #composer,
   .tweet-card {
-    scroll-margin-top: 96px;
+    scroll-margin-top: 130px;
   }
 }
 
