@@ -7,12 +7,57 @@ User = get_user_model()
 
 
 class RegisterForm(forms.Form):
-    first_name = forms.CharField(max_length=150, label="Prenom")
-    last_name = forms.CharField(max_length=150, label="Nom")
-    email = forms.EmailField(label="Email")
-    password = forms.CharField(widget=forms.PasswordInput, label="Mot de passe")
+    first_name = forms.CharField(
+        max_length=150,
+        label="Prenom",
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Ton prenom",
+                "autocomplete": "given-name",
+                "class": "form-input",
+            }
+        ),
+    )
+    last_name = forms.CharField(
+        max_length=150,
+        label="Nom",
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Ton nom",
+                "autocomplete": "family-name",
+                "class": "form-input",
+            }
+        ),
+    )
+    email = forms.EmailField(
+        label="Email",
+        widget=forms.EmailInput(
+            attrs={
+                "placeholder": "exemple@email.com",
+                "autocomplete": "email",
+                "class": "form-input",
+            }
+        ),
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={
+                "placeholder": "Mot de passe",
+                "autocomplete": "new-password",
+                "class": "form-input",
+            }
+        ),
+        label="Mot de passe",
+    )
     password_confirm = forms.CharField(
-        widget=forms.PasswordInput, label="Confirmer le mot de passe"
+        widget=forms.PasswordInput(
+            attrs={
+                "placeholder": "Confirme le mot de passe",
+                "autocomplete": "new-password",
+                "class": "form-input",
+            }
+        ),
+        label="Confirmer le mot de passe",
     )
 
     def clean_email(self):
@@ -50,5 +95,23 @@ class RegisterForm(forms.Form):
 
 
 class LoginForm(forms.Form):
-    email = forms.EmailField(label="Email")
-    password = forms.CharField(widget=forms.PasswordInput, label="Mot de passe")
+    email = forms.EmailField(
+        label="Email",
+        widget=forms.EmailInput(
+            attrs={
+                "placeholder": "exemple@email.com",
+                "autocomplete": "email",
+                "class": "form-input",
+            }
+        ),
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={
+                "placeholder": "Mot de passe",
+                "autocomplete": "current-password",
+                "class": "form-input",
+            }
+        ),
+        label="Mot de passe",
+    )
