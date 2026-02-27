@@ -28,6 +28,10 @@ body {
   min-height: 100%;
 }
 
+html {
+  scroll-padding-top: 112px;
+}
+
 body {
   font-family: "Manrope", "Segoe UI", sans-serif;
   color: var(--text-main);
@@ -464,6 +468,11 @@ button.secondary:hover {
   border-bottom: 1px solid rgba(40, 69, 100, 0.8);
 }
 
+#composer,
+.tweet-card {
+  scroll-margin-top: 112px;
+}
+
 .composer-top {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -772,6 +781,11 @@ button.secondary:hover {
 
   .timeline-header {
     top: 64px;
+  }
+
+  #composer,
+  .tweet-card {
+    scroll-margin-top: 96px;
   }
 }
 
