@@ -3,30 +3,35 @@
 {% block title %}Connexion - Kallam{% endblock %}
 
 {% block content %}
-<section class="card">
+<section class="auth-card">
+  <p class="eyebrow">Espace membre</p>
   <h1>Connexion</h1>
-  <p>Connecte-toi avec ton email et ton mot de passe.</p>
+  <p class="lead">Connecte-toi avec ton email et ton mot de passe.</p>
 
-  <form method="post" class="form-grid">
+  <form method="post" class="form-grid auth-form">
     {% csrf_token %}
     {% if form.non_field_errors %}
       <div class="error-box">{{ form.non_field_errors }}</div>
     {% endif %}
 
-    <label for="{{ form.email.id_for_label }}">Email</label>
-    {{ form.email }}
-    {% if form.email.errors %}<small class="error">{{ form.email.errors|striptags }}</small>{% endif %}
-
-    <label for="{{ form.password.id_for_label }}">Mot de passe</label>
-    <div class="input-inline">
-      {{ form.password }}
-      <button type="button" class="secondary" data-toggle-password="{{ form.password.id_for_label }}">Afficher</button>
+    <div class="field">
+      <label for="{{ form.email.id_for_label }}">Email</label>
+      {{ form.email }}
+      {% if form.email.errors %}<small class="error">{{ form.email.errors|striptags }}</small>{% endif %}
     </div>
-    {% if form.password.errors %}<small class="error">{{ form.password.errors|striptags }}</small>{% endif %}
 
-    <button type="submit">Se connecter</button>
+    <div class="field">
+      <label for="{{ form.password.id_for_label }}">Mot de passe</label>
+      <div class="input-inline">
+        {{ form.password }}
+        <button type="button" class="secondary" data-toggle-password="{{ form.password.id_for_label }}">Afficher</button>
+      </div>
+      {% if form.password.errors %}<small class="error">{{ form.password.errors|striptags }}</small>{% endif %}
+    </div>
+
+    <button type="submit" class="primary">Se connecter</button>
   </form>
 
-  <p class="muted">Pas encore de compte ? <a href="{% url 'accounts:register' %}">Creer un compte</a></p>
+  <p class="muted auth-footer">Pas encore de compte ? <a href="{% url 'accounts:register' %}">Creer un compte</a></p>
 </section>
 {% endblock %}
