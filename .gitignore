@@ -32,3 +32,6 @@ staticfiles/
 .ruff_cache/
 
 *.log
+
+# Local-only working notes
+docs/
