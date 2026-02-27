@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
+from .models import Post
+
 User = get_user_model()
 
 
@@ -63,3 +65,21 @@ class AuthFlowTests(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Cet email est deja utilise.")
+
+    def test_authenticated_user_can_publish_on_wall(self):
+        user = User.objects.create_user(
+            username="wall@example.com",
+            first_name="Wall",
+            last_name="User",
+            email="wall@example.com",
+            password="VeryStrongPass123!",
+        )
+        self.client.force_login(user)
+        response = self.client.post(
+            reverse("accounts:home"),
+            data={"content": "Premier message"},
+            follow=True,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(Post.objects.filter(author=user, content="Premier message").exists())
+        self.assertContains(response, "Premier message")
