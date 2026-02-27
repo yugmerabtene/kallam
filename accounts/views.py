@@ -14,12 +14,14 @@ from .models import Post, PostLike, PostReport, PostRepost
 @login_required
 @require_http_methods(["GET", "POST"])
 def home_view(request):
-    post_form = PostForm(request.POST or None)
+    post_form = PostForm(request.POST or None, request.FILES or None)
     if request.method == "POST":
         if post_form.is_valid():
             Post.objects.create(
                 author=request.user,
                 content=post_form.cleaned_data["content"],
+                image=post_form.cleaned_data.get("image"),
+                youtube_url=post_form.cleaned_data.get("youtube_url", ""),
             )
             messages.success(request, "Message publie.")
             return redirect("accounts:home")

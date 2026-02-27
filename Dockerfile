@@ -14,7 +14,7 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 
 COPY . /app
 
-RUN mkdir -p /app/data /app/staticfiles
+RUN mkdir -p /app/data /app/staticfiles /app/media
 
 COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
