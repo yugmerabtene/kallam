@@ -427,15 +427,44 @@ button.secondary {
 
 .tweet-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.55rem;
 }
 
-.tweet-actions button {
+.action-btn {
   border: 1px solid var(--x-line);
   background: #fff;
   color: var(--x-muted);
   padding: 0.38rem 0.66rem;
   border-radius: 999px;
+  font-size: 0.88rem;
+}
+
+.action-btn:hover {
+  border-color: #c8d7e3;
+  color: var(--x-text);
+}
+
+.action-btn.is-active {
+  border-color: #8ec9ee;
+  color: var(--x-blue);
+  background: #edf7ff;
+}
+
+.action-btn.report-btn {
+  border-color: #f0d9dc;
+  color: #a23a45;
+}
+
+.action-btn.report-btn:hover {
+  border-color: #e8c5ca;
+  color: #892f39;
+}
+
+.action-btn.report-btn.is-reported {
+  background: #fff5f6;
+  border-color: #f2c5cb;
+  color: #8d2f39;
 }
 
 .empty-feed {
