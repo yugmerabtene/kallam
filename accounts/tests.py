@@ -83,3 +83,66 @@ class AuthFlowTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(Post.objects.filter(author=user, content="Premier message").exists())
         self.assertContains(response, "Premier message")
+
+    def test_like_and_repost_toggle(self):
+        author = User.objects.create_user(
+            username="author@example.com",
+            first_name="Author",
+            last_name="One",
+            email="author@example.com",
+            password="VeryStrongPass123!",
+        )
+        actor = User.objects.create_user(
+            username="actor@example.com",
+            first_name="Actor",
+            last_name="Two",
+            email="actor@example.com",
+            password="VeryStrongPass123!",
+        )
+        post = Post.objects.create(author=author, content="Action post")
+        self.client.force_login(actor)
+
+        like_url = reverse("accounts:post_action", args=[post.id, "like"])
+        repost_url = reverse("accounts:post_action", args=[post.id, "repost"])
+
+        first_like = self.client.post(like_url, follow=True)
+        self.assertEqual(Post.objects.get(id=post.id).likes.count(), 1)
+        second_like = self.client.post(like_url, follow=True)
+        self.assertEqual(Post.objects.get(id=post.id).likes.count(), 0)
+        first_repost = self.client.post(repost_url, follow=True)
+        self.assertEqual(Post.objects.get(id=post.id).reposts.count(), 1)
+        second_repost = self.client.post(repost_url, follow=True)
+        self.assertEqual(Post.objects.get(id=post.id).reposts.count(), 0)
+
+        self.assertEqual(first_like.status_code, 200)
+        self.assertEqual(second_like.status_code, 200)
+        self.assertEqual(first_repost.status_code, 200)
+        self.assertEqual(second_repost.status_code, 200)
+        self.assertContains(second_repost, "Action post")
+
+    def test_report_is_created_once(self):
+        author = User.objects.create_user(
+            username="author2@example.com",
+            first_name="Author",
+            last_name="Two",
+            email="author2@example.com",
+            password="VeryStrongPass123!",
+        )
+        actor = User.objects.create_user(
+            username="actor2@example.com",
+            first_name="Actor",
+            last_name="Three",
+            email="actor2@example.com",
+            password="VeryStrongPass123!",
+        )
+        post = Post.objects.create(author=author, content="Report post")
+        self.client.force_login(actor)
+        report_url = reverse("accounts:post_action", args=[post.id, "report"])
+
+        response_1 = self.client.post(report_url, follow=True)
+        response_2 = self.client.post(report_url, follow=True)
+
+        self.assertEqual(response_1.status_code, 200)
+        self.assertEqual(response_2.status_code, 200)
+        self.assertContains(response_2, "Publication deja signalee.")
+        self.assertEqual(Post.objects.get(id=post.id).reports.count(), 1)
