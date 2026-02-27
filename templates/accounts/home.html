@@ -3,12 +3,22 @@
 {% block title %}Accueil - Kallam{% endblock %}
 
 {% block content %}
-<section class="card">
-  <h1>Bienvenue {{ user.first_name }} {{ user.last_name }}</h1>
-  <p>Tu es connecte sur la premiere iteration de Kallam.</p>
-  <ul>
-    <li>Email: {{ user.email }}</li>
-    <li>Username technique: {{ user.username }}</li>
-  </ul>
+<section class="dashboard-card">
+  <div class="dashboard-head">
+    <p class="eyebrow">Tableau de bord</p>
+    <h1>Bienvenue {{ user.first_name }} {{ user.last_name }}</h1>
+    <p class="lead">Tu es connecte sur la premiere iteration de Kallam.</p>
+  </div>
+
+  <dl class="meta-grid">
+    <div class="meta-item">
+      <dt>Email</dt>
+      <dd>{{ user.email }}</dd>
+    </div>
+    <div class="meta-item">
+      <dt>Identifiant technique</dt>
+      <dd>{{ user.username }}</dd>
+    </div>
+  </dl>
 </section>
 {% endblock %}
