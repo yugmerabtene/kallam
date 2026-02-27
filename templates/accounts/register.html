@@ -1,59 +1,72 @@
 {% extends "accounts/base.html" %}
 
 {% block title %}Inscription - Kallam{% endblock %}
+{% block body_class %}x-theme auth-page{% endblock %}
 
 {% block content %}
-<section class="auth-card">
-  <p class="eyebrow">Nouvel utilisateur</p>
-  <h1>Inscription</h1>
-  <p class="lead">Creer un compte avec nom, prenom, email et mot de passe.</p>
+<section class="auth-shell">
+  <aside class="auth-hero">
+    <div class="auth-hero-mark">K</div>
+    <p class="auth-hero-kicker">Nouvel utilisateur</p>
+    <h1>Rejoins Kallam et partage ce que tu penses.</h1>
+    <p class="auth-hero-text">
+      Cree ton compte en quelques secondes pour commencer a publier.
+    </p>
+  </aside>
 
-  <form method="post" class="form-grid auth-form" data-register-form>
-    {% csrf_token %}
-    {% if form.non_field_errors %}
-      <div class="error-box">{{ form.non_field_errors }}</div>
-    {% endif %}
+  <section class="auth-card">
+    <p class="eyebrow">Inscription</p>
+    <h2>Creer ton compte</h2>
+    <p class="lead">Nom, prenom, email et mot de passe.</p>
 
-    <div class="field">
-      <label for="{{ form.first_name.id_for_label }}">Prenom</label>
-      {{ form.first_name }}
-      {% if form.first_name.errors %}<small class="error">{{ form.first_name.errors|striptags }}</small>{% endif %}
-    </div>
+    <form method="post" class="form-grid auth-form" data-register-form>
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="error-box">{{ form.non_field_errors }}</div>
+      {% endif %}
 
-    <div class="field">
-      <label for="{{ form.last_name.id_for_label }}">Nom</label>
-      {{ form.last_name }}
-      {% if form.last_name.errors %}<small class="error">{{ form.last_name.errors|striptags }}</small>{% endif %}
-    </div>
-
-    <div class="field">
-      <label for="{{ form.email.id_for_label }}">Email</label>
-      {{ form.email }}
-      {% if form.email.errors %}<small class="error">{{ form.email.errors|striptags }}</small>{% endif %}
-    </div>
-
-    <div class="field">
-      <label for="{{ form.password.id_for_label }}">Mot de passe</label>
-      <div class="input-inline">
-        {{ form.password }}
-        <button type="button" class="secondary" data-toggle-password="{{ form.password.id_for_label }}">Afficher</button>
+      <div class="field field-double">
+        <div>
+          <label for="{{ form.first_name.id_for_label }}">Prenom</label>
+          {{ form.first_name }}
+          {% if form.first_name.errors %}<small class="error">{{ form.first_name.errors|striptags }}</small>{% endif %}
+        </div>
+        <div>
+          <label for="{{ form.last_name.id_for_label }}">Nom</label>
+          {{ form.last_name }}
+          {% if form.last_name.errors %}<small class="error">{{ form.last_name.errors|striptags }}</small>{% endif %}
+        </div>
       </div>
-      {% if form.password.errors %}<small class="error">{{ form.password.errors|striptags }}</small>{% endif %}
-    </div>
 
-    <div class="field">
-      <label for="{{ form.password_confirm.id_for_label }}">Confirmer le mot de passe</label>
-      <div class="input-inline">
-        {{ form.password_confirm }}
-        <button type="button" class="secondary" data-toggle-password="{{ form.password_confirm.id_for_label }}">Afficher</button>
+      <div class="field">
+        <label for="{{ form.email.id_for_label }}">Email</label>
+        {{ form.email }}
+        {% if form.email.errors %}<small class="error">{{ form.email.errors|striptags }}</small>{% endif %}
       </div>
-      <small class="error" data-password-match hidden>Les mots de passe ne correspondent pas.</small>
-      {% if form.password_confirm.errors %}<small class="error">{{ form.password_confirm.errors|striptags }}</small>{% endif %}
-    </div>
 
-    <button type="submit" class="primary">Creer mon compte</button>
-  </form>
+      <div class="field">
+        <label for="{{ form.password.id_for_label }}">Mot de passe</label>
+        <div class="input-inline">
+          {{ form.password }}
+          <button type="button" class="secondary" data-toggle-password="{{ form.password.id_for_label }}">Afficher</button>
+        </div>
+        {% if form.password.errors %}<small class="error">{{ form.password.errors|striptags }}</small>{% endif %}
+      </div>
 
-  <p class="muted auth-footer">Deja inscrit ? <a href="{% url 'accounts:login' %}">Se connecter</a></p>
+      <div class="field">
+        <label for="{{ form.password_confirm.id_for_label }}">Confirmer le mot de passe</label>
+        <div class="input-inline">
+          {{ form.password_confirm }}
+          <button type="button" class="secondary" data-toggle-password="{{ form.password_confirm.id_for_label }}">Afficher</button>
+        </div>
+        <small class="error" data-password-match hidden>Les mots de passe ne correspondent pas.</small>
+        {% if form.password_confirm.errors %}<small class="error">{{ form.password_confirm.errors|striptags }}</small>{% endif %}
+      </div>
+
+      <button type="submit" class="primary">Creer mon compte</button>
+    </form>
+
+    <p class="muted auth-footer">Deja inscrit ? <a href="{% url 'accounts:login' %}">Se connecter</a></p>
+  </section>
 </section>
 {% endblock %}

@@ -1,24 +1,73 @@
 {% extends "accounts/base.html" %}
 
 {% block title %}Accueil - Kallam{% endblock %}
+{% block body_class %}x-theme app-page{% endblock %}
 
 {% block content %}
-<section class="dashboard-card">
-  <div class="dashboard-head">
-    <p class="eyebrow">Tableau de bord</p>
-    <h1>Bienvenue {{ user.first_name }} {{ user.last_name }}</h1>
-    <p class="lead">Tu es connecte sur la premiere iteration de Kallam.</p>
-  </div>
+<section class="app-shell">
+  <aside class="left-rail">
+    <div class="rail-card">
+      <h2>Kallam</h2>
+      <nav class="rail-nav">
+        <a class="active" href="{% url 'accounts:home' %}">Accueil</a>
+        <a href="#">Explorer</a>
+        <a href="#">Messages</a>
+        <a href="#">Profil</a>
+      </nav>
+      <form method="post" action="{% url 'accounts:logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="primary rail-button">Deconnexion</button>
+      </form>
+    </div>
+  </aside>
 
-  <dl class="meta-grid">
-    <div class="meta-item">
-      <dt>Email</dt>
-      <dd>{{ user.email }}</dd>
+  <section class="timeline">
+    <header class="timeline-header">
+      <h1>Accueil</h1>
+    </header>
+
+    <article class="composer">
+      <h3>Exprime-toi</h3>
+      <p>Publie ton message en 280 caracteres. (Module publication a venir)</p>
+      <button class="primary" type="button" disabled>Publier</button>
+    </article>
+
+    <article class="tweet-card">
+      <p class="tweet-author">{{ user.first_name }} {{ user.last_name }} <span>@{{ user.username }}</span></p>
+      <p class="tweet-text">
+        Bienvenue sur Kallam. Le design suit maintenant une base proche de Twitter/X.
+      </p>
+      <div class="tweet-actions">
+        <button type="button" disabled>Repondre</button>
+        <button type="button" disabled>Reposter</button>
+        <button type="button" disabled>Aimer</button>
+      </div>
+    </article>
+  </section>
+
+  <aside class="right-rail">
+    <div class="rail-card">
+      <h3>Profil</h3>
+      <dl class="meta-grid">
+        <div class="meta-item">
+          <dt>Email</dt>
+          <dd>{{ user.email }}</dd>
+        </div>
+        <div class="meta-item">
+          <dt>Identifiant</dt>
+          <dd>@{{ user.username }}</dd>
+        </div>
+      </dl>
     </div>
-    <div class="meta-item">
-      <dt>Identifiant technique</dt>
-      <dd>{{ user.username }}</dd>
+
+    <div class="rail-card">
+      <h3>Tendances</h3>
+      <ul class="trends">
+        <li>#Kallam</li>
+        <li>#SocialApp</li>
+        <li>#Privacy</li>
+      </ul>
     </div>
-  </dl>
+  </aside>
 </section>
 {% endblock %}
