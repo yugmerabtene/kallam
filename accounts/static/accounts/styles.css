@@ -271,6 +271,11 @@ button.primary:hover {
   background: var(--x-blue-strong);
 }
 
+button.primary:disabled {
+  background: #9eb8cc;
+  cursor: not-allowed;
+}
+
 button.secondary {
   padding: 0.68rem 0.88rem;
   color: #0f1419;
@@ -387,9 +392,22 @@ button.secondary {
   font-size: 1rem;
 }
 
-.composer p {
-  margin: 0 0 0.75rem;
-  color: var(--x-muted);
+.composer-form {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.composer-input {
+  min-height: 98px;
+  resize: vertical;
+  border-radius: 14px;
+}
+
+.composer-footer {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .tweet-author {
@@ -418,6 +436,10 @@ button.secondary {
   color: var(--x-muted);
   padding: 0.38rem 0.66rem;
   border-radius: 999px;
+}
+
+.empty-feed {
+  background: #fbfdfe;
 }
 
 .meta-grid {

@@ -26,23 +26,44 @@
       <h1>Accueil</h1>
     </header>
 
-    <article class="composer">
-      <h3>Exprime-toi</h3>
-      <p>Publie ton message en 280 caracteres. (Module publication a venir)</p>
-      <button class="primary" type="button" disabled>Publier</button>
-    </article>
+    <section class="composer">
+      <h3>Publier</h3>
+      <form method="post" class="composer-form" data-composer-form>
+        {% csrf_token %}
+        {{ post_form.content }}
+        {% if post_form.content.errors %}
+          <small class="error">{{ post_form.content.errors|striptags }}</small>
+        {% endif %}
+        <div class="composer-footer">
+          <small class="muted">280 caracteres max</small>
+          <small class="muted" data-char-count>0/280</small>
+          <button class="primary" type="submit" data-publish-btn>Publier</button>
+        </div>
+      </form>
+    </section>
 
-    <article class="tweet-card">
-      <p class="tweet-author">{{ user.first_name }} {{ user.last_name }} <span>@{{ user.username }}</span></p>
-      <p class="tweet-text">
-        Bienvenue sur Kallam. Le design suit maintenant une base proche de Twitter/X.
-      </p>
-      <div class="tweet-actions">
-        <button type="button" disabled>Repondre</button>
-        <button type="button" disabled>Reposter</button>
-        <button type="button" disabled>Aimer</button>
-      </div>
-    </article>
+    {% if posts %}
+      {% for post in posts %}
+        <article class="tweet-card">
+          <p class="tweet-author">
+            {{ post.author_display_name }}
+            <span>{{ post.author_handle }}</span>
+            <span>·</span>
+            <span>{{ post.created_at|timesince }}</span>
+          </p>
+          <p class="tweet-text">{{ post.content }}</p>
+          <div class="tweet-actions">
+            <button type="button" disabled>Repondre</button>
+            <button type="button" disabled>Reposter</button>
+            <button type="button" disabled>Aimer</button>
+          </div>
+        </article>
+      {% endfor %}
+    {% else %}
+      <article class="tweet-card empty-feed">
+        <p class="tweet-text">Bienvenue sur Kallam. Publie ton premier message.</p>
+      </article>
+    {% endif %}
   </section>
 
   <aside class="right-rail">

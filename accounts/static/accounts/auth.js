@@ -49,3 +49,22 @@
     }
   });
 })();
+
+(function () {
+  var composerForm = document.querySelector("[data-composer-form]");
+  if (!composerForm) return;
+  var textarea = composerForm.querySelector("textarea[name='content']");
+  var counter = composerForm.querySelector("[data-char-count]");
+  var publishBtn = composerForm.querySelector("[data-publish-btn]");
+  if (!textarea || !counter || !publishBtn) return;
+
+  function updateCounter() {
+    var length = textarea.value.length;
+    counter.textContent = length + "/280";
+    var canPublish = length > 0 && length <= 280;
+    publishBtn.disabled = !canPublish;
+  }
+
+  textarea.addEventListener("input", updateCounter);
+  updateCounter();
+})();
