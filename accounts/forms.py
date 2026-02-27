@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
-from .models import extract_youtube_video_id
+from .models import extract_first_youtube_url, extract_youtube_video_id, is_file_url
 
 User = get_user_model()
 
@@ -143,13 +143,13 @@ class PostForm(forms.Form):
             }
         ),
     )
-    youtube_url = forms.URLField(
+    attachment_url = forms.URLField(
         required=False,
-        label="Lien YouTube",
+        label="URL de fichier",
         widget=forms.URLInput(
             attrs={
                 "class": "form-input",
-                "placeholder": "https://www.youtube.com/watch?v=...",
+                "placeholder": "https://exemple.com/fichier.pdf",
             }
         ),
     )
@@ -161,14 +161,24 @@ class PostForm(forms.Form):
         cleaned_data = super().clean()
         content = (cleaned_data.get("content") or "").strip()
         image = cleaned_data.get("image")
-        youtube_url = (cleaned_data.get("youtube_url") or "").strip()
+        attachment_url = (cleaned_data.get("attachment_url") or "").strip()
+        youtube_url = extract_first_youtube_url(content)
 
-        if youtube_url and not extract_youtube_video_id(youtube_url):
-            self.add_error("youtube_url", "Ajoute un lien YouTube valide.")
+        if attachment_url and extract_youtube_video_id(attachment_url):
+            self.add_error(
+                "attachment_url",
+                "Pour YouTube, colle le lien directement dans le message.",
+            )
+        elif attachment_url and not is_file_url(attachment_url):
+            self.add_error(
+                "attachment_url",
+                "L'URL doit pointer vers un fichier (pdf, image, video, etc.).",
+            )
 
-        if not content and not image and not youtube_url:
-            raise ValidationError("Ajoute un message, une image ou un lien YouTube.")
+        if not content and not image and not attachment_url:
+            raise ValidationError("Ajoute un message, une image ou une URL de fichier.")
 
         cleaned_data["content"] = content
         cleaned_data["youtube_url"] = youtube_url
+        cleaned_data["attachment_url"] = attachment_url
         return cleaned_data

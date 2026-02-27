@@ -22,6 +22,7 @@ def home_view(request):
                 content=post_form.cleaned_data["content"],
                 image=post_form.cleaned_data.get("image"),
                 youtube_url=post_form.cleaned_data.get("youtube_url", ""),
+                file_url=post_form.cleaned_data.get("attachment_url", ""),
             )
             messages.success(request, "Message publie.")
             return redirect("accounts:home")

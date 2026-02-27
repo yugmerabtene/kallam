@@ -1,14 +1,54 @@
+import re
+from urllib.parse import parse_qs, urlparse
+
 from django.conf import settings
 from django.db import models
-from urllib.parse import parse_qs, urlparse
+
+
+URL_IN_TEXT_PATTERN = re.compile(r"https?://[^\s]+", re.IGNORECASE)
+ALLOWED_FILE_EXTENSIONS = {
+    "pdf",
+    "doc",
+    "docx",
+    "xls",
+    "xlsx",
+    "ppt",
+    "pptx",
+    "csv",
+    "txt",
+    "json",
+    "xml",
+    "zip",
+    "rar",
+    "7z",
+    "jpg",
+    "jpeg",
+    "png",
+    "gif",
+    "webp",
+    "svg",
+    "mp3",
+    "wav",
+    "ogg",
+    "mp4",
+    "mov",
+    "webm",
+    "avi",
+    "mkv",
+}
+
+
+def _clean_candidate_url(raw):
+    return (raw or "").strip().rstrip(".,;:!?)")
 
 
 def extract_youtube_video_id(url):
-    if not url:
+    cleaned_url = _clean_candidate_url(url)
+    if not cleaned_url:
         return ""
 
     try:
-        parsed = urlparse(url.strip())
+        parsed = urlparse(cleaned_url)
     except ValueError:
         return ""
 
@@ -37,6 +77,37 @@ def extract_youtube_video_id(url):
     return video_id
 
 
+def extract_first_youtube_url(text):
+    if not text:
+        return ""
+    for raw_url in URL_IN_TEXT_PATTERN.findall(text):
+        candidate = _clean_candidate_url(raw_url)
+        if extract_youtube_video_id(candidate):
+            return candidate
+    return ""
+
+
+def is_file_url(url):
+    cleaned_url = _clean_candidate_url(url)
+    if not cleaned_url:
+        return False
+
+    try:
+        parsed = urlparse(cleaned_url)
+    except ValueError:
+        return False
+
+    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+        return False
+
+    path = (parsed.path or "").strip("/")
+    if "." not in path:
+        return False
+
+    extension = path.rsplit(".", 1)[-1].lower()
+    return extension in ALLOWED_FILE_EXTENSIONS
+
+
 class Post(models.Model):
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="posts"
@@ -44,6 +115,7 @@ class Post(models.Model):
     content = models.CharField(max_length=280, blank=True, default="")
     image = models.ImageField(upload_to="posts/images/", null=True, blank=True)
     youtube_url = models.URLField(blank=True)
+    file_url = models.URLField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
