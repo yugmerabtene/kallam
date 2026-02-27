@@ -46,20 +46,38 @@
           <span class="avatar-badge muted-avatar">{{ user.first_name|default:user.username|slice:":1"|upper }}</span>
           {{ post_form.content }}
         </div>
+        <div class="composer-tools">
+          <button
+            type="button"
+            class="attach-trigger"
+            data-attach-toggle
+            aria-controls="composer-attachments"
+            aria-expanded="{% if post_form.image.errors or post_form.attachment_url.errors %}true{% else %}false{% endif %}"
+            title="Joindre un fichier">
+            <span aria-hidden="true">&#128206;</span>
+          </button>
+          <small class="muted">Joindre: image ou URL de fichier. Pour YouTube, colle le lien dans le message.</small>
+        </div>
         <div class="composer-media-fields">
-          <div class="field">
-            <label for="{{ post_form.image.id_for_label }}">Image</label>
-            {{ post_form.image }}
-            {% if post_form.image.errors %}
-              <small class="error">{{ post_form.image.errors|striptags }}</small>
-            {% endif %}
-          </div>
-          <div class="field">
-            <label for="{{ post_form.youtube_url.id_for_label }}">Lien YouTube</label>
-            {{ post_form.youtube_url }}
-            {% if post_form.youtube_url.errors %}
-              <small class="error">{{ post_form.youtube_url.errors|striptags }}</small>
-            {% endif %}
+          <div
+            id="composer-attachments"
+            class="attach-panel"
+            data-attach-panel
+            {% if not post_form.image.errors and not post_form.attachment_url.errors %}hidden{% endif %}>
+            <div class="field">
+              <label for="{{ post_form.image.id_for_label }}">Image</label>
+              {{ post_form.image }}
+              {% if post_form.image.errors %}
+                <small class="error">{{ post_form.image.errors|striptags }}</small>
+              {% endif %}
+            </div>
+            <div class="field">
+              <label for="{{ post_form.attachment_url.id_for_label }}">URL de fichier</label>
+              {{ post_form.attachment_url }}
+              {% if post_form.attachment_url.errors %}
+                <small class="error">{{ post_form.attachment_url.errors|striptags }}</small>
+              {% endif %}
+            </div>
           </div>
         </div>
         {% if post_form.content.errors %}
@@ -111,6 +129,14 @@
                   allowfullscreen>
                 </iframe>
               </div>
+            {% endif %}
+
+            {% if post.file_url %}
+              <p class="tweet-file-link">
+                <a href="{{ post.file_url }}" target="_blank" rel="noopener noreferrer">
+                  &#128206; Fichier joint
+                </a>
+              </p>
             {% endif %}
 
             <div class="tweet-actions">

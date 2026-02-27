@@ -55,7 +55,9 @@
   if (!composerForm) return;
   var textarea = composerForm.querySelector("textarea[name='content']");
   var imageInput = composerForm.querySelector("input[name='image']");
-  var youtubeInput = composerForm.querySelector("input[name='youtube_url']");
+  var attachmentUrlInput = composerForm.querySelector("input[name='attachment_url']");
+  var attachmentToggle = composerForm.querySelector("[data-attach-toggle]");
+  var attachmentPanel = composerForm.querySelector("[data-attach-panel]");
   var counter = composerForm.querySelector("[data-char-count]");
   var publishBtn = composerForm.querySelector("[data-publish-btn]");
   if (!textarea || !counter || !publishBtn) return;
@@ -66,6 +68,17 @@
       var composer = document.getElementById("composer");
       if (composer) composer.scrollIntoView({ behavior: "smooth", block: "start" });
       textarea.focus();
+    });
+  }
+
+  if (attachmentToggle && attachmentPanel) {
+    attachmentToggle.addEventListener("click", function () {
+      var hidden = attachmentPanel.hidden;
+      attachmentPanel.hidden = !hidden;
+      attachmentToggle.setAttribute("aria-expanded", hidden ? "true" : "false");
+      if (hidden && !imageInput.value && attachmentUrlInput) {
+        attachmentUrlInput.focus();
+      }
     });
   }
 
@@ -88,14 +101,16 @@
     var length = textarea.value.length;
     counter.textContent = length + "/280";
     var hasImage = imageInput && imageInput.files && imageInput.files.length > 0;
-    var hasYoutube = youtubeInput && youtubeInput.value.trim().length > 0;
+    var hasAttachmentUrl =
+      attachmentUrlInput && attachmentUrlInput.value.trim().length > 0;
     var hasText = length > 0 && length <= 280;
-    var canPublish = hasText || hasImage || hasYoutube;
+    var canPublish = hasText || hasImage || hasAttachmentUrl;
     publishBtn.disabled = !canPublish;
   }
 
   textarea.addEventListener("input", updateCounter);
   if (imageInput) imageInput.addEventListener("change", updateCounter);
-  if (youtubeInput) youtubeInput.addEventListener("input", updateCounter);
+  if (attachmentUrlInput)
+    attachmentUrlInput.addEventListener("input", updateCounter);
   updateCounter();
 })();

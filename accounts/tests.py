@@ -173,7 +173,7 @@ class AuthFlowTests(TestCase):
             with override_settings(MEDIA_ROOT=tmp_media):
                 response = self.client.post(
                     reverse("accounts:home"),
-                    data={"content": "", "youtube_url": "", "image": image},
+                    data={"content": "", "attachment_url": "", "image": image},
                     follow=True,
                 )
 
@@ -194,8 +194,7 @@ class AuthFlowTests(TestCase):
         response = self.client.post(
             reverse("accounts:home"),
             data={
-                "content": "",
-                "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                "content": "Regarde cette video https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             },
             follow=True,
         )
@@ -204,3 +203,44 @@ class AuthFlowTests(TestCase):
         post = Post.objects.filter(author=user).latest("id")
         self.assertEqual(post.youtube_url, "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
         self.assertContains(response, "youtube.com/embed/dQw4w9WgXcQ")
+
+    def test_user_can_publish_file_url_attachment(self):
+        user = User.objects.create_user(
+            username="file@example.com",
+            first_name="File",
+            last_name="User",
+            email="file@example.com",
+            password="VeryStrongPass123!",
+        )
+        self.client.force_login(user)
+        response = self.client.post(
+            reverse("accounts:home"),
+            data={
+                "content": "",
+                "attachment_url": "https://cdn.example.com/docs/guide.pdf",
+            },
+            follow=True,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        post = Post.objects.filter(author=user).latest("id")
+        self.assertEqual(post.file_url, "https://cdn.example.com/docs/guide.pdf")
+        self.assertContains(response, "Fichier joint")
+
+    def test_rejects_non_file_attachment_url(self):
+        user = User.objects.create_user(
+            username="badurl@example.com",
+            first_name="Bad",
+            last_name="Url",
+            email="badurl@example.com",
+            password="VeryStrongPass123!",
+        )
+        self.client.force_login(user)
+        response = self.client.post(
+            reverse("accounts:home"),
+            data={"content": "", "attachment_url": "https://example.com/some-page"},
+            follow=True,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "pointer vers un fichier")
