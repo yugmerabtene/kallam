@@ -4,12 +4,33 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_http_methods
 
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, PostForm, RegisterForm
+from .models import Post
 
 
 @login_required
+@require_http_methods(["GET", "POST"])
 def home_view(request):
-    return render(request, "accounts/home.html")
+    post_form = PostForm(request.POST or None)
+    if request.method == "POST":
+        if post_form.is_valid():
+            Post.objects.create(
+                author=request.user,
+                content=post_form.cleaned_data["content"],
+            )
+            messages.success(request, "Message publie.")
+            return redirect("accounts:home")
+        messages.error(request, "Impossible de publier ce message.")
+
+    posts = Post.objects.select_related("author")[:50]
+    return render(
+        request,
+        "accounts/home.html",
+        {
+            "post_form": post_form,
+            "posts": posts,
+        },
+    )
 
 
 @require_http_methods(["GET", "POST"])

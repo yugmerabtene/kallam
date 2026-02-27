@@ -115,3 +115,24 @@ class LoginForm(forms.Form):
         ),
         label="Mot de passe",
     )
+
+
+class PostForm(forms.Form):
+    content = forms.CharField(
+        max_length=280,
+        label="Message",
+        widget=forms.Textarea(
+            attrs={
+                "class": "form-input composer-input",
+                "placeholder": "Quoi de neuf ?",
+                "rows": 3,
+                "maxlength": 280,
+            }
+        ),
+    )
+
+    def clean_content(self):
+        content = self.cleaned_data["content"].strip()
+        if not content:
+            raise ValidationError("Le message ne peut pas etre vide.")
+        return content
