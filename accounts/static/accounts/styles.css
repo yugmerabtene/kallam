@@ -1,19 +1,19 @@
 :root {
-  --bg-root: #0a1320;
-  --bg-layer: #0f1929;
-  --bg-card: #101a2b;
-  --bg-soft: #142235;
-  --line: #22364d;
-  --text-main: #f1f6fb;
-  --text-muted: #9cb2c9;
-  --accent: #4aa8ff;
-  --accent-strong: #3898f0;
-  --danger: #dc4457;
-  --danger-soft: #3a1d28;
-  --success-soft: #1d3f30;
+  --bg-root: #e7eff7;
+  --bg-layer: #f4f8fc;
+  --bg-card: #f7fbff;
+  --bg-soft: #edf3fa;
+  --line: #d3dfeb;
+  --text-main: #1e3146;
+  --text-muted: #667f96;
+  --accent: #2f87d7;
+  --accent-strong: #246fb3;
+  --danger: #d14b60;
+  --danger-soft: #fdecef;
+  --success-soft: #e8f6ed;
   --radius-lg: 16px;
   --radius-md: 12px;
-  --shadow-lg: 0 8px 24px rgba(2, 9, 19, 0.24);
+  --shadow-lg: 0 10px 26px rgba(31, 64, 97, 0.11);
 }
 
 *,
@@ -36,7 +36,7 @@ body {
   font-family: "Manrope", "Segoe UI", sans-serif;
   color: var(--text-main);
   background:
-    radial-gradient(circle at 50% -15%, rgba(74, 168, 255, 0.12), transparent 42%),
+    radial-gradient(circle at 50% -20%, rgba(47, 135, 215, 0.12), transparent 42%),
     linear-gradient(180deg, var(--bg-layer), var(--bg-root));
 }
 
@@ -44,8 +44,8 @@ body {
   position: sticky;
   top: 0;
   z-index: 30;
-  border-bottom: 1px solid rgba(34, 54, 77, 0.9);
-  background: rgba(8, 14, 24, 0.88);
+  border-bottom: 1px solid #d8e3ee;
+  background: rgba(244, 249, 253, 0.92);
   backdrop-filter: blur(8px);
 }
 
@@ -75,7 +75,7 @@ body {
   place-items: center;
   font-weight: 800;
   background: var(--accent);
-  color: #08203b;
+  color: #f4f9ff;
 }
 
 .site-logo-text {
@@ -105,11 +105,11 @@ body {
 
 .site-nav a:hover,
 .link-button:hover {
-  background: rgba(74, 168, 255, 0.12);
+  background: rgba(47, 135, 215, 0.1);
 }
 
 .site-nav-cta {
-  border: 1px solid rgba(74, 168, 255, 0.4);
+  border: 1px solid rgba(47, 135, 215, 0.35);
 }
 
 .inline-form {
@@ -132,22 +132,22 @@ body {
 .messages li {
   border: 1px solid var(--line);
   border-radius: 12px;
-  background: rgba(23, 43, 69, 0.88);
+  background: #f1f6fb;
   padding: 0.62rem 0.74rem;
 }
 
 .messages li.success {
-  border-color: rgba(67, 166, 114, 0.8);
+  border-color: rgba(66, 157, 106, 0.5);
   background: var(--success-soft);
 }
 
 .messages li.error {
-  border-color: rgba(220, 68, 87, 0.68);
+  border-color: rgba(209, 75, 96, 0.45);
   background: var(--danger-soft);
 }
 
 .messages li.info {
-  border-color: rgba(60, 165, 255, 0.62);
+  border-color: rgba(47, 135, 215, 0.45);
 }
 
 .auth-shell {
@@ -165,7 +165,7 @@ body {
 }
 
 .auth-hero {
-  background: linear-gradient(165deg, rgba(16, 30, 47, 0.96), rgba(11, 20, 34, 0.98));
+  background: linear-gradient(165deg, #dbe9f7, #cfe0f1);
   padding: clamp(1.2rem, 3vw, 2rem);
   display: flex;
   flex-direction: column;
@@ -179,15 +179,15 @@ body {
   border-radius: 999px;
   display: grid;
   place-items: center;
-  background: #f4f7fb;
-  color: #132640;
+  background: #ffffff;
+  color: #1f466f;
   font-size: 1.3rem;
   font-weight: 800;
 }
 
 .auth-hero-kicker {
   margin: 0;
-  color: #9cc1e3;
+  color: #486885;
   text-transform: uppercase;
   font-size: 0.78rem;
   letter-spacing: 0.12em;
@@ -203,12 +203,12 @@ body {
 
 .auth-hero-text {
   margin: 0;
-  color: #d4e4f4;
+  color: #35526d;
   max-width: 58ch;
 }
 
 .auth-card {
-  background: rgba(13, 24, 39, 0.96);
+  background: rgba(247, 251, 255, 0.95);
   padding: 1.2rem;
 }
 
@@ -217,7 +217,7 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.11em;
   font-size: 0.72rem;
-  color: #93cfff;
+  color: #4b83b8;
   font-weight: 700;
 }
 
@@ -249,14 +249,14 @@ body {
 
 label {
   font-weight: 700;
-  color: #eaf2fa;
+  color: #2d4864;
 }
 
 .form-input {
   width: 100%;
-  border: 1px solid #2c4765;
+  border: 1px solid #c5d5e5;
   border-radius: 12px;
-  background: #0f2034;
+  background: #f7fbff;
   color: var(--text-main);
   font: inherit;
   padding: 0.72rem 0.74rem;
@@ -264,13 +264,13 @@ label {
 }
 
 .form-input::placeholder {
-  color: #7f9db9;
+  color: #7b91a7;
 }
 
 .form-input:focus {
   outline: 0;
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(74, 168, 255, 0.22);
+  box-shadow: 0 0 0 2px rgba(47, 135, 215, 0.18);
 }
 
 textarea.form-input {
@@ -299,7 +299,7 @@ button.secondary,
 
 button.primary {
   padding: 0.68rem 1rem;
-  color: #061629;
+  color: #f6fbff;
   background: var(--accent);
 }
 
@@ -314,12 +314,12 @@ button.primary:disabled {
 
 button.secondary {
   padding: 0.62rem 0.94rem;
-  color: #d7e8fa;
-  background: #20364f;
+  color: #3a5774;
+  background: #e5eef6;
 }
 
 button.secondary:hover {
-  background: #27415f;
+  background: #dbe7f1;
 }
 
 .muted {
@@ -327,15 +327,15 @@ button.secondary:hover {
 }
 
 .error {
-  color: #ff8193;
+  color: #bd3f53;
   font-size: 0.9rem;
 }
 
 .error-box {
   border-radius: 11px;
-  border: 1px solid rgba(220, 68, 87, 0.75);
-  background: rgba(58, 29, 40, 0.95);
-  color: #ffd6dc;
+  border: 1px solid rgba(209, 75, 96, 0.45);
+  background: #fdeff2;
+  color: #8b2e3d;
   padding: 0.65rem 0.72rem;
 }
 
@@ -344,7 +344,7 @@ button.secondary:hover {
 }
 
 .auth-footer a {
-  color: #9fd6ff;
+  color: var(--accent);
   font-weight: 700;
   text-decoration: none;
 }
@@ -360,7 +360,7 @@ button.secondary:hover {
 .timeline {
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  background: rgba(12, 23, 37, 0.92);
+  background: rgba(247, 251, 255, 0.93);
   box-shadow: var(--shadow-lg);
 }
 
@@ -381,8 +381,8 @@ button.secondary:hover {
   display: grid;
   place-items: center;
   font-weight: 800;
-  background: rgba(74, 168, 255, 0.14);
-  border: 1px solid rgba(74, 168, 255, 0.34);
+  background: rgba(47, 135, 215, 0.1);
+  border: 1px solid rgba(47, 135, 215, 0.28);
 }
 
 .muted-avatar {
@@ -428,12 +428,12 @@ button.secondary:hover {
 }
 
 .rail-nav a:hover {
-  background: rgba(74, 168, 255, 0.12);
+  background: rgba(47, 135, 215, 0.1);
 }
 
 .rail-nav a.active {
-  color: #d8ecff;
-  background: rgba(74, 168, 255, 0.16);
+  color: #215684;
+  background: rgba(47, 135, 215, 0.14);
 }
 
 .timeline {
@@ -446,7 +446,7 @@ button.secondary:hover {
   z-index: 6;
   padding: 0.85rem 0.95rem;
   border-bottom: 1px solid var(--line);
-  background: rgba(12, 23, 37, 0.94);
+  background: rgba(244, 249, 253, 0.96);
   backdrop-filter: blur(6px);
 }
 
@@ -465,7 +465,7 @@ button.secondary:hover {
 .composer,
 .tweet-card {
   padding: 0.92rem;
-  border-bottom: 1px solid rgba(40, 69, 100, 0.8);
+  border-bottom: 1px solid #d4e0eb;
 }
 
 #composer,
@@ -504,9 +504,9 @@ button.secondary:hover {
   width: 34px;
   height: 34px;
   border-radius: 999px;
-  border: 1px solid rgba(74, 168, 255, 0.4);
-  background: rgba(74, 168, 255, 0.12);
-  color: #dff1ff;
+  border: 1px solid rgba(47, 135, 215, 0.34);
+  background: rgba(47, 135, 215, 0.1);
+  color: #2a5f8e;
   font-size: 1rem;
   line-height: 1;
   display: grid;
@@ -514,7 +514,7 @@ button.secondary:hover {
 }
 
 .attach-trigger:hover {
-  background: rgba(74, 168, 255, 0.2);
+  background: rgba(47, 135, 215, 0.18);
 }
 
 .composer-media-fields {
@@ -541,8 +541,8 @@ button.secondary:hover {
   border: 0;
   border-radius: 999px;
   padding: 0.38rem 0.74rem;
-  background: #264668;
-  color: #f4f7fb;
+  background: #dbe8f3;
+  color: #2d4f70;
   cursor: pointer;
   font-weight: 700;
 }
@@ -551,8 +551,8 @@ button.secondary:hover {
   margin: 0 0 0.72rem;
   border-radius: 14px;
   overflow: hidden;
-  border: 1px solid rgba(60, 165, 255, 0.26);
-  background: rgba(8, 17, 30, 0.95);
+  border: 1px solid rgba(47, 135, 215, 0.22);
+  background: #edf4fb;
 }
 
 .tweet-media img {
@@ -566,8 +566,8 @@ button.secondary:hover {
   margin: 0 0 0.72rem;
   border-radius: 14px;
   overflow: hidden;
-  border: 1px solid rgba(60, 165, 255, 0.26);
-  background: rgba(8, 17, 30, 0.95);
+  border: 1px solid rgba(47, 135, 215, 0.22);
+  background: #edf4fb;
 }
 
 .tweet-video iframe {
@@ -583,9 +583,9 @@ button.secondary:hover {
 
 .tweet-file-link a {
   text-decoration: none;
-  color: #d7ecff;
+  color: #285b89;
   font-weight: 700;
-  border: 1px solid rgba(74, 168, 255, 0.28);
+  border: 1px solid rgba(47, 135, 215, 0.26);
   border-radius: 999px;
   padding: 0.36rem 0.68rem;
   display: inline-flex;
@@ -594,7 +594,7 @@ button.secondary:hover {
 }
 
 .tweet-file-link a:hover {
-  border-color: rgba(74, 168, 255, 0.56);
+  border-color: rgba(47, 135, 215, 0.52);
 }
 
 .posts-grid {
@@ -606,7 +606,7 @@ button.secondary:hover {
 }
 
 .tweet-card:hover {
-  background: rgba(35, 57, 83, 0.22);
+  background: rgba(47, 135, 215, 0.08);
 }
 
 .tweet-header {
@@ -643,27 +643,27 @@ button.secondary:hover {
 }
 
 .action-btn {
-  border: 1px solid #33506f;
-  background: rgba(16, 29, 46, 0.7);
-  color: #bfd3e8;
+  border: 1px solid #c6d5e4;
+  background: #f7fbff;
+  color: #607b96;
   padding: 0.4rem 0.72rem;
   font-size: 0.88rem;
 }
 
 .action-btn:hover {
-  color: #f1f7fd;
-  border-color: #4b78a6;
+  color: #2e5476;
+  border-color: #9bb7d2;
 }
 
 .action-btn.is-active {
-  border-color: rgba(74, 168, 255, 0.78);
-  color: #d9efff;
-  background: rgba(31, 82, 131, 0.34);
+  border-color: rgba(47, 135, 215, 0.55);
+  color: #245f92;
+  background: rgba(47, 135, 215, 0.13);
 }
 
 .action-btn.report-btn {
-  border-color: rgba(220, 68, 87, 0.45);
-  color: #ffb0bb;
+  border-color: rgba(209, 75, 96, 0.38);
+  color: #b44457;
 }
 
 .action-btn.report-btn:hover {
@@ -671,8 +671,8 @@ button.secondary:hover {
 }
 
 .action-btn.report-btn.is-reported {
-  background: rgba(58, 29, 40, 0.95);
-  color: #ffd7dd;
+  background: #fdeff2;
+  color: #9a3242;
 }
 
 .empty-feed {
@@ -707,9 +707,9 @@ button.secondary:hover {
 }
 
 .trends.modern li {
-  border: 1px solid rgba(74, 168, 255, 0.22);
-  background: rgba(74, 168, 255, 0.07);
-  color: #d3ebff;
+  border: 1px solid rgba(47, 135, 215, 0.22);
+  background: rgba(47, 135, 215, 0.08);
+  color: #355f86;
   border-radius: 11px;
   padding: 0.52rem 0.64rem;
   font-weight: 700;
@@ -718,8 +718,8 @@ button.secondary:hover {
 .site-footer {
   width: min(1220px, 96vw);
   margin: 0 auto 0.8rem;
-  border-top: 1px solid rgba(34, 54, 77, 0.8);
-  color: #8ea7c2;
+  border-top: 1px solid #d2dfeb;
+  color: #6f879f;
   font-size: 0.86rem;
 }
 
@@ -737,7 +737,7 @@ button.secondary:hover {
 }
 
 .footer-inner a {
-  color: #9fd6ff;
+  color: #2f78b7;
   text-decoration: none;
   font-weight: 700;
 }
