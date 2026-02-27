@@ -2,7 +2,12 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from .forms import PostForm, RegisterForm
-from .models import Post, extract_youtube_video_id
+from .models import (
+    Post,
+    extract_first_youtube_url,
+    extract_youtube_video_id,
+    is_file_url,
+)
 
 User = get_user_model()
 
@@ -67,6 +72,19 @@ class PostModelUnitTests(TestCase):
             "",
         )
 
+    def test_extract_first_youtube_url_from_text(self):
+        content = "Hello regarde ça https://youtu.be/dQw4w9WgXcQ merci"
+        self.assertEqual(
+            extract_first_youtube_url(content),
+            "https://youtu.be/dQw4w9WgXcQ",
+        )
+
+    def test_is_file_url(self):
+        self.assertTrue(is_file_url("https://cdn.example.com/docs/guide.pdf"))
+        self.assertTrue(is_file_url("https://cdn.example.com/videos/demo.mp4"))
+        self.assertFalse(is_file_url("https://example.com/page"))
+        self.assertFalse(is_file_url("https://example.com/watch?v=abc"))
+
 
 class PostFormUnitTests(TestCase):
     def test_post_form_rejects_blank_content(self):
@@ -79,11 +97,15 @@ class PostFormUnitTests(TestCase):
         self.assertTrue(form.is_valid())
         self.assertEqual(form.cleaned_data["content"], "Test message")
 
-    def test_post_form_accepts_youtube_without_text(self):
-        form = PostForm(data={"content": "", "youtube_url": "https://youtu.be/dQw4w9WgXcQ"})
+    def test_post_form_accepts_youtube_in_message_text(self):
+        form = PostForm(data={"content": "video https://youtu.be/dQw4w9WgXcQ"})
         self.assertTrue(form.is_valid())
+        self.assertEqual(
+            form.cleaned_data["youtube_url"],
+            "https://youtu.be/dQw4w9WgXcQ",
+        )
 
-    def test_post_form_rejects_invalid_youtube(self):
-        form = PostForm(data={"content": "", "youtube_url": "https://example.com/nope"})
+    def test_post_form_rejects_non_file_attachment_url(self):
+        form = PostForm(data={"content": "", "attachment_url": "https://example.com/nope"})
         self.assertFalse(form.is_valid())
-        self.assertIn("youtube_url", form.errors)
+        self.assertIn("attachment_url", form.errors)

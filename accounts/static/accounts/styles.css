@@ -484,10 +484,43 @@ button.secondary:hover {
   gap: 0.45rem;
 }
 
+.composer-tools {
+  margin-top: 0.58rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.attach-trigger {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(74, 168, 255, 0.4);
+  background: rgba(74, 168, 255, 0.12);
+  color: #dff1ff;
+  font-size: 1rem;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+}
+
+.attach-trigger:hover {
+  background: rgba(74, 168, 255, 0.2);
+}
+
 .composer-media-fields {
   margin-top: 0.62rem;
   display: grid;
   gap: 0.62rem;
+}
+
+.attach-panel {
+  display: grid;
+  gap: 0.62rem;
+}
+
+.attach-panel[hidden] {
+  display: none;
 }
 
 .form-file-input {
@@ -533,6 +566,26 @@ button.secondary:hover {
   width: 100%;
   aspect-ratio: 16 / 9;
   border: 0;
+}
+
+.tweet-file-link {
+  margin: 0 0 0.72rem;
+}
+
+.tweet-file-link a {
+  text-decoration: none;
+  color: #d7ecff;
+  font-weight: 700;
+  border: 1px solid rgba(74, 168, 255, 0.28);
+  border-radius: 999px;
+  padding: 0.36rem 0.68rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.tweet-file-link a:hover {
+  border-color: rgba(74, 168, 255, 0.56);
 }
 
 .posts-grid {
