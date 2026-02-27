@@ -1,0 +1,48 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}Inscription - Kallam{% endblock %}
+
+{% block content %}
+<section class="card">
+  <h1>Inscription</h1>
+  <p>Creer un compte avec nom, prenom, email et mot de passe.</p>
+
+  <form method="post" class="form-grid" data-register-form>
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <div class="error-box">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <label for="{{ form.first_name.id_for_label }}">Prenom</label>
+    {{ form.first_name }}
+    {% if form.first_name.errors %}<small class="error">{{ form.first_name.errors|striptags }}</small>{% endif %}
+
+    <label for="{{ form.last_name.id_for_label }}">Nom</label>
+    {{ form.last_name }}
+    {% if form.last_name.errors %}<small class="error">{{ form.last_name.errors|striptags }}</small>{% endif %}
+
+    <label for="{{ form.email.id_for_label }}">Email</label>
+    {{ form.email }}
+    {% if form.email.errors %}<small class="error">{{ form.email.errors|striptags }}</small>{% endif %}
+
+    <label for="{{ form.password.id_for_label }}">Mot de passe</label>
+    <div class="input-inline">
+      {{ form.password }}
+      <button type="button" class="secondary" data-toggle-password="{{ form.password.id_for_label }}">Afficher</button>
+    </div>
+    {% if form.password.errors %}<small class="error">{{ form.password.errors|striptags }}</small>{% endif %}
+
+    <label for="{{ form.password_confirm.id_for_label }}">Confirmer le mot de passe</label>
+    <div class="input-inline">
+      {{ form.password_confirm }}
+      <button type="button" class="secondary" data-toggle-password="{{ form.password_confirm.id_for_label }}">Afficher</button>
+    </div>
+    <small class="error" data-password-match hidden>Les mots de passe ne correspondent pas.</small>
+    {% if form.password_confirm.errors %}<small class="error">{{ form.password_confirm.errors|striptags }}</small>{% endif %}
+
+    <button type="submit">Creer mon compte</button>
+  </form>
+
+  <p class="muted">Deja inscrit ? <a href="{% url 'accounts:login' %}">Se connecter</a></p>
+</section>
+{% endblock %}

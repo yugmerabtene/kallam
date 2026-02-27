@@ -1,0 +1,14 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}Accueil - Kallam{% endblock %}
+
+{% block content %}
+<section class="card">
+  <h1>Bienvenue {{ user.first_name }} {{ user.last_name }}</h1>
+  <p>Tu es connecte sur la premiere iteration de Kallam.</p>
+  <ul>
+    <li>Email: {{ user.email }}</li>
+    <li>Username technique: {{ user.username }}</li>
+  </ul>
+</section>
+{% endblock %}

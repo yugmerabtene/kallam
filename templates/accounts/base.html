@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Kallam{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'accounts/styles.css' %}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">KALLAM</div>
+    <nav>
+      {% if user.is_authenticated %}
+        <a href="{% url 'accounts:home' %}">Accueil</a>
+        <form method="post" action="{% url 'accounts:logout' %}" class="inline-form">
+          {% csrf_token %}
+          <button type="submit" class="link-button">Deconnexion</button>
+        </form>
+      {% else %}
+        <a href="{% url 'accounts:login' %}">Connexion</a>
+        <a href="{% url 'accounts:register' %}">Inscription</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <main class="container">
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src="{% static 'accounts/auth.js' %}"></script>
+</body>
+</html>
