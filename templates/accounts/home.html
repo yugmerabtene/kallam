@@ -40,14 +40,33 @@
     </header>
 
     <section class="composer" id="composer">
-      <form method="post" class="composer-form" data-composer-form>
+      <form method="post" enctype="multipart/form-data" class="composer-form" data-composer-form>
         {% csrf_token %}
         <div class="composer-top">
           <span class="avatar-badge muted-avatar">{{ user.first_name|default:user.username|slice:":1"|upper }}</span>
           {{ post_form.content }}
         </div>
+        <div class="composer-media-fields">
+          <div class="field">
+            <label for="{{ post_form.image.id_for_label }}">Image</label>
+            {{ post_form.image }}
+            {% if post_form.image.errors %}
+              <small class="error">{{ post_form.image.errors|striptags }}</small>
+            {% endif %}
+          </div>
+          <div class="field">
+            <label for="{{ post_form.youtube_url.id_for_label }}">Lien YouTube</label>
+            {{ post_form.youtube_url }}
+            {% if post_form.youtube_url.errors %}
+              <small class="error">{{ post_form.youtube_url.errors|striptags }}</small>
+            {% endif %}
+          </div>
+        </div>
         {% if post_form.content.errors %}
           <small class="error">{{ post_form.content.errors|striptags }}</small>
+        {% endif %}
+        {% if post_form.non_field_errors %}
+          <small class="error">{{ post_form.non_field_errors|striptags }}</small>
         {% endif %}
         <div class="composer-footer">
           <small class="muted">280 caracteres max</small>
@@ -71,7 +90,28 @@
               </div>
             </header>
 
-            <p class="tweet-text">{{ post.content }}</p>
+            {% if post.content %}
+              <p class="tweet-text">{{ post.content }}</p>
+            {% endif %}
+
+            {% if post.image %}
+              <figure class="tweet-media">
+                <img src="{{ post.image.url }}" alt="Image publiee par {{ post.author_display_name }}" loading="lazy">
+              </figure>
+            {% endif %}
+
+            {% if post.youtube_embed_url %}
+              <div class="tweet-video">
+                <iframe
+                  src="{{ post.youtube_embed_url }}"
+                  title="Video YouTube"
+                  loading="lazy"
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen>
+                </iframe>
+              </div>
+            {% endif %}
 
             <div class="tweet-actions">
               <button type="button" class="action-btn reply-btn" data-reply-handle="{{ post.author_handle }}">
