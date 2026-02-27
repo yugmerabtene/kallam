@@ -3,6 +3,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
+from .models import extract_youtube_video_id
+
 User = get_user_model()
 
 
@@ -121,6 +123,7 @@ class PostForm(forms.Form):
     content = forms.CharField(
         max_length=280,
         label="Message",
+        required=False,
         widget=forms.Textarea(
             attrs={
                 "class": "form-input composer-input",
@@ -130,9 +133,42 @@ class PostForm(forms.Form):
             }
         ),
     )
+    image = forms.ImageField(
+        required=False,
+        label="Image",
+        widget=forms.ClearableFileInput(
+            attrs={
+                "class": "form-input form-file-input",
+                "accept": "image/*",
+            }
+        ),
+    )
+    youtube_url = forms.URLField(
+        required=False,
+        label="Lien YouTube",
+        widget=forms.URLInput(
+            attrs={
+                "class": "form-input",
+                "placeholder": "https://www.youtube.com/watch?v=...",
+            }
+        ),
+    )
 
     def clean_content(self):
-        content = self.cleaned_data["content"].strip()
-        if not content:
-            raise ValidationError("Le message ne peut pas etre vide.")
-        return content
+        return (self.cleaned_data.get("content") or "").strip()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        content = (cleaned_data.get("content") or "").strip()
+        image = cleaned_data.get("image")
+        youtube_url = (cleaned_data.get("youtube_url") or "").strip()
+
+        if youtube_url and not extract_youtube_video_id(youtube_url):
+            self.add_error("youtube_url", "Ajoute un lien YouTube valide.")
+
+        if not content and not image and not youtube_url:
+            raise ValidationError("Ajoute un message, une image ou un lien YouTube.")
+
+        cleaned_data["content"] = content
+        cleaned_data["youtube_url"] = youtube_url
+        return cleaned_data
