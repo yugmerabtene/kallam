@@ -469,7 +469,7 @@ button.secondary:hover {
 }
 
 .composer {
-  padding-top: 1.85rem;
+  padding-top: calc(1.85rem + 8px);
 }
 
 #composer,
