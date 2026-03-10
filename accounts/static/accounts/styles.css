@@ -520,6 +520,17 @@ textarea.form-input { line-height: 1.5; resize: vertical; }
   object-fit: cover;
 }
 
+/* When avatar-img is applied directly on the <img> that IS the badge (not inside a wrapper) */
+img.avatar-badge {
+  width: 40px;
+  height: 40px;
+}
+
+img.avatar-badge.avatar-lg {
+  width: 70px;
+  height: 70px;
+}
+
 .profile-name {
   margin: 0;
   font-weight: 800;
