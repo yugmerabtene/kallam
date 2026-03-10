@@ -21,4 +21,5 @@ git checkout "$BRANCH"
 git reset --hard "origin/$BRANCH"
 
 docker compose up --build -d --remove-orphans
+docker exec kallam python manage.py collectstatic --noinput
 docker image prune -f
