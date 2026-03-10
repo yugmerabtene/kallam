@@ -23,6 +23,13 @@
         <div class="error-box">{{ form.non_field_errors }}</div>
       {% endif %}
 
+      <div class="field">
+        <label for="{{ form.pseudo.id_for_label }}">Pseudonyme</label>
+        {{ form.pseudo }}
+        {% if form.pseudo.help_text %}<small class="muted">{{ form.pseudo.help_text }}</small>{% endif %}
+        {% if form.pseudo.errors %}<small class="error">{{ form.pseudo.errors|striptags }}</small>{% endif %}
+      </div>
+
       <div class="field field-double">
         <div>
           <label for="{{ form.first_name.id_for_label }}">Prenom</label>

@@ -5,192 +5,228 @@
 
 {% block content %}
 <section class="x-layout">
+
+  {# ── Rail gauche ──────────────────────────────────── #}
   <aside class="left-rail">
     <div class="rail-card profile-card">
       <div class="profile-head">
-        <span class="avatar-badge">{{ user.first_name|default:user.username|slice:":1"|upper }}</span>
+        {% if user_profile and user_profile.avatar %}
+          <img src="{{ user_profile.avatar.url }}" class="avatar-badge avatar-img" alt="Mon avatar">
+        {% else %}
+          <span class="avatar-badge">{{ user.first_name|default:user.username|slice:":1"|upper }}</span>
+        {% endif %}
         <div>
           <p class="profile-name">{{ user.first_name }} {{ user.last_name }}</p>
-          <p class="profile-handle">{{ user.username }}</p>
+          {% if user_profile %}
+            <p class="profile-handle">@{{ user_profile.pseudo }}</p>
+          {% else %}
+            <p class="profile-handle">{{ user.username }}</p>
+          {% endif %}
         </div>
       </div>
-      <div class="quick-post">
-        <button type="button" class="primary rail-post-btn" data-composer-jump>Publier</button>
-      </div>
+      {% if user_profile %}
+        <div class="follow-stats">
+          <span><strong>{{ following_count }}</strong> abonnements</span>
+          <span><strong>{{ followers_count }}</strong> abonnés</span>
+        </div>
+        <a href="{% url 'accounts:profile' pseudo=user_profile.pseudo %}" class="rail-profile-link">Mon profil</a>
+      {% else %}
+        <a href="{% url 'accounts:edit_profile' %}" class="rail-profile-link">Créer mon profil</a>
+      {% endif %}
     </div>
 
     <div class="rail-card nav-card">
-      <nav class="rail-nav" aria-label="Navigation secondaire">
-        <a class="active" href="{% url 'accounts:home' %}">Accueil</a>
-        <a href="#">Explorer</a>
-        <a href="#">Messages</a>
-        <a href="#">Communautes</a>
+      <nav class="rail-nav" aria-label="Navigation">
+        <a class="active" href="{% url 'accounts:home' %}">🏠 Accueil</a>
+        {% if user_profile %}
+          <a href="{% url 'accounts:profile' pseudo=user_profile.pseudo %}">👤 Profil</a>
+        {% endif %}
+        <a href="{% url 'accounts:inbox' %}">✉️ Messages</a>
       </nav>
       <form method="post" action="{% url 'accounts:logout' %}">
         {% csrf_token %}
-        <button type="submit" class="secondary rail-logout-btn">Deconnexion</button>
+        <button type="submit" class="secondary rail-logout-btn">Déconnexion</button>
       </form>
     </div>
   </aside>
 
-  <section class="timeline" aria-label="Fil principal">
-    <header class="timeline-header">
-      <h1>Accueil</h1>
-      <p class="timeline-sub">Bienvenue sur ton fil Kallam</p>
-    </header>
+  {# ── Colonne centrale ──────────────────────────────── #}
+  <div class="feed-column">
 
-    <section class="composer" id="composer">
-      <form method="post" enctype="multipart/form-data" class="composer-form" data-composer-form>
+    {# Composer — carte indépendante, toujours visible #}
+    <div class="composer-card" id="composer">
+      <form method="post" enctype="multipart/form-data" data-composer-form>
         {% csrf_token %}
-        <div class="composer-top">
-          <span class="avatar-badge muted-avatar">{{ user.first_name|default:user.username|slice:":1"|upper }}</span>
-          {{ post_form.content }}
-        </div>
-        <div class="composer-tools">
-          <button
-            type="button"
-            class="attach-trigger"
-            data-attach-toggle
-            aria-controls="composer-attachments"
-            aria-expanded="{% if post_form.image.errors or post_form.attachment_url.errors %}true{% else %}false{% endif %}"
-            title="Joindre un fichier">
-            <span aria-hidden="true">&#128206;</span>
-          </button>
-          <small class="muted">Joindre: image ou URL de fichier. Pour YouTube, colle le lien dans le message.</small>
-        </div>
-        <div class="composer-media-fields">
-          <div
-            id="composer-attachments"
-            class="attach-panel"
-            data-attach-panel
-            {% if not post_form.image.errors and not post_form.attachment_url.errors %}hidden{% endif %}>
-            <div class="field">
-              <label for="{{ post_form.image.id_for_label }}">Image</label>
-              {{ post_form.image }}
-              {% if post_form.image.errors %}
-                <small class="error">{{ post_form.image.errors|striptags }}</small>
-              {% endif %}
-            </div>
-            <div class="field">
-              <label for="{{ post_form.attachment_url.id_for_label }}">URL de fichier</label>
-              {{ post_form.attachment_url }}
-              {% if post_form.attachment_url.errors %}
-                <small class="error">{{ post_form.attachment_url.errors|striptags }}</small>
-              {% endif %}
+
+        <div class="composer-inner">
+          {% if user_profile and user_profile.avatar %}
+            <img src="{{ user_profile.avatar.url }}" class="avatar-badge avatar-img composer-avatar" alt="">
+          {% else %}
+            <span class="avatar-badge composer-avatar">{{ user.first_name|default:user.username|slice:":1"|upper }}</span>
+          {% endif %}
+
+          <div class="composer-body">
+            {{ post_form.content }}
+
+            {% if post_form.content.errors %}
+              <small class="error">{{ post_form.content.errors|striptags }}</small>
+            {% endif %}
+            {% if post_form.non_field_errors %}
+              <small class="error">{{ post_form.non_field_errors|striptags }}</small>
+            {% endif %}
+
+            <div id="composer-attachments" class="attach-panel" data-attach-panel
+              {% if not post_form.image.errors and not post_form.attachment_url.errors %}hidden{% endif %}>
+              <div class="field">
+                <label for="{{ post_form.image.id_for_label }}">Image</label>
+                {{ post_form.image }}
+                {% if post_form.image.errors %}<small class="error">{{ post_form.image.errors|striptags }}</small>{% endif %}
+              </div>
+              <div class="field">
+                <label for="{{ post_form.attachment_url.id_for_label }}">URL de fichier</label>
+                {{ post_form.attachment_url }}
+                {% if post_form.attachment_url.errors %}<small class="error">{{ post_form.attachment_url.errors|striptags }}</small>{% endif %}
+              </div>
             </div>
           </div>
         </div>
-        {% if post_form.content.errors %}
-          <small class="error">{{ post_form.content.errors|striptags }}</small>
-        {% endif %}
-        {% if post_form.non_field_errors %}
-          <small class="error">{{ post_form.non_field_errors|striptags }}</small>
-        {% endif %}
-        <div class="composer-footer">
-          <small class="muted">280 caracteres max</small>
-          <small class="muted" data-char-count>0/280</small>
-          <button class="primary" type="submit" data-publish-btn>Publier</button>
+
+        <div class="composer-bar">
+          <div class="composer-tools">
+            <button type="button" class="tool-btn" data-attach-toggle
+              aria-controls="composer-attachments"
+              aria-expanded="{% if post_form.image.errors or post_form.attachment_url.errors %}true{% else %}false{% endif %}"
+              title="Joindre image ou fichier">
+              📎
+            </button>
+            <span class="char-counter" data-char-count>0/280</span>
+          </div>
+          <button class="primary composer-submit" type="submit" data-publish-btn disabled>Publier</button>
         </div>
       </form>
-    </section>
+    </div>
 
-    <section class="posts-grid">
-      {% if posts %}
-        {% for post in posts %}
-          <article class="tweet-card" id="post-{{ post.id }}">
-            <header class="tweet-header">
-              <div>
-                <p class="tweet-author">
-                  {{ post.author_display_name }}
-                  <span>{{ post.author_handle }}</span>
-                </p>
-                <p class="tweet-time">{{ post.created_at|timesince }} · {{ post.like_count }} likes</p>
+    {# Fil de posts #}
+    <section class="timeline" aria-label="Fil principal">
+      <div class="feed-label">
+        <span>Fil d'actualité</span>
+        <span class="feed-count">{{ posts|length }} publication{% if posts|length != 1 %}s{% endif %}</span>
+      </div>
+
+      <div class="posts-grid">
+        {% if posts %}
+          {% for post in posts %}
+            <article class="tweet-card" id="post-{{ post.id }}">
+              <div class="tweet-layout">
+                {# Avatar colonne gauche #}
+                <div class="tweet-avatar-col">
+                  {% with prof=post.author.profile %}
+                    {% if prof and prof.avatar %}
+                      <a href="{% url 'accounts:profile' pseudo=prof.pseudo %}">
+                        <img src="{{ prof.avatar.url }}" class="avatar-badge avatar-img" alt="">
+                      </a>
+                    {% else %}
+                      {% if prof %}
+                        <a href="{% url 'accounts:profile' pseudo=prof.pseudo %}" class="avatar-badge avatar-link">
+                          {{ post.author_display_name|slice:":1"|upper }}
+                        </a>
+                      {% else %}
+                        <span class="avatar-badge">{{ post.author_display_name|slice:":1"|upper }}</span>
+                      {% endif %}
+                    {% endif %}
+                  {% endwith %}
+                </div>
+
+                {# Corps du post #}
+                <div class="tweet-body">
+                  <div class="tweet-meta">
+                    <span class="tweet-author">{{ post.author_display_name }}</span>
+                    <span class="tweet-handle">{{ post.author_handle }}</span>
+                    <span class="tweet-dot">·</span>
+                    <a href="{% url 'accounts:post_detail' post.id %}" class="tweet-time">{{ post.created_at|timesince }}</a>
+                  </div>
+
+                  {% if post.content %}
+                    <p class="tweet-text">{{ post.content }}</p>
+                  {% endif %}
+
+                  {% if post.image %}
+                    <figure class="tweet-media">
+                      <img src="{{ post.image.url }}" alt="Image de {{ post.author_display_name }}" loading="lazy">
+                    </figure>
+                  {% endif %}
+
+                  {% if post.youtube_embed_url %}
+                    <div class="tweet-video">
+                      <iframe src="{{ post.youtube_embed_url }}" title="Video YouTube" loading="lazy"
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen></iframe>
+                    </div>
+                  {% endif %}
+
+                  {% if post.file_url %}
+                    <p class="tweet-file-link">
+                      <a href="{{ post.file_url }}" target="_blank" rel="noopener noreferrer">📎 Fichier joint</a>
+                    </p>
+                  {% endif %}
+
+                  <div class="tweet-actions">
+                    <button type="button" class="action-btn reply-btn" data-reply-handle="{{ post.author_handle }}">
+                      💬 <span>Répondre</span>
+                    </button>
+
+                    <form method="post" action="{% url 'accounts:post_action' post.id 'repost' %}" class="inline-form">
+                      {% csrf_token %}
+                      <input type="hidden" name="next" value="{% url 'accounts:home' %}#post-{{ post.id }}">
+                      <button type="submit" class="action-btn repost-btn {% if post.reposted_by_me %}is-active{% endif %}">
+                        🔁 {% if post.repost_count %}<span>{{ post.repost_count }}</span>{% endif %}
+                      </button>
+                    </form>
+
+                    <form method="post" action="{% url 'accounts:post_action' post.id 'like' %}" class="inline-form">
+                      {% csrf_token %}
+                      <input type="hidden" name="next" value="{% url 'accounts:home' %}#post-{{ post.id }}">
+                      <button type="submit" class="action-btn like-btn {% if post.liked_by_me %}is-active{% endif %}">
+                        {% if post.liked_by_me %}❤️{% else %}🤍{% endif %} {% if post.like_count %}<span>{{ post.like_count }}</span>{% endif %}
+                      </button>
+                    </form>
+
+                    <form method="post" action="{% url 'accounts:post_action' post.id 'report' %}" class="inline-form">
+                      {% csrf_token %}
+                      <input type="hidden" name="next" value="{% url 'accounts:home' %}#post-{{ post.id }}">
+                      <button type="submit" class="action-btn report-btn {% if post.reported_by_me %}is-reported{% endif %}">
+                        🚩
+                      </button>
+                    </form>
+                  </div>
+                </div>
               </div>
-            </header>
-
-            {% if post.content %}
-              <p class="tweet-text">{{ post.content }}</p>
-            {% endif %}
-
-            {% if post.image %}
-              <figure class="tweet-media">
-                <img src="{{ post.image.url }}" alt="Image publiee par {{ post.author_display_name }}" loading="lazy">
-              </figure>
-            {% endif %}
-
-            {% if post.youtube_embed_url %}
-              <div class="tweet-video">
-                <iframe
-                  src="{{ post.youtube_embed_url }}"
-                  title="Video YouTube"
-                  loading="lazy"
-                  referrerpolicy="strict-origin-when-cross-origin"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowfullscreen>
-                </iframe>
-              </div>
-            {% endif %}
-
-            {% if post.file_url %}
-              <p class="tweet-file-link">
-                <a href="{{ post.file_url }}" target="_blank" rel="noopener noreferrer">
-                  &#128206; Fichier joint
-                </a>
-              </p>
-            {% endif %}
-
-            <div class="tweet-actions">
-              <button type="button" class="action-btn reply-btn" data-reply-handle="{{ post.author_handle }}">
-                Repondre
-              </button>
-
-              <form method="post" action="{% url 'accounts:post_action' post.id 'repost' %}" class="inline-form">
-                {% csrf_token %}
-                <input type="hidden" name="next" value="{% url 'accounts:home' %}#post-{{ post.id }}">
-                <button type="submit" class="action-btn {% if post.reposted_by_me %}is-active{% endif %}">
-                  Reposter {% if post.repost_count %}{{ post.repost_count }}{% endif %}
-                </button>
-              </form>
-
-              <form method="post" action="{% url 'accounts:post_action' post.id 'like' %}" class="inline-form">
-                {% csrf_token %}
-                <input type="hidden" name="next" value="{% url 'accounts:home' %}#post-{{ post.id }}">
-                <button type="submit" class="action-btn {% if post.liked_by_me %}is-active{% endif %}">
-                  Aimer {% if post.like_count %}{{ post.like_count }}{% endif %}
-                </button>
-              </form>
-
-              <form method="post" action="{% url 'accounts:post_action' post.id 'report' %}" class="inline-form">
-                {% csrf_token %}
-                <input type="hidden" name="next" value="{% url 'accounts:home' %}#post-{{ post.id }}">
-                <button type="submit" class="action-btn report-btn {% if post.reported_by_me %}is-reported{% endif %}">
-                  {% if post.reported_by_me %}Reporte{% else %}Reporter{% endif %}
-                </button>
-              </form>
-            </div>
-          </article>
-        {% endfor %}
-      {% else %}
-        <article class="tweet-card empty-feed">
-          <p class="tweet-text">Bienvenue sur Kallam. Publie ton premier message.</p>
-        </article>
-      {% endif %}
+            </article>
+          {% endfor %}
+        {% else %}
+          <div class="empty-feed">
+            <p style="font-size:2rem;margin:0">✨</p>
+            <p>Bienvenue sur Kallam. Publie ton premier message ci-dessus.</p>
+          </div>
+        {% endif %}
+      </div>
     </section>
-  </section>
+  </div>
 
+  {# ── Rail droit ───────────────────────────────────── #}
   <aside class="right-rail">
     <div class="rail-card stat-card">
       <p class="eyebrow">Statistiques</p>
       <ul class="stat-list">
         <li><strong>{{ user.posts.count }}</strong><span>Publications</span></li>
-        <li><strong>{{ posts|length }}</strong><span>Dans le fil</span></li>
-        <li><strong>100%</strong><span>Visibilite locale</span></li>
+        <li><strong>{{ followers_count }}</strong><span>Abonnés</span></li>
+        <li><strong>{{ following_count }}</strong><span>Abonnements</span></li>
       </ul>
     </div>
-
-    <div class="rail-card trend-card">
+    <div class="rail-card">
       <p class="eyebrow">Tendances</p>
-      <ul class="trends modern">
+      <ul class="trends">
         <li>#Kallam</li>
         <li>#Citoyens</li>
         <li>#LibreExpression</li>
@@ -198,5 +234,6 @@
       </ul>
     </div>
   </aside>
+
 </section>
 {% endblock %}

@@ -1,0 +1,91 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}Modération - Kallam{% endblock %}
+{% block body_class %}x-theme app-page{% endblock %}
+
+{% block content %}
+<section class="x-layout">
+  <aside class="left-rail">
+    <div class="rail-card nav-card">
+      <nav class="rail-nav" aria-label="Navigation modération">
+        <a href="{% url 'accounts:home' %}">Accueil</a>
+        <a class="active" href="{% url 'accounts:moderation' %}">Modération</a>
+      </nav>
+    </div>
+  </aside>
+
+  <section class="timeline" aria-label="Dashboard modération">
+    <header class="timeline-header">
+      <h1>Dashboard modération</h1>
+      <p class="timeline-sub">{{ reported_posts|length }} post(s) signalé(s) · {{ total_reports }} signalement(s) total</p>
+    </header>
+
+    <section class="posts-grid">
+      {% if reported_posts %}
+        {% for post in reported_posts %}
+          <article class="tweet-card" id="post-{{ post.id }}" style="border-left:3px solid var(--danger)">
+            <header class="tweet-header">
+              <div>
+                <p class="tweet-author">
+                  {{ post.author_display_name }}
+                  <span>{{ post.author_handle }}</span>
+                </p>
+                <p class="tweet-time">{{ post.created_at|timesince }}</p>
+              </div>
+              <span class="badge-danger" style="margin-left:auto;align-self:flex-start">
+                {{ post.report_count }} signalement{% if post.report_count > 1 %}s{% endif %}
+              </span>
+            </header>
+
+            {% if post.content %}
+              <p class="tweet-text">{{ post.content }}</p>
+            {% endif %}
+
+            {% if post.image %}
+              <figure class="tweet-media">
+                <img src="{{ post.image.url }}" alt="Image du post" loading="lazy">
+              </figure>
+            {% endif %}
+
+            {% if post.youtube_embed_url %}
+              <div class="tweet-video">
+                <iframe src="{{ post.youtube_embed_url }}" title="Video" loading="lazy" allowfullscreen></iframe>
+              </div>
+            {% endif %}
+
+            <div class="tweet-actions" style="gap:0.5rem">
+              <form method="post" action="{% url 'accounts:moderation_action' post.id 'dismiss' %}" class="inline-form">
+                {% csrf_token %}
+                <button type="submit" class="action-btn">
+                  Ignorer les signalements
+                </button>
+              </form>
+              <form method="post" action="{% url 'accounts:moderation_action' post.id 'delete' %}" class="inline-form">
+                {% csrf_token %}
+                <button type="submit" class="action-btn report-btn"
+                  onclick="return confirm('Supprimer définitivement ce post ?')">
+                  Supprimer le post
+                </button>
+              </form>
+            </div>
+          </article>
+        {% endfor %}
+      {% else %}
+        <article class="tweet-card empty-feed">
+          <p class="tweet-text">Aucun post signalé. La communauté est sage.</p>
+        </article>
+      {% endif %}
+    </section>
+  </section>
+
+  <aside class="right-rail">
+    <div class="rail-card stat-card">
+      <p class="eyebrow">Statistiques</p>
+      <ul class="stat-list">
+        <li><strong>{{ reported_posts|length }}</strong><span>Posts signalés</span></li>
+        <li><strong>{{ total_reports }}</strong><span>Signalements</span></li>
+      </ul>
+    </div>
+  </aside>
+</section>
+{% endblock %}

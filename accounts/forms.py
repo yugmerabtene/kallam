@@ -1,14 +1,37 @@
+import re
+
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
-from .models import extract_first_youtube_url, extract_youtube_video_id, is_file_url
+from .models import (
+    UserProfile,
+    extract_first_youtube_url,
+    extract_youtube_video_id,
+    is_file_url,
+)
 
 User = get_user_model()
 
+PSEUDO_RE = re.compile(r"^[a-z0-9_]{3,50}$")
+RESERVED_PSEUDOS = {"modifier", "profil", "admin", "kallam", "system"}
+
+
 
 class RegisterForm(forms.Form):
+    pseudo = forms.CharField(
+        max_length=50,
+        label="Pseudonyme",
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "tonpseudo",
+                "autocomplete": "username",
+                "class": "form-input",
+            }
+        ),
+        help_text="3-50 caractères : lettres minuscules, chiffres, _",
+    )
     first_name = forms.CharField(
         max_length=150,
         label="Prenom",
@@ -62,6 +85,18 @@ class RegisterForm(forms.Form):
         label="Confirmer le mot de passe",
     )
 
+    def clean_pseudo(self):
+        pseudo = self.cleaned_data.get("pseudo", "").strip().lower()
+        if not PSEUDO_RE.match(pseudo):
+            raise ValidationError(
+                "Le pseudonyme doit contenir 3-50 caractères (lettres minuscules, chiffres, _)."
+            )
+        if pseudo in RESERVED_PSEUDOS:
+            raise ValidationError("Ce pseudonyme est réservé.")
+        if UserProfile.objects.filter(pseudo=pseudo).exists():
+            raise ValidationError("Ce pseudonyme est déjà utilisé.")
+        return pseudo
+
     def clean_email(self):
         email = self.cleaned_data["email"].strip().lower()
         if User.objects.filter(email__iexact=email).exists():
@@ -93,6 +128,7 @@ class RegisterForm(forms.Form):
             last_name=self.cleaned_data["last_name"].strip(),
             password=self.cleaned_data["password"],
         )
+        UserProfile.objects.create(user=user, pseudo=self.cleaned_data["pseudo"])
         return user
 
 
@@ -182,3 +218,36 @@ class PostForm(forms.Form):
         cleaned_data["youtube_url"] = youtube_url
         cleaned_data["attachment_url"] = attachment_url
         return cleaned_data
+
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ["pseudo", "bio", "avatar", "langue"]
+        widgets = {
+            "pseudo": forms.TextInput(
+                attrs={"class": "form-input", "placeholder": "tonpseudo"}
+            ),
+            "bio": forms.Textarea(
+                attrs={"class": "form-input", "rows": 3, "maxlength": 160}
+            ),
+            "avatar": forms.ClearableFileInput(
+                attrs={"class": "form-input form-file-input", "accept": "image/*"}
+            ),
+            "langue": forms.Select(attrs={"class": "form-input"}),
+        }
+
+    def clean_pseudo(self):
+        pseudo = self.cleaned_data.get("pseudo", "").strip().lower()
+        if not PSEUDO_RE.match(pseudo):
+            raise ValidationError(
+                "Le pseudonyme doit contenir 3-50 caractères (lettres minuscules, chiffres, _)."
+            )
+        if pseudo in RESERVED_PSEUDOS:
+            raise ValidationError("Ce pseudonyme est réservé.")
+        qs = UserProfile.objects.filter(pseudo=pseudo)
+        if self.instance.pk:
+            qs = qs.exclude(pk=self.instance.pk)
+        if qs.exists():
+            raise ValidationError("Ce pseudonyme est déjà utilisé.")
+        return pseudo

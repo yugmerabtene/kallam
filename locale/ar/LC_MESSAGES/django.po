@@ -1,0 +1,75 @@
+# Arabic translations for Kallam
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar\n"
+
+msgid "Accueil"
+msgstr "الرئيسية"
+
+msgid "Messages"
+msgstr "الرسائل"
+
+msgid "Profil"
+msgstr "الملف الشخصي"
+
+msgid "Modération"
+msgstr "الإشراف"
+
+msgid "Connexion"
+msgstr "تسجيل الدخول"
+
+msgid "Inscription"
+msgstr "التسجيل"
+
+msgid "Déconnexion"
+msgstr "تسجيل الخروج"
+
+msgid "Publier"
+msgstr "نشر"
+
+msgid "Message publie."
+msgstr "تم نشر المنشور."
+
+msgid "Impossible de publier ce message."
+msgstr "تعذّر نشر هذا المنشور."
+
+msgid "Inscription reussie."
+msgstr "تم التسجيل بنجاح."
+
+msgid "Connexion reussie."
+msgstr "تم تسجيل الدخول بنجاح."
+
+msgid "Vous etes deconnecte."
+msgstr "تم تسجيل خروجك."
+
+msgid "Profil mis a jour."
+msgstr "تم تحديث الملف الشخصي."
+
+msgid "Publication signalee."
+msgstr "تم الإبلاغ عن المنشور."
+
+msgid "Publication deja signalee."
+msgstr "تم الإبلاغ عن هذا المنشور مسبقاً."
+
+msgid "Action non supportee."
+msgstr "الإجراء غير مدعوم."
+
+msgid "Trop de publications. Attends un peu."
+msgstr "عدد كبير من المنشورات. انتظر قليلاً."
+
+msgid "Trop de messages. Attends un peu."
+msgstr "عدد كبير من الرسائل. انتظر قليلاً."
+
+msgid "Trop de tentatives. Reessaie dans 5 minutes."
+msgstr "محاولات كثيرة جداً. أعد المحاولة بعد 5 دقائق."
+
+msgid "Français"
+msgstr "الفرنسية"
+
+msgid "English"
+msgstr "الإنجليزية"
+
+msgid "العربية"
+msgstr "العربية"

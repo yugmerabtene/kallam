@@ -1,0 +1,194 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}@{{ profile.pseudo }} - Kallam{% endblock %}
+{% block body_class %}x-theme app-page{% endblock %}
+
+{% block content %}
+<section class="x-layout">
+  <aside class="left-rail">
+    <div class="rail-card profile-card">
+      {% if user.is_authenticated %}
+        <div class="profile-head">
+          {% if user_profile and user_profile.avatar %}
+            <img src="{{ user_profile.avatar.url }}" class="avatar-badge avatar-img" alt="Mon avatar">
+          {% else %}
+            <span class="avatar-badge">{{ user.first_name|default:user.username|slice:":1"|upper }}</span>
+          {% endif %}
+          <div>
+            <p class="profile-name">{{ user.first_name }} {{ user.last_name }}</p>
+            {% if user_profile %}
+              <p class="profile-handle">@{{ user_profile.pseudo }}</p>
+            {% else %}
+              <p class="profile-handle">{{ user.username }}</p>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="rail-card nav-card">
+      <nav class="rail-nav" aria-label="Navigation secondaire">
+        <a href="{% url 'accounts:home' %}">Accueil</a>
+        {% if user.is_authenticated and user_profile %}
+          <a href="{% url 'accounts:profile' pseudo=user_profile.pseudo %}">Mon profil</a>
+        {% endif %}
+        <a href="#">Explorer</a>
+        <a href="#">Messages</a>
+      </nav>
+      {% if user.is_authenticated %}
+        <form method="post" action="{% url 'accounts:logout' %}">
+          {% csrf_token %}
+          <button type="submit" class="secondary rail-logout-btn">Déconnexion</button>
+        </form>
+      {% endif %}
+    </div>
+  </aside>
+
+  <section class="timeline" aria-label="Profil de @{{ profile.pseudo }}">
+    <header class="timeline-header">
+      <div class="profile-cover-header">
+        <div class="profile-cover-identity">
+          {% if profile.avatar %}
+            <img src="{{ profile.avatar.url }}" class="avatar-badge avatar-lg avatar-img" alt="Avatar de @{{ profile.pseudo }}">
+          {% else %}
+            <span class="avatar-badge avatar-lg">{{ profile.pseudo|slice:":1"|upper }}</span>
+          {% endif %}
+          <div>
+            <h1 class="profile-name" style="margin:0;font-size:1.2rem">
+              {{ profile.user.first_name }} {{ profile.user.last_name }}
+            </h1>
+            <p class="profile-handle">@{{ profile.pseudo }}</p>
+            {% if profile.bio %}
+              <p class="profile-bio">{{ profile.bio }}</p>
+            {% endif %}
+            <p class="muted" style="font-size:0.82rem">{{ profile.get_langue_display }}</p>
+          </div>
+        </div>
+
+        <div class="profile-cover-actions" style="display:flex;flex-direction:column;gap:0.5rem;align-items:flex-end">
+          {% if user.is_authenticated %}
+            {% if user == profile.user %}
+              <a href="{% url 'accounts:edit_profile' %}" class="secondary" style="display:inline-block;padding:0.5rem 1rem;border-radius:8px;text-decoration:none;border:1px solid var(--border);font-weight:600;font-size:0.88rem">Modifier le profil</a>
+            {% else %}
+              <form method="post" action="{% url 'accounts:follow' pseudo=profile.pseudo %}">
+                {% csrf_token %}
+                <button type="submit" class="{% if is_following %}secondary{% else %}primary{% endif %}">
+                  {% if is_following %}Se désabonner{% else %}Suivre{% endif %}
+                </button>
+              </form>
+              <form method="post" action="{% url 'accounts:start_conversation' pseudo=profile.pseudo %}">
+                {% csrf_token %}
+                <button type="submit" class="secondary" style="font-size:0.88rem">Message</button>
+              </form>
+              <form method="post" action="{% url 'accounts:trust' pseudo=profile.pseudo %}">
+                {% csrf_token %}
+                <button type="submit" class="secondary" style="font-size:0.88rem">
+                  {% if is_trusted %}💙 De confiance{% else %}🤝 Faire confiance{% endif %}
+                </button>
+              </form>
+            {% endif %}
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="follow-stats">
+        <span><strong>{{ following_count }}</strong> abonnements</span>
+        <span><strong>{{ followers_count }}</strong> abonnés</span>
+        <span><strong>{{ posts|length }}</strong> publications</span>
+      </div>
+    </header>
+
+    <section class="posts-grid">
+      {% if posts %}
+        {% for post in posts %}
+          <article class="tweet-card" id="post-{{ post.id }}">
+            <header class="tweet-header">
+              <div>
+                <p class="tweet-author">
+                  {{ post.author_display_name }}
+                  <span>{{ post.author_handle }}</span>
+                </p>
+                <p class="tweet-time">{{ post.created_at|timesince }} · {{ post.like_count }} likes</p>
+              </div>
+            </header>
+
+            {% if post.content %}
+              <p class="tweet-text">{{ post.content }}</p>
+            {% endif %}
+
+            {% if post.image %}
+              <figure class="tweet-media">
+                <img src="{{ post.image.url }}" alt="Image publiée par {{ post.author_display_name }}" loading="lazy">
+              </figure>
+            {% endif %}
+
+            {% if post.youtube_embed_url %}
+              <div class="tweet-video">
+                <iframe
+                  src="{{ post.youtube_embed_url }}"
+                  title="Video YouTube"
+                  loading="lazy"
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen>
+                </iframe>
+              </div>
+            {% endif %}
+
+            {% if post.file_url %}
+              <p class="tweet-file-link">
+                <a href="{{ post.file_url }}" target="_blank" rel="noopener noreferrer">
+                  &#128206; Fichier joint
+                </a>
+              </p>
+            {% endif %}
+
+            {% if user.is_authenticated %}
+              <div class="tweet-actions">
+                <form method="post" action="{% url 'accounts:post_action' post.id 'repost' %}" class="inline-form">
+                  {% csrf_token %}
+                  <input type="hidden" name="next" value="{{ request.path }}#post-{{ post.id }}">
+                  <button type="submit" class="action-btn repost-btn {% if post.reposted_by_me %}is-active{% endif %}">
+                    🔁 {% if post.repost_count %}{{ post.repost_count }}{% endif %}
+                  </button>
+                </form>
+
+                <form method="post" action="{% url 'accounts:post_action' post.id 'like' %}" class="inline-form">
+                  {% csrf_token %}
+                  <input type="hidden" name="next" value="{{ request.path }}#post-{{ post.id }}">
+                  <button type="submit" class="action-btn like-btn {% if post.liked_by_me %}is-active{% endif %}">
+                    {% if post.liked_by_me %}❤️{% else %}🤍{% endif %} {% if post.like_count %}{{ post.like_count }}{% endif %}
+                  </button>
+                </form>
+
+                <form method="post" action="{% url 'accounts:post_action' post.id 'report' %}" class="inline-form">
+                  {% csrf_token %}
+                  <input type="hidden" name="next" value="{{ request.path }}#post-{{ post.id }}">
+                  <button type="submit" class="action-btn report-btn {% if post.reported_by_me %}is-reported{% endif %}">
+                    🚩 {% if post.reported_by_me %}Reporté{% else %}Signaler{% endif %}
+                  </button>
+                </form>
+              </div>
+            {% endif %}
+          </article>
+        {% endfor %}
+      {% else %}
+        <article class="tweet-card empty-feed">
+          <p class="tweet-text">Aucune publication pour le moment.</p>
+        </article>
+      {% endif %}
+    </section>
+  </section>
+
+  <aside class="right-rail">
+    <div class="rail-card stat-card">
+      <p class="eyebrow">Statistiques</p>
+      <ul class="stat-list">
+        <li><strong>{{ posts|length }}</strong><span>Publications</span></li>
+        <li><strong>{{ followers_count }}</strong><span>Abonnés</span></li>
+        <li><strong>{{ following_count }}</strong><span>Abonnements</span></li>
+      </ul>
+    </div>
+  </aside>
+</section>
+{% endblock %}

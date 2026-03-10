@@ -1,0 +1,75 @@
+# English translations for Kallam
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+
+msgid "Accueil"
+msgstr "Home"
+
+msgid "Messages"
+msgstr "Messages"
+
+msgid "Profil"
+msgstr "Profile"
+
+msgid "Modération"
+msgstr "Moderation"
+
+msgid "Connexion"
+msgstr "Login"
+
+msgid "Inscription"
+msgstr "Register"
+
+msgid "Déconnexion"
+msgstr "Logout"
+
+msgid "Publier"
+msgstr "Publish"
+
+msgid "Message publie."
+msgstr "Post published."
+
+msgid "Impossible de publier ce message."
+msgstr "Unable to publish this post."
+
+msgid "Inscription reussie."
+msgstr "Registration successful."
+
+msgid "Connexion reussie."
+msgstr "Logged in successfully."
+
+msgid "Vous etes deconnecte."
+msgstr "You have been logged out."
+
+msgid "Profil mis a jour."
+msgstr "Profile updated."
+
+msgid "Publication signalee."
+msgstr "Post reported."
+
+msgid "Publication deja signalee."
+msgstr "Post already reported."
+
+msgid "Action non supportee."
+msgstr "Action not supported."
+
+msgid "Trop de publications. Attends un peu."
+msgstr "Too many posts. Please wait."
+
+msgid "Trop de messages. Attends un peu."
+msgstr "Too many messages. Please wait."
+
+msgid "Trop de tentatives. Reessaie dans 5 minutes."
+msgstr "Too many attempts. Try again in 5 minutes."
+
+msgid "Français"
+msgstr "French"
+
+msgid "English"
+msgstr "English"
+
+msgid "العربية"
+msgstr "Arabic"

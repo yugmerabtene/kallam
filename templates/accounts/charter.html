@@ -1,0 +1,66 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}Charte communautaire - Kallam{% endblock %}
+{% block body_class %}x-theme auth-page{% endblock %}
+
+{% block content %}
+<section class="auth-shell" style="grid-template-columns:1fr;max-width:720px;margin:0 auto">
+  <div class="auth-card animate-scale-in">
+    <p class="eyebrow">Gouvernance</p>
+    <h2 style="font-family:'Sora',sans-serif;margin-bottom:1.2rem">Charte communautaire Kallam</h2>
+
+    <div style="display:grid;gap:1.2rem;font-size:0.95rem;line-height:1.65;color:var(--text-2)">
+
+      <section>
+        <h3 style="color:var(--text);font-size:1rem;margin:0 0 0.4rem">1. Respect mutuel</h3>
+        <p style="margin:0">Toute interaction sur Kallam doit être fondée sur le respect. Les discours haineux, la discrimination, le harcèlement ou l'intimidation sont strictement interdits.</p>
+      </section>
+
+      <section>
+        <h3 style="color:var(--text);font-size:1rem;margin:0 0 0.4rem">2. Contenu responsable</h3>
+        <p style="margin:0">Partage du contenu dont tu as les droits ou qui est libre de droits. Ne publie pas d'informations personnelles d'autrui sans consentement. Les contenus illégaux sont prohibés.</p>
+      </section>
+
+      <section>
+        <h3 style="color:var(--text);font-size:1rem;margin:0 0 0.4rem">3. Véracité de l'information</h3>
+        <p style="margin:0">Effort collectif de fiabilité : signale les contenus trompeurs via le bouton 🚩. Évite la désinformation délibérée.</p>
+      </section>
+
+      <section>
+        <h3 style="color:var(--text);font-size:1rem;margin:0 0 0.4rem">4. Listes de confiance</h3>
+        <p style="margin:0">Tu peux marquer des membres comme "de confiance" sur leur profil pour filtrer ton fil selon tes préférences. Cette liste est privée et ne notifie pas les concernés.</p>
+      </section>
+
+      <section>
+        <h3 style="color:var(--text);font-size:1rem;margin:0 0 0.4rem">5. Modération transparente</h3>
+        <p style="margin:0">Toutes les actions de modération sont horodatées dans un journal accessible à l'équipe staff. Les utilisateurs peuvent signaler tout abus via le formulaire d'enquête anonyme.</p>
+      </section>
+
+      <section>
+        <h3 style="color:var(--text);font-size:1rem;margin:0 0 0.4rem">6. Vie privée & données</h3>
+        <p style="margin:0">Tes messages privés sont chiffrés. Tu peux exporter l'intégralité de tes données à tout moment depuis ton compte. Conformité RGPD assurée.</p>
+      </section>
+
+      <section>
+        <h3 style="color:var(--text);font-size:1rem;margin:0 0 0.4rem">7. Sanctions</h3>
+        <p style="margin:0">Le non-respect de cette charte peut entraîner la suppression de contenus ou la désactivation du compte, selon la gravité, après examen par l'équipe de modération.</p>
+      </section>
+
+      <div style="border-top:1px solid var(--border-soft);padding-top:1rem;font-size:0.85rem;color:var(--text-3)">
+        <p style="margin:0">Kallam — Projet d'excellence européen · Dernière mise à jour : mars 2026</p>
+      </div>
+    </div>
+
+    <div style="margin-top:1.5rem;display:flex;gap:0.75rem;flex-wrap:wrap">
+      <a href="{% url 'accounts:survey' %}" class="secondary" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.55rem 1rem;border-radius:var(--r-full);text-decoration:none;border:1px solid var(--border);font-weight:700;font-size:0.9rem">
+        📋 Donner mon avis
+      </a>
+      {% if user.is_authenticated %}
+        <a href="{% url 'accounts:export_data' %}" class="secondary" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.55rem 1rem;border-radius:var(--r-full);text-decoration:none;border:1px solid var(--border);font-weight:700;font-size:0.9rem">
+          ⬇️ Exporter mes données
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

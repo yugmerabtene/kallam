@@ -1,0 +1,116 @@
+{% extends "accounts/base.html" %}
+{% load i18n %}
+
+{% block title %}Post de {{ post.author_display_name }} - Kallam{% endblock %}
+{% block body_class %}x-theme app-page{% endblock %}
+
+{% block content %}
+<section class="x-layout">
+  <aside class="left-rail">
+    <div class="rail-card nav-card">
+      <nav class="rail-nav" aria-label="Navigation">
+        <a href="{% url 'accounts:home' %}">{% trans "Accueil" %}</a>
+        {% if post.author.profile %}
+          <a href="{% url 'accounts:profile' pseudo=post.author.profile.pseudo %}">Profil auteur</a>
+        {% endif %}
+      </nav>
+    </div>
+  </aside>
+
+  <section class="timeline" aria-label="Publication">
+    <header class="timeline-header">
+      <a href="javascript:history.back()" style="color:var(--text-2);text-decoration:none;font-size:0.9rem">← Retour</a>
+      <h1 style="margin-top:0.5rem">Publication</h1>
+    </header>
+
+    <article class="tweet-card">
+      <header class="tweet-header">
+        <div style="display:flex;align-items:center;gap:0.7rem">
+          {% with prof=post.author.profile %}
+            {% if prof and prof.avatar %}
+              <img src="{{ prof.avatar.url }}" class="avatar-badge avatar-img" alt="">
+            {% else %}
+              <span class="avatar-badge">{{ post.author_display_name|slice:":1"|upper }}</span>
+            {% endif %}
+            <div>
+              <p class="tweet-author" style="margin:0">
+                {{ post.author_display_name }}
+                {% if prof %}
+                  <a href="{% url 'accounts:profile' pseudo=prof.pseudo %}" style="color:var(--text-2);text-decoration:none">{{ post.author_handle }}</a>
+                {% else %}
+                  <span>{{ post.author_handle }}</span>
+                {% endif %}
+              </p>
+              <p class="tweet-time" style="margin:0">{{ post.created_at|date:"d/m/Y à H:i" }}</p>
+            </div>
+          {% endwith %}
+        </div>
+      </header>
+
+      {% if post.content %}
+        <p class="tweet-text" style="font-size:1.1rem;line-height:1.6">{{ post.content }}</p>
+      {% endif %}
+
+      {% if post.image %}
+        <figure class="tweet-media">
+          <img src="{{ post.image.url }}" alt="Image publiée par {{ post.author_display_name }}" loading="lazy">
+        </figure>
+      {% endif %}
+
+      {% if post.youtube_embed_url %}
+        <div class="tweet-video">
+          <iframe
+            src="{{ post.youtube_embed_url }}"
+            title="Video YouTube"
+            loading="lazy"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen>
+          </iframe>
+        </div>
+      {% endif %}
+
+      {% if post.file_url %}
+        <p class="tweet-file-link">
+          <a href="{{ post.file_url }}" target="_blank" rel="noopener noreferrer">
+            &#128206; Fichier joint
+          </a>
+        </p>
+      {% endif %}
+
+      <div style="display:flex;gap:1rem;padding:0.5rem 0;font-size:0.9rem;color:var(--text-2);border-top:1px solid var(--border-soft);margin-top:0.8rem">
+        <span>{{ post.like_count }} like{% if post.like_count != 1 %}s{% endif %}</span>
+        <span>{{ post.repost_count }} repost{% if post.repost_count != 1 %}s{% endif %}</span>
+      </div>
+
+      {% if user.is_authenticated %}
+        <div class="tweet-actions">
+          <form method="post" action="{% url 'accounts:post_action' post.id 'repost' %}" class="inline-form">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{% url 'accounts:post_detail' post.id %}">
+            <button type="submit" class="action-btn repost-btn {% if post.reposted_by_me %}is-active{% endif %}">
+              🔁 {% if post.repost_count %}{{ post.repost_count }}{% endif %}
+            </button>
+          </form>
+          <form method="post" action="{% url 'accounts:post_action' post.id 'like' %}" class="inline-form">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{% url 'accounts:post_detail' post.id %}">
+            <button type="submit" class="action-btn like-btn {% if post.liked_by_me %}is-active{% endif %}">
+              {% if post.liked_by_me %}❤️{% else %}🤍{% endif %} {% if post.like_count %}{{ post.like_count }}{% endif %}
+            </button>
+          </form>
+          <form method="post" action="{% url 'accounts:post_action' post.id 'report' %}" class="inline-form">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{% url 'accounts:post_detail' post.id %}">
+            <button type="submit" class="action-btn report-btn {% if post.reported_by_me %}is-reported{% endif %}">
+              🚩 {% if post.reported_by_me %}Reporté{% else %}Signaler{% endif %}
+            </button>
+          </form>
+        </div>
+      {% endif %}
+    </article>
+  </section>
+
+  <aside class="right-rail"></aside>
+</section>
+{% endblock %}

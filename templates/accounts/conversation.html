@@ -1,0 +1,81 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}
+  {% if other %}Conversation avec @{{ other.profile.pseudo }}{% else %}Conversation{% endif %} - Kallam
+{% endblock %}
+{% block body_class %}x-theme app-page{% endblock %}
+
+{% block content %}
+<section class="x-layout">
+  <aside class="left-rail">
+    <div class="rail-card nav-card">
+      <nav class="rail-nav" aria-label="Navigation secondaire">
+        <a href="{% url 'accounts:home' %}">Accueil</a>
+        <a href="{% url 'accounts:inbox' %}">← Messages</a>
+      </nav>
+    </div>
+  </aside>
+
+  <section class="timeline" aria-label="Conversation" style="display:flex;flex-direction:column;padding:0">
+    <header class="timeline-header" style="padding:1rem 1.4rem">
+      {% if other %}
+        <div style="display:flex;align-items:center;gap:0.8rem">
+          {% with prof=other.profile %}
+            {% if prof.avatar %}
+              <img src="{{ prof.avatar.url }}" class="avatar-badge avatar-img" alt="">
+            {% else %}
+              <span class="avatar-badge">{{ other.first_name|default:other.username|slice:":1"|upper }}</span>
+            {% endif %}
+            <div>
+              <p class="profile-name" style="margin:0">{{ other.first_name }} {{ other.last_name }}</p>
+              <a href="{% url 'accounts:profile' pseudo=prof.pseudo %}" class="profile-handle" style="text-decoration:none">@{{ prof.pseudo }}</a>
+            </div>
+          {% endwith %}
+        </div>
+      {% endif %}
+    </header>
+
+    <div class="msg-thread" id="msg-thread">
+      {% if messages %}
+        {% for msg in messages %}
+          <div class="msg-row {% if msg.sender == user %}mine{% else %}theirs{% endif %}">
+            {% if msg.sender != user %}
+              {% with prof=msg.sender.profile %}
+                {% if prof.avatar %}
+                  <img src="{{ prof.avatar.url }}" class="avatar-badge avatar-img" style="width:30px;height:30px;flex-shrink:0" alt="">
+                {% else %}
+                  <span class="avatar-badge" style="width:30px;height:30px;font-size:0.75rem;flex-shrink:0">{{ msg.sender.first_name|default:msg.sender.username|slice:":1"|upper }}</span>
+                {% endif %}
+              {% endwith %}
+            {% endif %}
+            <div class="msg-bubble {% if msg.sender == user %}mine{% else %}theirs{% endif %}">
+              {{ msg.content }}
+            </div>
+            <span class="msg-time">{{ msg.created_at|time:"H:i" }}</span>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p style="text-align:center;color:var(--text-2);padding:2rem">
+          Dis bonjour pour démarrer la conversation !
+        </p>
+      {% endif %}
+    </div>
+
+    <form method="post" class="msg-composer-form" id="msg-form">
+      {% csrf_token %}
+      <textarea
+        name="content"
+        class="msg-composer-input"
+        placeholder="Écris ton message…"
+        rows="1"
+        maxlength="2000"
+        required
+        autofocus></textarea>
+      <button type="submit" class="primary" style="flex-shrink:0">Envoyer</button>
+    </form>
+  </section>
+
+  <aside class="right-rail"></aside>
+</section>
+
+{% endblock %}

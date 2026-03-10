@@ -1,0 +1,111 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}Fil de confiance - Kallam{% endblock %}
+{% block body_class %}x-theme app-page{% endblock %}
+
+{% block content %}
+<section class="x-layout">
+  <aside class="left-rail">
+    <div class="rail-card nav-card">
+      <nav class="rail-nav" aria-label="Navigation">
+        <a href="{% url 'accounts:home' %}">🏠 Accueil</a>
+        <a class="active" href="{% url 'accounts:trusted_feed' %}">🔒 Fil de confiance</a>
+        <a href="{% url 'accounts:inbox' %}">✉️ Messages</a>
+      </nav>
+    </div>
+  </aside>
+
+  <div class="feed-column">
+    <div class="composer-card" style="display:flex;align-items:flex-start;gap:0.75rem;padding:1.1rem 1.2rem">
+      <div>
+        <p style="margin:0;font-weight:800;font-size:0.95rem">🔒 Fil de confiance</p>
+        <p style="margin:0.25rem 0 0;font-size:0.88rem;color:var(--text-2)">
+          Publications des {{ trusted_count }} utilisateur{% if trusted_count != 1 %}s{% endif %} que tu as marqué{% if trusted_count != 1 %}s{% endif %} comme "de confiance".
+          {% if trusted_count == 0 %}Va sur le profil d'un utilisateur et clique <strong>Faire confiance</strong> pour le voir ici.{% endif %}
+        </p>
+      </div>
+    </div>
+
+    <section class="timeline" aria-label="Fil de confiance">
+      <div class="feed-label">
+        <span>Publications de confiance</span>
+        <span class="feed-count">{{ posts|length }} publication{% if posts|length != 1 %}s{% endif %}</span>
+      </div>
+      <div class="posts-grid">
+        {% if posts %}
+          {% for post in posts %}
+            <article class="tweet-card" id="post-{{ post.id }}">
+              <div class="tweet-layout">
+                <div class="tweet-avatar-col">
+                  {% with prof=post.author.profile %}
+                    {% if prof and prof.avatar %}
+                      <a href="{% url 'accounts:profile' pseudo=prof.pseudo %}">
+                        <img src="{{ prof.avatar.url }}" class="avatar-badge avatar-img" alt="">
+                      </a>
+                    {% else %}
+                      {% if prof %}
+                        <a href="{% url 'accounts:profile' pseudo=prof.pseudo %}" class="avatar-badge avatar-link">
+                          {{ post.author_display_name|slice:":1"|upper }}
+                        </a>
+                      {% else %}
+                        <span class="avatar-badge">{{ post.author_display_name|slice:":1"|upper }}</span>
+                      {% endif %}
+                    {% endif %}
+                  {% endwith %}
+                </div>
+                <div class="tweet-body">
+                  <div class="tweet-meta">
+                    <span class="tweet-author">{{ post.author_display_name }}</span>
+                    <span class="tweet-handle">{{ post.author_handle }}</span>
+                    <span class="tweet-dot">·</span>
+                    <a href="{% url 'accounts:post_detail' post.id %}" class="tweet-time">{{ post.created_at|timesince }}</a>
+                  </div>
+                  {% if post.content %}<p class="tweet-text">{{ post.content }}</p>{% endif %}
+                  {% if post.image %}
+                    <figure class="tweet-media"><img src="{{ post.image.url }}" alt="" loading="lazy"></figure>
+                  {% endif %}
+                  <div class="tweet-actions">
+                    <form method="post" action="{% url 'accounts:post_action' post.id 'like' %}" class="inline-form">
+                      {% csrf_token %}
+                      <input type="hidden" name="next" value="{% url 'accounts:trusted_feed' %}#post-{{ post.id }}">
+                      <button type="submit" class="action-btn like-btn {% if post.liked_by_me %}is-active{% endif %}">
+                        {% if post.liked_by_me %}❤️{% else %}🤍{% endif %} {% if post.like_count %}{{ post.like_count }}{% endif %}
+                      </button>
+                    </form>
+                    <form method="post" action="{% url 'accounts:post_action' post.id 'repost' %}" class="inline-form">
+                      {% csrf_token %}
+                      <input type="hidden" name="next" value="{% url 'accounts:trusted_feed' %}#post-{{ post.id }}">
+                      <button type="submit" class="action-btn repost-btn {% if post.reposted_by_me %}is-active{% endif %}">
+                        🔁 {% if post.repost_count %}{{ post.repost_count }}{% endif %}
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </article>
+          {% endfor %}
+        {% else %}
+          <div class="empty-feed">
+            <p style="font-size:2rem;margin:0">🔒</p>
+            <p>Ton fil de confiance est vide. Ajoute des membres de confiance depuis leur profil.</p>
+          </div>
+        {% endif %}
+      </div>
+    </section>
+  </div>
+
+  <aside class="right-rail">
+    <div class="rail-card">
+      <p class="eyebrow">Confiance</p>
+      <p style="margin:0.5rem 0 0;font-size:0.88rem;color:var(--text-2)">{{ trusted_count }} membre{% if trusted_count != 1 %}s{% endif %} de confiance</p>
+    </div>
+    <div class="rail-card">
+      <p class="eyebrow">Gouvernance</p>
+      <div style="display:grid;gap:0.4rem;margin-top:0.5rem">
+        <a href="{% url 'accounts:charter' %}" style="font-size:0.88rem;color:var(--accent);text-decoration:none;font-weight:700">📋 Charte communautaire</a>
+        <a href="{% url 'accounts:survey' %}" style="font-size:0.88rem;color:var(--accent);text-decoration:none;font-weight:700">📝 Enquête anonyme</a>
+      </div>
+    </div>
+  </aside>
+</section>
+{% endblock %}

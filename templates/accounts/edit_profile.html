@@ -1,0 +1,82 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}Modifier le profil - Kallam{% endblock %}
+{% block body_class %}x-theme auth-page{% endblock %}
+
+{% block content %}
+<section class="auth-shell">
+  <aside class="auth-hero">
+    <div class="auth-hero-mark">K</div>
+    <p class="auth-hero-kicker">Mon profil</p>
+    <h1>Personnalise ton identité Kallam.</h1>
+    <p class="auth-hero-text">Choisis ton pseudonyme, ta bio et ta langue préférée.</p>
+  </aside>
+
+  <section class="auth-card">
+    <p class="eyebrow">Profil</p>
+    <h2>Modifier mon profil</h2>
+
+    <form method="post" enctype="multipart/form-data" class="form-grid auth-form">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="error-box">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <div class="field">
+        <label for="{{ form.pseudo.id_for_label }}">Pseudonyme</label>
+        {{ form.pseudo }}
+        {% if form.pseudo.help_text %}
+          <small class="muted">{{ form.pseudo.help_text }}</small>
+        {% endif %}
+        {% if form.pseudo.errors %}
+          <small class="error">{{ form.pseudo.errors|striptags }}</small>
+        {% endif %}
+      </div>
+
+      <div class="field">
+        <label for="{{ form.bio.id_for_label }}">Bio <span class="muted">(160 max)</span></label>
+        {{ form.bio }}
+        {% if form.bio.errors %}
+          <small class="error">{{ form.bio.errors|striptags }}</small>
+        {% endif %}
+      </div>
+
+      <div class="field">
+        <label for="{{ form.avatar.id_for_label }}">Avatar</label>
+        {% if profile and profile.avatar %}
+          <img src="{{ profile.avatar.url }}"
+               style="width:60px;height:60px;border-radius:50%;object-fit:cover;display:block;margin-bottom:8px"
+               alt="Avatar actuel">
+        {% endif %}
+        {{ form.avatar }}
+        {% if form.avatar.errors %}
+          <small class="error">{{ form.avatar.errors|striptags }}</small>
+        {% endif %}
+      </div>
+
+      <div class="field">
+        <label for="{{ form.langue.id_for_label }}">Langue préférée</label>
+        {{ form.langue }}
+        {% if form.langue.errors %}
+          <small class="error">{{ form.langue.errors|striptags }}</small>
+        {% endif %}
+      </div>
+
+      <button type="submit" class="primary">Sauvegarder</button>
+      {% if profile %}
+        <a href="{% url 'accounts:profile' pseudo=profile.pseudo %}"
+           class="secondary"
+           style="display:inline-block;text-align:center;padding:0.62rem 1.1rem;border-radius:10px;text-decoration:none;border:1px solid var(--border);font-weight:600">
+          Annuler
+        </a>
+      {% else %}
+        <a href="{% url 'accounts:home' %}"
+           class="secondary"
+           style="display:inline-block;text-align:center;padding:0.62rem 1.1rem;border-radius:10px;text-decoration:none;border:1px solid var(--border);font-weight:600">
+          Annuler
+        </a>
+      {% endif %}
+    </form>
+  </section>
+</section>
+{% endblock %}

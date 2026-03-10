@@ -1,0 +1,45 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}Enquête anonyme - Kallam{% endblock %}
+{% block body_class %}x-theme auth-page{% endblock %}
+
+{% block content %}
+<section class="auth-shell" style="grid-template-columns:1fr;max-width:600px;margin:0 auto">
+  <div class="auth-card animate-scale-in">
+    <p class="eyebrow">Enquête communautaire</p>
+    <h2 style="font-family:'Sora',sans-serif">Ton avis compte</h2>
+    <p class="lead">Cette enquête est <strong>100% anonyme</strong> — aucun lien avec ton compte n'est conservé.</p>
+
+    {% if submitted %}
+      <div class="messages" style="margin:0">
+        <li class="success">✓ Merci pour ta réponse ! Elle a été enregistrée de façon anonyme.</li>
+      </div>
+      <div style="margin-top:1.2rem;display:flex;gap:0.75rem">
+        <a href="{% url 'accounts:survey' %}" class="secondary" style="display:inline-flex;padding:0.55rem 1rem;border-radius:var(--r-full);text-decoration:none;border:1px solid var(--border);font-weight:700;font-size:0.9rem">Répondre à nouveau</a>
+        {% if user.is_authenticated %}
+          <a href="{% url 'accounts:home' %}" class="primary" style="display:inline-flex;padding:0.55rem 1rem;border-radius:var(--r-full);text-decoration:none;font-weight:700;font-size:0.9rem">Retour à l'accueil</a>
+        {% endif %}
+      </div>
+    {% else %}
+      <form method="post" class="form-grid" style="margin-top:0.5rem">
+        {% csrf_token %}
+        {% if messages %}
+          {% for message in messages %}
+            <div class="error-box">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+        <div class="field">
+          <label for="answer">{{ question.text }}</label>
+          <textarea id="answer" name="answer" class="form-input" rows="5" maxlength="1000" placeholder="Écris ta réponse ici…" required></textarea>
+          <small class="muted">Maximum 1 000 caractères · Aucune donnée personnelle n'est collectée</small>
+        </div>
+        <button type="submit" class="primary">Envoyer mon avis</button>
+      </form>
+    {% endif %}
+
+    <p style="margin-top:1rem;font-size:0.83rem;color:var(--text-3)">
+      <a href="{% url 'accounts:charter' %}" style="color:var(--accent);text-decoration:none;font-weight:700">Voir la charte communautaire</a>
+    </p>
+  </div>
+</section>
+{% endblock %}

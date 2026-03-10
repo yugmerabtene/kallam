@@ -1,0 +1,67 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}Journal de modération - Kallam{% endblock %}
+{% block body_class %}x-theme app-page{% endblock %}
+
+{% block content %}
+<section class="x-layout">
+  <aside class="left-rail">
+    <div class="rail-card nav-card">
+      <nav class="rail-nav" aria-label="Navigation modération">
+        <a href="{% url 'accounts:home' %}">🏠 Accueil</a>
+        <a href="{% url 'accounts:moderation' %}">🛡️ Modération</a>
+        <a class="active" href="{% url 'accounts:moderation_log' %}">📋 Journal</a>
+      </nav>
+    </div>
+  </aside>
+
+  <section class="timeline" aria-label="Journal de modération">
+    <header class="timeline-header">
+      <h1>Journal de modération</h1>
+      <p class="timeline-sub">{{ logs|length }} action{% if logs|length != 1 %}s{% endif %} enregistrée{% if logs|length != 1 %}s{% endif %}</p>
+    </header>
+
+    <div class="posts-grid">
+      {% if logs %}
+        {% for log in logs %}
+          <div class="tweet-card">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem">
+              <div>
+                <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.3rem">
+                  {% if log.action == 'delete' %}
+                    <span class="badge-danger">🗑️ Suppression</span>
+                  {% else %}
+                    <span style="display:inline-flex;align-items:center;gap:0.3rem;background:var(--accent-dim);border:1px solid #c4b5fd;color:var(--accent-text);border-radius:var(--r-full);padding:0.2rem 0.55rem;font-size:0.78rem;font-weight:700">✓ Ignoré</span>
+                  {% endif %}
+                  <span style="font-size:0.83rem;color:var(--text-2)">Post #{{ log.post_id_ref }}</span>
+                </div>
+                {% if log.post_preview %}
+                  <p style="margin:0 0 0.3rem;font-size:0.88rem;color:var(--text-2);font-style:italic">"{{ log.post_preview }}"</p>
+                {% endif %}
+                <p style="margin:0;font-size:0.82rem;color:var(--text-3)">
+                  Par <strong>{% if log.actor %}{% if log.actor.profile.pseudo %}@{{ log.actor.profile.pseudo }}{% else %}{{ log.actor.username }}{% endif %}{% else %}(compte supprimé){% endif %}</strong>
+                </p>
+              </div>
+              <span style="font-size:0.8rem;color:var(--text-3);flex-shrink:0;white-space:nowrap">{{ log.created_at|date:"d/m/Y H:i" }}</span>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-feed">
+          <p style="font-size:2rem;margin:0">📋</p>
+          <p>Aucune action de modération enregistrée.</p>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <aside class="right-rail">
+    <div class="rail-card">
+      <p class="eyebrow">Journal</p>
+      <ul class="stat-list">
+        <li><strong>{{ logs|length }}</strong><span>Actions totales</span></li>
+      </ul>
+    </div>
+  </aside>
+</section>
+{% endblock %}

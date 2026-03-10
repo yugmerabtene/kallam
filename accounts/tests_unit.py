@@ -1,8 +1,15 @@
-from django.contrib.auth import get_user_model
-from django.test import TestCase
+from datetime import timedelta
 
+from django.contrib.auth import get_user_model
+from django.core.management import call_command
+from django.test import TestCase
+from django.utils import timezone
+
+from .encryption import decrypt, encrypt
 from .forms import PostForm, RegisterForm
 from .models import (
+    Conversation,
+    Message,
     Post,
     extract_first_youtube_url,
     extract_youtube_video_id,
@@ -16,6 +23,7 @@ class RegisterFormUnitTests(TestCase):
     def test_register_form_rejects_password_mismatch(self):
         form = RegisterForm(
             data={
+                "pseudo": "janedoe",
                 "first_name": "Jane",
                 "last_name": "Doe",
                 "email": "jane@test.com",
@@ -29,6 +37,7 @@ class RegisterFormUnitTests(TestCase):
     def test_register_form_normalizes_email(self):
         form = RegisterForm(
             data={
+                "pseudo": "janedoe",
                 "first_name": "Jane",
                 "last_name": "Doe",
                 "email": "Jane@Test.Com",
@@ -109,3 +118,53 @@ class PostFormUnitTests(TestCase):
         form = PostForm(data={"content": "", "attachment_url": "https://example.com/nope"})
         self.assertFalse(form.is_valid())
         self.assertIn("attachment_url", form.errors)
+
+
+class EncryptionUnitTests(TestCase):
+    def test_roundtrip(self):
+        self.assertEqual(decrypt(encrypt("hello")), "hello")
+
+    def test_empty_string(self):
+        self.assertEqual(encrypt(""), "")
+        self.assertEqual(decrypt(""), "")
+
+    def test_none(self):
+        self.assertIsNone(encrypt(None))
+        self.assertIsNone(decrypt(None))
+
+
+class RetentionCommandTests(TestCase):
+    def setUp(self):
+        self.u1 = User.objects.create_user(
+            username="u1@ex.com", email="u1@ex.com", password="pass"
+        )
+        self.u2 = User.objects.create_user(
+            username="u2@ex.com", email="u2@ex.com", password="pass"
+        )
+
+    def _make_conv_with_message(self, days_ago):
+        conv = Conversation.objects.create()
+        conv.participants.add(self.u1, self.u2)
+        msg = Message.objects.create(
+            conversation=conv, sender=self.u1, content="test"
+        )
+        # Backdate
+        Message.objects.filter(pk=msg.pk).update(
+            created_at=timezone.now() - timedelta(days=days_ago)
+        )
+        return conv, msg
+
+    def test_dry_run_does_not_delete(self):
+        self._make_conv_with_message(days_ago=120)
+        call_command("clean_old_messages", days=90, dry_run=True)
+        self.assertEqual(Message.objects.count(), 1)
+
+    def test_deletes_old_messages(self):
+        self._make_conv_with_message(days_ago=120)
+        call_command("clean_old_messages", days=90)
+        self.assertEqual(Message.objects.count(), 0)
+
+    def test_keeps_recent_messages(self):
+        self._make_conv_with_message(days_ago=10)
+        call_command("clean_old_messages", days=90)
+        self.assertEqual(Message.objects.count(), 1)

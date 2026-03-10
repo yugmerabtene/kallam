@@ -6,7 +6,8 @@ from django.test import TestCase
 from django.test import override_settings
 from django.urls import reverse
 
-from .models import Post
+from .encryption import decrypt, encrypt
+from .models import Conversation, Message, Post, PostReport, UserProfile
 
 User = get_user_model()
 
@@ -16,6 +17,7 @@ class AuthFlowTests(TestCase):
         response = self.client.post(
             reverse("accounts:register"),
             data={
+                "pseudo": "janedoe",
                 "first_name": "Doe",
                 "last_name": "Jane",
                 "email": "jane@example.com",
@@ -60,6 +62,7 @@ class AuthFlowTests(TestCase):
         response = self.client.post(
             reverse("accounts:register"),
             data={
+                "pseudo": "cduser",
                 "first_name": "C",
                 "last_name": "D",
                 "email": "taken@example.com",
@@ -244,3 +247,165 @@ class AuthFlowTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "pointer vers un fichier")
+
+
+class MessagingTests(TestCase):
+    def setUp(self):
+        self.alice = User.objects.create_user(
+            username="alice@example.com",
+            email="alice@example.com",
+            first_name="Alice",
+            last_name="A",
+            password="VeryStrongPass123!",
+        )
+        self.bob = User.objects.create_user(
+            username="bob@example.com",
+            email="bob@example.com",
+            first_name="Bob",
+            last_name="B",
+            password="VeryStrongPass123!",
+        )
+        UserProfile.objects.create(user=self.alice, pseudo="alice")
+        UserProfile.objects.create(user=self.bob, pseudo="bob")
+
+    def test_start_conversation_creates_conversation(self):
+        self.client.force_login(self.alice)
+        response = self.client.post(
+            reverse("accounts:start_conversation", args=["bob"]),
+            follow=True,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Conversation.objects.count(), 1)
+        conv = Conversation.objects.first()
+        self.assertIn(self.alice, conv.participants.all())
+        self.assertIn(self.bob, conv.participants.all())
+
+    def test_start_conversation_reuses_existing(self):
+        self.client.force_login(self.alice)
+        self.client.post(reverse("accounts:start_conversation", args=["bob"]))
+        self.client.post(reverse("accounts:start_conversation", args=["bob"]))
+        self.assertEqual(Conversation.objects.count(), 1)
+
+    def test_send_message(self):
+        self.client.force_login(self.alice)
+        self.client.post(reverse("accounts:start_conversation", args=["bob"]))
+        conv = Conversation.objects.first()
+        self.client.post(
+            reverse("accounts:conversation", args=[conv.pk]),
+            data={"content": "Salut Bob !"},
+        )
+        self.assertEqual(Message.objects.count(), 1)
+        msg = Message.objects.first()
+        self.assertEqual(msg.sender, self.alice)
+        self.assertEqual(msg.content, "Salut Bob !")
+
+    def test_reading_marks_messages_as_read(self):
+        conv = Conversation.objects.create()
+        conv.participants.add(self.alice, self.bob)
+        Message.objects.create(conversation=conv, sender=self.bob, content="Hello !")
+
+        self.client.force_login(self.alice)
+        self.client.get(reverse("accounts:conversation", args=[conv.pk]))
+        msg = Message.objects.first()
+        self.assertIsNotNone(msg.read_at)
+
+    def test_inbox_requires_login(self):
+        response = self.client.get(reverse("accounts:inbox"))
+        self.assertRedirects(
+            response,
+            f"{reverse('accounts:login')}?next={reverse('accounts:inbox')}",
+        )
+
+    def test_cannot_access_other_users_conversation(self):
+        charlie = User.objects.create_user(
+            username="charlie@example.com",
+            email="charlie@example.com",
+            password="VeryStrongPass123!",
+        )
+        conv = Conversation.objects.create()
+        conv.participants.add(self.alice, self.bob)
+        self.client.force_login(charlie)
+        response = self.client.get(reverse("accounts:conversation", args=[conv.pk]))
+        self.assertEqual(response.status_code, 404)
+
+
+class EncryptionTests(TestCase):
+    def test_encrypt_decrypt_roundtrip(self):
+        plaintext = "Message confidentiel"
+        token = encrypt(plaintext)
+        self.assertNotEqual(token, plaintext)
+        self.assertEqual(decrypt(token), plaintext)
+
+    def test_decrypt_falls_back_on_plain_text(self):
+        """Les données non chiffrées (legacy) ne lèvent pas d'exception."""
+        result = decrypt("texte non chiffré")
+        self.assertEqual(result, "texte non chiffré")
+
+    def test_message_content_is_stored_encrypted(self):
+        author = User.objects.create_user(
+            username="enc@example.com",
+            email="enc@example.com",
+            password="VeryStrongPass123!",
+        )
+        other = User.objects.create_user(
+            username="other@example.com",
+            email="other@example.com",
+            password="VeryStrongPass123!",
+        )
+        conv = Conversation.objects.create()
+        conv.participants.add(author, other)
+        msg = Message.objects.create(
+            conversation=conv, sender=author, content="Secret message"
+        )
+        # Lecture via l'ORM = déchiffré
+        self.assertEqual(Message.objects.get(pk=msg.pk).content, "Secret message")
+        # Lecture brute en DB = chiffré (ne commence pas par le texte en clair)
+        from django.db import connection
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT content FROM accounts_message WHERE id = %s", [msg.pk])
+            raw = cursor.fetchone()[0]
+        self.assertNotEqual(raw, "Secret message")
+        self.assertTrue(raw.startswith("gAAAAA"))  # Fernet token prefix
+
+
+class ModerationTests(TestCase):
+    def setUp(self):
+        self.staff = User.objects.create_user(
+            username="staff@example.com",
+            email="staff@example.com",
+            password="VeryStrongPass123!",
+            is_staff=True,
+        )
+        self.regular = User.objects.create_user(
+            username="regular@example.com",
+            email="regular@example.com",
+            password="VeryStrongPass123!",
+        )
+        self.post = Post.objects.create(author=self.regular, content="Post signalé")
+        PostReport.objects.create(post=self.post, reporter=self.staff)
+
+    def test_moderation_dashboard_requires_staff(self):
+        self.client.force_login(self.regular)
+        response = self.client.get(reverse("accounts:moderation"))
+        self.assertEqual(response.status_code, 404)
+
+    def test_moderation_dashboard_accessible_to_staff(self):
+        self.client.force_login(self.staff)
+        response = self.client.get(reverse("accounts:moderation"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Post signalé")
+
+    def test_moderation_delete_post(self):
+        self.client.force_login(self.staff)
+        self.client.post(
+            reverse("accounts:moderation_action", args=[self.post.id, "delete"])
+        )
+        self.assertFalse(Post.objects.filter(pk=self.post.pk).exists())
+
+    def test_moderation_dismiss_reports(self):
+        self.client.force_login(self.staff)
+        self.client.post(
+            reverse("accounts:moderation_action", args=[self.post.id, "dismiss"])
+        )
+        self.assertEqual(PostReport.objects.filter(post=self.post).count(), 0)
+        self.assertTrue(Post.objects.filter(pk=self.post.pk).exists())

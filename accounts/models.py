@@ -4,6 +4,8 @@ from urllib.parse import parse_qs, urlparse
 from django.conf import settings
 from django.db import models
 
+from .encryption import EncryptedTextField
+
 
 URL_IN_TEXT_PATTERN = re.compile(r"https?://[^\s]+", re.IGNORECASE)
 ALLOWED_FILE_EXTENSIONS = {
@@ -108,6 +110,53 @@ def is_file_url(url):
     return extension in ALLOWED_FILE_EXTENSIONS
 
 
+class UserProfile(models.Model):
+    LANGUE_CHOICES = [
+        ("fr", "Français"),
+        ("en", "English"),
+        ("ar", "العربية"),
+    ]
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="profile",
+    )
+    pseudo = models.CharField(max_length=50, unique=True)
+    bio = models.CharField(max_length=160, blank=True)
+    avatar = models.ImageField(upload_to="avatars/", null=True, blank=True)
+    langue = models.CharField(max_length=5, choices=LANGUE_CHOICES, default="fr")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"@{self.pseudo}"
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+
+        return reverse("accounts:profile", kwargs={"pseudo": self.pseudo})
+
+
+class Follow(models.Model):
+    follower = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="following",
+    )
+    followed = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="followers",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["follower", "followed"], name="unique_follow"
+            )
+        ]
+
+
 class Post(models.Model):
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="posts"
@@ -126,8 +175,11 @@ class Post(models.Model):
 
     @property
     def author_handle(self):
-        raw = self.author.username or self.author.email or "user"
-        return f"@{raw.split('@')[0].lower()}"
+        try:
+            return f"@{self.author.profile.pseudo}"
+        except Exception:
+            raw = self.author.username or self.author.email or "user"
+            return f"@{raw.split('@')[0].lower()}"
 
     @property
     def author_display_name(self):
@@ -140,6 +192,39 @@ class Post(models.Model):
         if not video_id:
             return ""
         return f"https://www.youtube.com/embed/{video_id}"
+
+
+class Conversation(models.Model):
+    participants = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name="conversations",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def other_participant(self, user):
+        return self.participants.exclude(pk=user.pk).first()
+
+
+class Message(models.Model):
+    conversation = models.ForeignKey(
+        Conversation,
+        on_delete=models.CASCADE,
+        related_name="messages",
+    )
+    sender = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="sent_messages",
+    )
+    content = EncryptedTextField(max_length=2000)
+    created_at = models.DateTimeField(auto_now_add=True)
+    read_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["created_at"]
 
 
 class PostLike(models.Model):
@@ -185,3 +270,57 @@ class PostReport(models.Model):
                 fields=["post", "reporter"], name="unique_report_per_user"
             )
         ]
+
+
+class TrustList(models.Model):
+    """Liste de confiance : utilisateurs dont on veut voir le contenu en priorité."""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="trust_list"
+    )
+    trusted = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="trusted_by"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["user", "trusted"], name="unique_trust")
+        ]
+
+
+class ModerationLog(models.Model):
+    """Journal horodaté des actions de modération (staff)."""
+    ACTION_DELETE  = "delete"
+    ACTION_DISMISS = "dismiss"
+    ACTION_CHOICES = [
+        (ACTION_DELETE,  "Suppression"),
+        (ACTION_DISMISS, "Signalements ignorés"),
+    ]
+    actor        = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name="mod_actions"
+    )
+    action       = models.CharField(max_length=20, choices=ACTION_CHOICES)
+    post_id_ref  = models.IntegerField()
+    post_preview = models.CharField(max_length=120, blank=True)
+    created_at   = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+
+class SurveyQuestion(models.Model):
+    """Question d'enquête communautaire."""
+    text       = models.CharField(max_length=400)
+    is_active  = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.text[:60]
+
+
+class SurveyResponse(models.Model):
+    """Réponse anonyme à une enquête — aucun lien avec un compte."""
+    question   = models.ForeignKey(SurveyQuestion, on_delete=models.CASCADE, related_name="responses")
+    answer     = models.TextField(max_length=1000)
+    created_at = models.DateTimeField(auto_now_add=True)
+    # Volontairement sans FK utilisateur — anonyme RGPD-friendly
