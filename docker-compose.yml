@@ -16,4 +16,5 @@ services:
     volumes:
       - ./data:/app/data
       - ./media:/app/media
+      - ./staticfiles:/app/staticfiles
     restart: unless-stopped
