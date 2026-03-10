@@ -11,7 +11,7 @@
     <div class="rail-card profile-card">
       <div class="profile-head">
         {% if user_profile and user_profile.avatar %}
-          <img src="{{ user_profile.avatar.url }}" class="avatar-badge avatar-img" alt="Mon avatar">
+          <span class="avatar-badge"><img src="{{ user_profile.avatar.url }}" class="avatar-img" alt="Mon avatar"></span>
         {% else %}
           <span class="avatar-badge">{{ user.first_name|default:user.username|slice:":1"|upper }}</span>
         {% endif %}
@@ -60,7 +60,7 @@
 
         <div class="composer-inner">
           {% if user_profile and user_profile.avatar %}
-            <img src="{{ user_profile.avatar.url }}" class="avatar-badge avatar-img composer-avatar" alt="">
+            <span class="avatar-badge composer-avatar"><img src="{{ user_profile.avatar.url }}" class="avatar-img" alt=""></span>
           {% else %}
             <span class="avatar-badge composer-avatar">{{ user.first_name|default:user.username|slice:":1"|upper }}</span>
           {% endif %}
@@ -122,8 +122,8 @@
                 <div class="tweet-avatar-col">
                   {% with prof=post.author.profile %}
                     {% if prof and prof.avatar %}
-                      <a href="{% url 'accounts:profile' pseudo=prof.pseudo %}">
-                        <img src="{{ prof.avatar.url }}" class="avatar-badge avatar-img" alt="">
+                      <a href="{% url 'accounts:profile' pseudo=prof.pseudo %}" class="avatar-badge">
+                        <img src="{{ prof.avatar.url }}" class="avatar-img" alt="">
                       </a>
                     {% else %}
                       {% if prof %}

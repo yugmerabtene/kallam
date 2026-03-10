@@ -10,7 +10,7 @@
       {% if user.is_authenticated %}
         <div class="profile-head">
           {% if user_profile and user_profile.avatar %}
-            <img src="{{ user_profile.avatar.url }}" class="avatar-badge avatar-img" alt="Mon avatar">
+            <span class="avatar-badge"><img src="{{ user_profile.avatar.url }}" class="avatar-img" alt="Mon avatar"></span>
           {% else %}
             <span class="avatar-badge">{{ user.first_name|default:user.username|slice:":1"|upper }}</span>
           {% endif %}
@@ -49,7 +49,7 @@
       <div class="profile-cover-header">
         <div class="profile-cover-identity">
           {% if profile.avatar %}
-            <img src="{{ profile.avatar.url }}" class="avatar-badge avatar-lg avatar-img" alt="Avatar de @{{ profile.pseudo }}">
+            <span class="avatar-badge avatar-lg"><img src="{{ profile.avatar.url }}" class="avatar-img" alt="Avatar de @{{ profile.pseudo }}"></span>
           {% else %}
             <span class="avatar-badge avatar-lg">{{ profile.pseudo|slice:":1"|upper }}</span>
           {% endif %}

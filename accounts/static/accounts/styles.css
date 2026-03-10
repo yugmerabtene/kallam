@@ -63,6 +63,48 @@
   --max-w: 1180px;
   --col-l: 248px;
   --col-r: 284px;
+
+  /* Header surfaces (used for dark mode overrides) */
+  --header-bg:   rgba(255, 255, 255, 0.88);
+  --sticky-bg:   rgba(255, 255, 255, 0.92);
+}
+
+/* ── Dark mode ─────────────────────────────────────── */
+[data-theme="dark"] {
+  --bg:          #0f0e17;
+  --surface:     #1a1827;
+  --surface-2:   #211f30;
+  --surface-3:   #272540;
+
+  --border:      #2e2c46;
+  --border-soft: #242238;
+
+  --accent:      #7c6df4;
+  --accent-h:    #6b5de0;
+  --accent-dim:  #1e1b40;
+  --accent-text: #c4b8ff;
+
+  --like:        #f06080;
+  --like-dim:    #3d1522;
+  --repost:      #34d399;
+  --repost-dim:  #0a2b1e;
+  --danger:      #f87171;
+  --danger-dim:  #3b1212;
+  --success-dim: #0a2b1e;
+  --warn-dim:    #2d2510;
+
+  --text:        #eeedf8;
+  --text-2:      #9d9bb8;
+  --text-3:      #6a6884;
+
+  --sh-xs: 0 1px 3px rgba(0, 0, 0, 0.25);
+  --sh-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --sh-md: 0 4px 20px rgba(0, 0, 0, 0.45);
+  --sh-lg: 0 8px 32px rgba(0, 0, 0, 0.55);
+  --sh-focus: 0 0 0 3px rgba(124, 109, 244, 0.38);
+
+  --header-bg:   rgba(26, 24, 39, 0.92);
+  --sticky-bg:   rgba(26, 24, 39, 0.96);
 }
 
 /* ── 2. Reset & Base ──────────────────────────────── */
@@ -94,7 +136,7 @@ button { border: 0; cursor: pointer; font: inherit; }
   top: 0;
   z-index: 40;
   height: var(--header-h);
-  background: rgba(255, 255, 255, 0.88);
+  background: var(--header-bg);
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
   border-bottom: 1px solid var(--border-soft);
@@ -189,6 +231,62 @@ button { border: 0; cursor: pointer; font: inherit; }
 }
 
 .inline-form { margin: 0; }
+
+/* ── Dark mode toggle & header lang ───────────────── */
+.theme-toggle {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--r-full);
+  display: grid;
+  place-items: center;
+  font-size: 1rem;
+  color: var(--text-2);
+  transition: background var(--t-fast), color var(--t-fast);
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.theme-toggle:hover {
+  background: var(--accent-dim);
+  color: var(--accent-text);
+}
+
+.header-lang-form {
+  display: flex;
+  align-items: center;
+}
+
+.header-lang-select {
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 0.28rem 0.5rem;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--t-fast), background var(--t-fast);
+  max-width: 72px;
+}
+
+.header-lang-select:hover,
+.header-lang-select:focus {
+  border-color: var(--accent);
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: 0.4rem;
+  padding-left: 0.6rem;
+  border-left: 1px solid var(--border-soft);
+}
 
 /* ── 4. Main layout ───────────────────────────────── */
 .site-main {
@@ -792,7 +890,7 @@ img.avatar-badge.avatar-lg {
   z-index: 8;
   padding: 0.9rem 1.1rem;
   border-bottom: 1px solid var(--border-soft);
-  background: rgba(255, 255, 255, 0.92);
+  background: var(--sticky-bg);
   backdrop-filter: blur(12px);
 }
 

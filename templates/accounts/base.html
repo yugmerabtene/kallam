@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Kallam{% endblock %}</title>
+  <script>(function(){var t=localStorage.getItem('kallam-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}());</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Sora:wght@600;700&display=swap" rel="stylesheet">
@@ -39,6 +40,21 @@
           <a href="{% url 'accounts:login' %}">Connexion</a>
           <a class="site-nav-cta" href="{% url 'accounts:register' %}">Inscription</a>
         {% endif %}
+
+        <div class="header-controls">
+          <form action="{% url 'set_language' %}" method="post" class="inline-form header-lang-form">
+            {% csrf_token %}
+            <input name="next" type="hidden" value="{{ request.path }}">
+            {% get_current_language as CURRENT_LANG %}
+            {% get_available_languages as LANGUAGES %}
+            <select name="language" onchange="this.form.submit()" class="header-lang-select" aria-label="Langue">
+              {% for lang_code, lang_name in LANGUAGES %}
+                <option value="{{ lang_code }}"{% if lang_code == CURRENT_LANG %} selected{% endif %}>{{ lang_code|upper }}</option>
+              {% endfor %}
+            </select>
+          </form>
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Basculer thème sombre" title="Mode sombre / clair">🌙</button>
+        </div>
       </nav>
     </div>
   </header>
@@ -54,21 +70,6 @@
 
     {% block content %}{% endblock %}
   </main>
-
-  <div style="position:fixed;bottom:1rem;right:1rem;z-index:50">
-    <form action="{% url 'set_language' %}" method="post" style="display:flex;gap:0.3rem;align-items:center">
-      {% csrf_token %}
-      <input name="next" type="hidden" value="{{ request.path }}">
-      <select name="language" onchange="this.form.submit()"
-        style="font-size:0.78rem;padding:0.3rem 0.5rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer">
-        {% get_current_language as CURRENT_LANG %}
-        {% get_available_languages as LANGUAGES %}
-        {% for lang_code, lang_name in LANGUAGES %}
-          <option value="{{ lang_code }}"{% if lang_code == CURRENT_LANG %} selected{% endif %}>{{ lang_name }}</option>
-        {% endfor %}
-      </select>
-    </form>
-  </div>
 
   <footer class="site-footer">
     <div class="footer-inner">

@@ -1,5 +1,25 @@
 /* Kallam — UI interactions v2 */
 
+/* ── Dark mode toggle ────────────────────────────── */
+(function () {
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+    btn.setAttribute('title', theme === 'dark' ? 'Mode clair' : 'Mode sombre');
+  }
+
+  applyTheme(localStorage.getItem('kallam-theme') === 'dark' ? 'dark' : 'light');
+
+  btn.addEventListener('click', function () {
+    var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('kallam-theme', next);
+    applyTheme(next);
+  });
+}());
+
 /* ── Password visibility toggle ─────────────────── */
 (function () {
   document.querySelectorAll("[data-toggle-password]").forEach(function (btn) {

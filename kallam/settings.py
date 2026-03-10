@@ -120,8 +120,43 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'fr'
 
 LANGUAGES = [
-    ('fr', _('Français')),
+    # Langues officielles de l'UE
+    ('bg', _('Bulgare')),
+    ('cs', _('Tchèque')),
+    ('da', _('Danois')),
+    ('de', _('Deutsch')),
+    ('el', _('Ελληνικά')),
     ('en', _('English')),
+    ('es', _('Español')),
+    ('et', _('Eesti')),
+    ('fi', _('Suomi')),
+    ('fr', _('Français')),
+    ('ga', _('Gaeilge')),
+    ('hr', _('Hrvatski')),
+    ('hu', _('Magyar')),
+    ('it', _('Italiano')),
+    ('lt', _('Lietuvių')),
+    ('lv', _('Latviešu')),
+    ('mt', _('Malti')),
+    ('nl', _('Nederlands')),
+    ('pl', _('Polski')),
+    ('pt', _('Português')),
+    ('ro', _('Română')),
+    ('sk', _('Slovenčina')),
+    ('sl', _('Slovenščina')),
+    ('sv', _('Svenska')),
+    # Autres langues européennes majeures
+    ('ca', _('Català')),
+    ('gl', _('Galego')),
+    ('is', _('Íslenska')),
+    ('lb', _('Lëtzebuergesch')),
+    ('mk', _('Македонски')),
+    ('nb', _('Norsk')),
+    ('sq', _('Shqip')),
+    ('sr', _('Српски')),
+    ('tr', _('Türkçe')),
+    ('uk', _('Українська')),
+    # Hors Europe
     ('ar', _('العربية')),
 ]
 
@@ -139,7 +174,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = Path(os.getenv('DJANGO_MEDIA_ROOT', str(BASE_DIR / 'media')))
 
