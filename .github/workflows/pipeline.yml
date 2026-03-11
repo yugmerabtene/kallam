@@ -31,6 +31,9 @@ jobs:
       - name: Django checks
         run: python manage.py check
 
+      - name: Collectstatic (required for manifest storage)
+        run: python manage.py collectstatic --noinput
+
       - name: Unit tests
         run: python manage.py test accounts.tests_unit
 
