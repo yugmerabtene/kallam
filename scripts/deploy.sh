@@ -21,7 +21,7 @@ git checkout "$BRANCH"
 git reset --hard "origin/$BRANCH"
 
 docker compose up --build -d --remove-orphans
-docker exec kallam python manage.py collectstatic --noinput
+docker exec kallam python manage.py collectstatic --noinput --clear
 chown -R "$(whoami):$(whoami)" "$APP_DIR/staticfiles/" 2>/dev/null || true
 chmod -R o+rX "$APP_DIR/staticfiles/" "$APP_DIR/media/" 2>/dev/null || true
 docker image prune -f
