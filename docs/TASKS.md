@@ -26,11 +26,11 @@
 
 ## Sprint 3 - Gouvernance et impact FEDE
 
-- [ ] Implementer charte communautaire versionnee
-- [ ] Ajouter listes de confiance cote utilisateur
-- [ ] Ajouter journal d'actions moderation transparent
-- [ ] Preparer demo smartphone BYOD (QR code + guide)
-- [ ] Construire questionnaire anonymise et tableau de synthese
+- [x] Implementer charte communautaire versionnee
+- [x] Ajouter listes de confiance cote utilisateur
+- [x] Ajouter journal d'actions moderation transparent
+- [x] Preparer demo smartphone BYOD (QR code + guide)
+- [x] Construire questionnaire anonymise et tableau de synthese
 
 ## Sprint 4 - Preparation de soutenance
 
