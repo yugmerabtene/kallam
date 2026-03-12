@@ -63,6 +63,7 @@
       </div>
 
       <button type="submit" class="primary">Sauvegarder</button>
+
       {% if profile %}
         <a href="{% url 'accounts:profile' pseudo=profile.pseudo %}"
            class="secondary"
@@ -77,6 +78,16 @@
         </a>
       {% endif %}
     </form>
+
+    <hr style="margin:2rem 0;border:none;border-top:1px solid var(--border)">
+    <p class="eyebrow" style="color:var(--error,#e53e3e)">Zone de danger</p>
+    <p style="font-size:0.9rem;color:var(--text-muted);margin-bottom:1rem">
+      La suppression de compte est irréversible. Toutes tes données seront effacées.
+    </p>
+    <a href="{% url 'accounts:delete_account' %}"
+       style="display:inline-block;padding:0.55rem 1rem;border-radius:10px;text-decoration:none;border:1px solid var(--error,#e53e3e);color:var(--error,#e53e3e);font-weight:600;font-size:0.9rem">
+      Supprimer mon compte
+    </a>
   </section>
 </section>
 {% endblock %}

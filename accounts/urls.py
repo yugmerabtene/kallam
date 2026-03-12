@@ -3,6 +3,7 @@ from django.urls import path
 from .views import (
     charter_view,
     conversation_view,
+    delete_account_view,
     edit_profile_view,
     export_data_view,
     follow_view,
@@ -50,4 +51,5 @@ urlpatterns = [
     path("fil-confiance/", trusted_feed_view, name="trusted_feed"),
     path("enquete/", survey_view, name="survey"),
     path("mes-donnees/", export_data_view, name="export_data"),
+    path("supprimer-mon-compte/", delete_account_view, name="delete_account"),
 ]

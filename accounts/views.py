@@ -526,6 +526,22 @@ def survey_view(request):
 
 
 @login_required
+@require_http_methods(["GET", "POST"])
+def delete_account_view(request):
+    if request.method == "POST":
+        password = request.POST.get("password", "")
+        user = authenticate(request, username=request.user.email, password=password)
+        if user is None:
+            messages.error(request, _("Mot de passe incorrect. Suppression annulée."))
+            return render(request, "accounts/delete_account.html")
+        logout(request)
+        user.delete()
+        messages.success(request, _("Ton compte a été supprimé définitivement."))
+        return redirect("accounts:login")
+    return render(request, "accounts/delete_account.html")
+
+
+@login_required
 @require_http_methods(["GET"])
 def export_data_view(request):
     user = request.user

@@ -1,0 +1,49 @@
+{% extends "accounts/base.html" %}
+{% load i18n %}
+
+{% block title %}Supprimer mon compte - Kallam{% endblock %}
+{% block body_class %}x-theme auth-page{% endblock %}
+
+{% block content %}
+<section class="auth-shell">
+  <aside class="auth-hero">
+    <div class="auth-hero-mark">K</div>
+    <p class="auth-hero-kicker">Zone de danger</p>
+    <h1>Supprimer ton compte.</h1>
+    <p class="auth-hero-text">
+      Cette action est irréversible. Toutes tes données (posts, messages, profil) seront effacées définitivement.
+    </p>
+  </aside>
+
+  <section class="auth-card">
+    <p class="eyebrow">Suppression de compte</p>
+    <h2>Confirmer la suppression</h2>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="error-box">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <p style="margin-bottom:1.2rem;color:var(--text-muted)">
+      Pour confirmer, entre ton mot de passe. Cette action supprimera définitivement ton compte et toutes les données associées.
+    </p>
+
+    <form method="post" class="form-grid auth-form">
+      {% csrf_token %}
+      <div class="field">
+        <label for="id_password">Mot de passe</label>
+        <input type="password" name="password" id="id_password" required autocomplete="current-password">
+      </div>
+
+      <button type="submit" class="primary" style="background:var(--error,#e53e3e)">
+        Supprimer définitivement mon compte
+      </button>
+      <a href="{% url 'accounts:edit_profile' %}"
+         style="display:inline-block;text-align:center;padding:0.62rem 1.1rem;border-radius:10px;text-decoration:none;border:1px solid var(--border);font-weight:600">
+        Annuler
+      </a>
+    </form>
+  </section>
+</section>
+{% endblock %}
