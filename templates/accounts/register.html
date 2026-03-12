@@ -68,6 +68,15 @@
         {% if form.password_confirm.errors %}<small class="error">{{ form.password_confirm.errors|striptags }}</small>{% endif %}
       </div>
 
+      <div class="field" style="flex-direction:row;align-items:flex-start;gap:0.6rem">
+        {{ form.cgu_accepted }}
+        <label for="{{ form.cgu_accepted.id_for_label }}" style="font-size:0.9rem;cursor:pointer;margin:0">
+          J'ai lu et j'accepte les
+          <a href="{% url 'accounts:cgu' %}" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:underline">Conditions Générales d'Utilisation</a>
+        </label>
+        {% if form.cgu_accepted.errors %}<small class="error" style="display:block;margin-top:0.25rem">{{ form.cgu_accepted.errors|striptags }}</small>{% endif %}
+      </div>
+
       <button type="submit" class="primary">Creer mon compte</button>
     </form>
 

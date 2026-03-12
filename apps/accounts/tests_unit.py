@@ -39,6 +39,7 @@ class RegisterFormUnitTests(TestCase):
                 "email": "Jane@Test.Com",
                 "password": "VeryStrongPass123!",
                 "password_confirm": "VeryStrongPass123!",
+                "cgu_accepted": True,
             }
         )
         self.assertTrue(form.is_valid())

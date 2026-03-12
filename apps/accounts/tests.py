@@ -25,6 +25,7 @@ class AuthFlowTests(TestCase):
                 "email": "jane@example.com",
                 "password": "VeryStrongPass123!",
                 "password_confirm": "VeryStrongPass123!",
+                "cgu_accepted": True,
             },
             follow=True,
         )

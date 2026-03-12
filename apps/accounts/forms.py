@@ -78,6 +78,12 @@ class RegisterForm(forms.Form):
         ),
         label="Confirmer le mot de passe",
     )
+    cgu_accepted = forms.BooleanField(
+        required=True,
+        label="J'ai lu et j'accepte les Conditions Générales d'Utilisation",
+        error_messages={"required": "Tu dois accepter les CGU pour créer un compte."},
+        widget=forms.CheckboxInput(attrs={"class": "form-checkbox"}),
+    )
 
     def clean_pseudo(self):
         pseudo = self.cleaned_data.get("pseudo", "").strip().lower()

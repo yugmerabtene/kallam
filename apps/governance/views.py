@@ -39,6 +39,12 @@ def charter_view(request):
     return render(request, "accounts/charter.html", {"charter_version": version})
 
 
+@require_http_methods(["GET"])
+def cgu_view(request):
+    """Conditions Générales d'Utilisation — page publique."""
+    return render(request, "accounts/cgu.html")
+
+
 @login_required
 @require_http_methods(["POST"])
 def trust_view(request, pseudo):
