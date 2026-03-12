@@ -1,0 +1,61 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}Démo BYOD - Kallam{% endblock %}
+{% block body_class %}x-theme auth-page{% endblock %}
+
+{% block content %}
+<section class="auth-shell" style="grid-template-columns:1fr;max-width:720px;margin:0 auto">
+  <div class="auth-card animate-scale-in">
+    <p class="eyebrow">Démo smartphone</p>
+    <h2 style="font-family:'Sora',sans-serif;margin-bottom:0.4rem">Accès BYOD</h2>
+    <p class="lead" style="margin-bottom:1.5rem">
+      Scanne le QR code avec ton smartphone pour accéder à Kallam directement depuis ton appareil.
+    </p>
+
+    <div style="display:flex;flex-direction:column;align-items:center;gap:1rem;margin-bottom:1.5rem">
+      <div id="qrcode" style="padding:1rem;background:#fff;border-radius:var(--r-lg);border:1px solid var(--border)"></div>
+      <code style="font-size:0.82rem;color:var(--text-2);word-break:break-all;text-align:center">{{ site_url }}</code>
+    </div>
+
+    <div style="display:grid;gap:1rem;font-size:0.93rem;line-height:1.65;color:var(--text-2)">
+      <section>
+        <h3 style="color:var(--text);font-size:1rem;margin:0 0 0.4rem">1. Connexion au réseau</h3>
+        <p style="margin:0">Connecte ton smartphone au Wi-Fi de la salle ou utilise les données mobiles. Assure-toi d'avoir accès à Internet.</p>
+      </section>
+      <section>
+        <h3 style="color:var(--text);font-size:1rem;margin:0 0 0.4rem">2. Scanner le QR code</h3>
+        <p style="margin:0">Ouvre l'appareil photo de ton smartphone et pointe-le vers le QR code ci-dessus. Appuie sur le lien qui apparaît.</p>
+      </section>
+      <section>
+        <h3 style="color:var(--text);font-size:1rem;margin:0 0 0.4rem">3. Créer un compte</h3>
+        <p style="margin:0">Clique sur <strong>Inscription</strong>, choisis un pseudonyme et ta langue préférée. Aucun email vérifié n'est requis pour la démo.</p>
+      </section>
+      <section>
+        <h3 style="color:var(--text);font-size:1rem;margin:0 0 0.4rem">4. Explorer</h3>
+        <p style="margin:0">Publie un message, suis d'autres participants, envoie un message privé chiffré. Donne ton avis via l'<a href="{% url 'accounts:survey' %}" style="color:var(--accent)">enquête anonyme</a>.</p>
+      </section>
+    </div>
+
+    <div style="margin-top:1.5rem;display:flex;gap:0.75rem;flex-wrap:wrap">
+      <a href="{% url 'accounts:register' %}" class="primary" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.55rem 1.2rem;border-radius:var(--r-full);text-decoration:none;font-weight:700;font-size:0.9rem">
+        S'inscrire
+      </a>
+      <a href="{% url 'accounts:charter' %}" class="secondary" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.55rem 1rem;border-radius:var(--r-full);text-decoration:none;border:1px solid var(--border);font-weight:700;font-size:0.9rem">
+        Voir la charte
+      </a>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+  new QRCode(document.getElementById("qrcode"), {
+    text: "{{ site_url }}",
+    width: 200,
+    height: 200,
+    colorDark: "#000000",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.M
+  });
+</script>
+{% endblock %}

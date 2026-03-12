@@ -1,0 +1,95 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}Synthèse enquête - Kallam{% endblock %}
+{% block body_class %}x-theme app-page{% endblock %}
+
+{% block content %}
+<section class="x-layout">
+  <aside class="left-rail">
+    <div class="rail-card nav-card">
+      <nav class="rail-nav" aria-label="Navigation staff">
+        <a href="{% url 'accounts:home' %}">🏠 Accueil</a>
+        <a href="{% url 'accounts:moderation' %}">🛡️ Modération</a>
+        <a href="{% url 'accounts:moderation_log' %}">📋 Journal</a>
+        <a class="active" href="{% url 'accounts:survey_summary' %}">📊 Synthèse enquête</a>
+      </nav>
+    </div>
+  </aside>
+
+  <section class="timeline" aria-label="Tableau de synthèse">
+    <header class="timeline-header">
+      <h1>Tableau de synthèse — Enquêtes anonymes</h1>
+      <p class="timeline-sub">{{ questions|length }} question{% if questions|length != 1 %}s{% endif %}</p>
+    </header>
+
+    <div class="posts-grid">
+      {% if questions %}
+        {% for question in questions %}
+          <div class="tweet-card">
+            <div style="margin-bottom:0.75rem">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap">
+                <p style="margin:0;font-weight:800;font-size:0.95rem">{{ question.text }}</p>
+                <span style="display:inline-flex;align-items:center;gap:0.3rem;background:var(--accent-dim);border:1px solid #c4b5fd;color:var(--accent-text);border-radius:var(--r-full);padding:0.2rem 0.6rem;font-size:0.8rem;font-weight:700;white-space:nowrap">
+                  {{ question.response_count }} réponse{% if question.response_count != 1 %}s{% endif %}
+                </span>
+              </div>
+              <p style="margin:0.2rem 0 0;font-size:0.8rem;color:var(--text-3)">
+                Créée le {{ question.created_at|date:"d/m/Y" }}
+                {% if question.is_active %} · <span style="color:#4ade80;font-weight:700">Active</span>{% else %} · <span style="color:var(--text-3)">Inactive</span>{% endif %}
+              </p>
+            </div>
+
+            {% if question.responses.all %}
+              <div style="display:grid;gap:0.5rem;border-top:1px solid var(--border-soft);padding-top:0.75rem">
+                {% for response in question.responses.all|slice:":10" %}
+                  <div style="background:var(--surface-2);border-radius:var(--r-md);padding:0.6rem 0.8rem">
+                    <p style="margin:0;font-size:0.88rem;color:var(--text-2)">{{ response.answer }}</p>
+                    <p style="margin:0.2rem 0 0;font-size:0.75rem;color:var(--text-3)">{{ response.created_at|date:"d/m/Y H:i" }}</p>
+                  </div>
+                {% endfor %}
+                {% if question.response_count > 10 %}
+                  <p style="margin:0;font-size:0.82rem;color:var(--text-3);text-align:center">
+                    + {{ question.response_count|add:"-10" }} autre{% if question.response_count|add:"-10" != 1 %}s{% endif %} réponse{% if question.response_count|add:"-10" != 1 %}s{% endif %}
+                  </p>
+                {% endif %}
+              </div>
+            {% else %}
+              <p style="margin:0;font-size:0.88rem;color:var(--text-3);font-style:italic">Aucune réponse pour l'instant.</p>
+            {% endif %}
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-feed">
+          <p style="font-size:2rem;margin:0">📊</p>
+          <p>Aucune question d'enquête créée.</p>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <aside class="right-rail">
+    <div class="rail-card">
+      <p class="eyebrow">Synthèse</p>
+      <ul class="stat-list">
+        <li><strong>{{ questions|length }}</strong><span>Questions</span></li>
+        <li>
+          <strong>
+            {% with total=0 %}
+              {% for q in questions %}{% endfor %}
+              —
+            {% endwith %}
+          </strong>
+          <span>Réponses (voir ci-contre)</span>
+        </li>
+      </ul>
+    </div>
+    <div class="rail-card">
+      <p class="eyebrow">Actions</p>
+      <div style="display:grid;gap:0.4rem;margin-top:0.5rem">
+        <a href="{% url 'accounts:survey' %}" style="font-size:0.88rem;color:var(--accent);text-decoration:none;font-weight:700">📝 Voir l'enquête publique</a>
+        <a href="{% url 'accounts:moderation' %}" style="font-size:0.88rem;color:var(--accent);text-decoration:none;font-weight:700">🛡️ Modération</a>
+      </div>
+    </div>
+  </aside>
+</section>
+{% endblock %}

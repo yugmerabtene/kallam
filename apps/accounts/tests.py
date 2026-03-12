@@ -455,3 +455,58 @@ class PermissionTests(TestCase):
         self._assert_login_required(
             reverse("accounts:post_action", args=[self.post.id, "like"]), method="post"
         )
+
+
+class SprintThreeGovernanceTests(TestCase):
+    """Tests des fonctionnalités Sprint 3 : charte versionnée, BYOD, synthèse enquête."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="gov@example.com",
+            email="gov@example.com",
+            password="VeryStrongPass123!",
+        )
+        UserProfile.objects.create(user=self.user, pseudo="govuser")
+        self.staff = User.objects.create_user(
+            username="govstaff@example.com",
+            email="govstaff@example.com",
+            password="VeryStrongPass123!",
+            is_staff=True,
+        )
+        UserProfile.objects.create(user=self.staff, pseudo="govstaff")
+
+    def test_charter_view_returns_200(self):
+        response = self.client.get(reverse("accounts:charter"))
+        self.assertEqual(response.status_code, 200)
+
+    def test_charter_view_creates_version_on_first_access(self):
+        from apps.governance.models import CharterVersion
+        CharterVersion.objects.all().delete()
+        self.client.get(reverse("accounts:charter"))
+        self.assertTrue(CharterVersion.objects.exists())
+
+    def test_charter_version_shown_in_template(self):
+        response = self.client.get(reverse("accounts:charter"))
+        self.assertContains(response, "Version")
+
+    def test_byod_view_returns_200(self):
+        response = self.client.get(reverse("accounts:byod"))
+        self.assertEqual(response.status_code, 200)
+
+    def test_byod_view_contains_qrcode_element(self):
+        response = self.client.get(reverse("accounts:byod"))
+        self.assertContains(response, "qrcode")
+
+    def test_survey_summary_requires_staff(self):
+        self.client.force_login(self.user)
+        response = self.client.get(reverse("accounts:survey_summary"))
+        self.assertEqual(response.status_code, 404)
+
+    def test_survey_summary_accessible_by_staff(self):
+        self.client.force_login(self.staff)
+        response = self.client.get(reverse("accounts:survey_summary"))
+        self.assertEqual(response.status_code, 200)
+
+    def test_survey_summary_anonymous_gets_404(self):
+        response = self.client.get(reverse("accounts:survey_summary"))
+        self.assertEqual(response.status_code, 404)

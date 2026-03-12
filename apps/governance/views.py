@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count, Exists, OuterRef, Value
+from django.db.models import Count, Exists, OuterRef
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_http_methods
@@ -8,7 +8,7 @@ from django.views.decorators.http import require_http_methods
 from apps.accounts.models import UserProfile
 from apps.posts.models import Post, PostLike, PostReport, PostRepost
 
-from .models import SurveyQuestion, SurveyResponse, TrustList
+from .models import CharterVersion, SurveyQuestion, SurveyResponse, TrustList
 
 
 def _rate_limit(key, limit, window):
@@ -20,9 +20,23 @@ def _rate_limit(key, limit, window):
     return False
 
 
+def _staff_required(view_fn):
+    from functools import wraps
+
+    @wraps(view_fn)
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated or not request.user.is_staff:
+            from django.http import Http404
+            raise Http404
+        return view_fn(request, *args, **kwargs)
+
+    return wrapper
+
+
 @require_http_methods(["GET"])
 def charter_view(request):
-    return render(request, "accounts/charter.html")
+    version = CharterVersion.current()
+    return render(request, "accounts/charter.html", {"charter_version": version})
 
 
 @login_required
@@ -99,3 +113,22 @@ def survey_view(request):
     return render(
         request, "accounts/survey.html", {"question": question, "submitted": submitted}
     )
+
+
+@require_http_methods(["GET"])
+def byod_view(request):
+    """Page démo BYOD : QR code + guide d'accès smartphone."""
+    site_url = request.build_absolute_uri("/")
+    return render(request, "accounts/byod.html", {"site_url": site_url})
+
+
+@_staff_required
+@require_http_methods(["GET"])
+def survey_summary_view(request):
+    """Tableau de synthèse des réponses anonymes (staff uniquement)."""
+    questions = (
+        SurveyQuestion.objects.annotate(response_count=Count("responses"))
+        .prefetch_related("responses")
+        .order_by("-created_at")
+    )
+    return render(request, "accounts/survey_summary.html", {"questions": questions})
