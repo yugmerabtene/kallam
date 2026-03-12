@@ -19,10 +19,10 @@ from django.contrib import admin
 from django.urls import include, path, re_path
 from django.views.static import serve
 
-from accounts.api import api
+from apps.accounts.api import api
 
 urlpatterns = [
-    path("", include("accounts.urls")),
+    path("", include("apps.accounts.urls")),
     path("admin/", admin.site.urls),
     path("api/", api.urls),
     path("i18n/", include("django.conf.urls.i18n")),

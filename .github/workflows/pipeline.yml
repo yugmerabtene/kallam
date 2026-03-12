@@ -35,10 +35,10 @@ jobs:
         run: python manage.py collectstatic --noinput
 
       - name: Unit tests
-        run: python manage.py test accounts.tests_unit
+        run: python manage.py test apps.accounts.tests_unit
 
       - name: Integration tests
-        run: python manage.py test accounts.tests
+        run: python manage.py test apps.accounts.tests
 
       - name: Build Docker image
         run: docker build -t kallam:ci .
