@@ -18,11 +18,11 @@
 
 ## Sprint 2 - Messagerie et securite
 
-- [ ] Creer `apps.messaging` (conversation, message, statut lu)
-- [ ] Chiffrer les champs sensibles au repos (au minimum metadata critique)
-- [ ] Ajouter politique de retention des messages
-- [ ] Ajouter endpoint de signalement dans `apps.moderation`
-- [ ] Ajouter limite anti-spam et anti-abus (rate limit)
+- [x] Creer `apps.messaging` (conversation, message, statut lu)
+- [x] Chiffrer les champs sensibles au repos (au minimum metadata critique)
+- [x] Ajouter politique de retention des messages
+- [x] Ajouter endpoint de signalement dans `apps.moderation`
+- [x] Ajouter limite anti-spam et anti-abus (rate limit)
 
 ## Sprint 3 - Gouvernance et impact FEDE
 

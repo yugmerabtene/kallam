@@ -14,6 +14,7 @@ from ninja import NinjaAPI, Schema
 from ninja.security import django_auth
 
 from apps.messaging.models import Conversation, Message
+from apps.moderation.models import ModerationLog
 from apps.posts.models import Post, PostLike, PostReport, PostRepost
 
 from .models import Follow, UserProfile
@@ -77,7 +78,36 @@ class MessageIn(Schema):
     content: str
 
 
+class ReportedPostOut(Schema):
+    post_id: int
+    content: str
+    author_pseudo: str
+    report_count: int
+    created_at: datetime
+
+
+class ModerationActionOut(Schema):
+    post_id: int
+    action: str
+    success: bool
+
+
+class ModerationLogOut(Schema):
+    id: int
+    actor_pseudo: str
+    action: str
+    post_id_ref: int
+    post_preview: str
+    created_at: datetime
+
+
 # ── Utilitaire ────────────────────────────────────────────────────────────────
+
+def _require_staff(request):
+    if not request.user.is_authenticated or not request.user.is_staff:
+        from ninja.errors import HttpError
+        raise HttpError(403, "Accès réservé au staff.")
+
 
 def _post_to_schema(p) -> PostOut:
     return PostOut(
@@ -337,3 +367,76 @@ def send_message(request: HttpRequest, conv_id: int, payload: MessageIn):
         created_at=msg.created_at,
         read_at=msg.read_at,
     )
+
+
+# ── Modération staff ───────────────────────────────────────────────────────────
+
+@api.get("/moderation/reports/", auth=django_auth, response=List[ReportedPostOut], tags=["moderation"], summary="Posts signalés")
+def list_reported_posts(request: HttpRequest):
+    """Liste des posts ayant au moins un signalement, triés par nombre de signalements."""
+    _require_staff(request)
+    posts = (
+        Post.objects.annotate(report_count=Count("reports", distinct=True))
+        .filter(report_count__gt=0)
+        .select_related("author", "author__profile")
+        .order_by("-report_count")
+    )
+    return [
+        ReportedPostOut(
+            post_id=p.id,
+            content=p.content,
+            author_pseudo=p.author_handle.lstrip("@"),
+            report_count=p.report_count,
+            created_at=p.created_at,
+        )
+        for p in posts
+    ]
+
+
+@api.post("/moderation/{post_id}/delete/", auth=django_auth, response=ModerationActionOut, tags=["moderation"], summary="Supprimer un post signalé")
+def moderate_delete(request: HttpRequest, post_id: int):
+    """Supprime le post et enregistre l'action dans le journal."""
+    _require_staff(request)
+    post = get_object_or_404(Post, pk=post_id)
+    preview = post.content[:120]
+    ModerationLog.objects.create(
+        actor=request.user,
+        action=ModerationLog.ACTION_DELETE,
+        post_id_ref=post_id,
+        post_preview=preview,
+    )
+    post.delete()
+    return ModerationActionOut(post_id=post_id, action=ModerationLog.ACTION_DELETE, success=True)
+
+
+@api.post("/moderation/{post_id}/dismiss/", auth=django_auth, response=ModerationActionOut, tags=["moderation"], summary="Ignorer les signalements d'un post")
+def moderate_dismiss(request: HttpRequest, post_id: int):
+    """Supprime tous les signalements du post sans le supprimer."""
+    _require_staff(request)
+    post = get_object_or_404(Post, pk=post_id)
+    post.reports.all().delete()
+    ModerationLog.objects.create(
+        actor=request.user,
+        action=ModerationLog.ACTION_DISMISS,
+        post_id_ref=post_id,
+        post_preview=post.content[:120],
+    )
+    return ModerationActionOut(post_id=post_id, action=ModerationLog.ACTION_DISMISS, success=True)
+
+
+@api.get("/moderation/log/", auth=django_auth, response=List[ModerationLogOut], tags=["moderation"], summary="Journal des actions de modération")
+def list_moderation_log(request: HttpRequest):
+    """200 dernières actions de modération."""
+    _require_staff(request)
+    logs = ModerationLog.objects.select_related("actor", "actor__profile")[:200]
+    return [
+        ModerationLogOut(
+            id=entry.id,
+            actor_pseudo=entry.actor.profile.pseudo if entry.actor and hasattr(entry.actor, "profile") else "—",
+            action=entry.action,
+            post_id_ref=entry.post_id_ref,
+            post_preview=entry.post_preview,
+            created_at=entry.created_at,
+        )
+        for entry in logs
+    ]
