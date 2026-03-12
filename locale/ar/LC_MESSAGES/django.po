@@ -65,6 +65,21 @@ msgstr "عدد كبير من الرسائل. انتظر قليلاً."
 msgid "Trop de tentatives. Reessaie dans 5 minutes."
 msgstr "محاولات كثيرة جداً. أعد المحاولة بعد 5 دقائق."
 
+msgid "Mot de passe incorrect. Suppression annulée."
+msgstr "كلمة المرور غير صحيحة. تم إلغاء الحذف."
+
+msgid "Ton compte a été supprimé définitivement."
+msgstr "تم حذف حسابك نهائياً."
+
+msgid "Tu ne peux pas te faire confiance à toi-même."
+msgstr "لا يمكنك إضافة نفسك إلى قائمة الثقة."
+
+msgid "Trop de réponses. Réessaie plus tard."
+msgstr "ردود كثيرة جداً. أعد المحاولة لاحقاً."
+
+msgid "Réponse invalide (1-1000 caractères)."
+msgstr "رد غير صالح (1-1000 حرف)."
+
 msgid "Français"
 msgstr "الفرنسية"
 

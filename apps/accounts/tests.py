@@ -409,3 +409,49 @@ class ModerationTests(TestCase):
         )
         self.assertEqual(PostReport.objects.filter(post=self.post).count(), 0)
         self.assertTrue(Post.objects.filter(pk=self.post.pk).exists())
+
+
+class PermissionTests(TestCase):
+    """Vérifie que les vues protégées redirigent les anonymes vers la page de connexion."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="perm@example.com",
+            email="perm@example.com",
+            password="VeryStrongPass123!",
+        )
+        UserProfile.objects.create(user=self.user, pseudo="permuser")
+        self.post = Post.objects.create(author=self.user, content="test")
+
+    def _assert_login_required(self, url, method="get"):
+        response = getattr(self.client, method)(url)
+        login_url = reverse("accounts:login")
+        self.assertRedirects(response, f"{login_url}?next={url}")
+
+    def test_home_requires_login(self):
+        self._assert_login_required(reverse("accounts:home"))
+
+    def test_edit_profile_requires_login(self):
+        self._assert_login_required(reverse("accounts:edit_profile"))
+
+    def test_delete_account_requires_login(self):
+        self._assert_login_required(reverse("accounts:delete_account"))
+
+    def test_export_data_requires_login(self):
+        self._assert_login_required(reverse("accounts:export_data"))
+
+    def test_inbox_requires_login(self):
+        self._assert_login_required(reverse("accounts:inbox"))
+
+    def test_trusted_feed_requires_login(self):
+        self._assert_login_required(reverse("accounts:trusted_feed"))
+
+    def test_follow_requires_login(self):
+        self._assert_login_required(
+            reverse("accounts:follow", args=["permuser"]), method="post"
+        )
+
+    def test_post_action_requires_login(self):
+        self._assert_login_required(
+            reverse("accounts:post_action", args=[self.post.id, "like"]), method="post"
+        )

@@ -13,7 +13,8 @@ from django.shortcuts import get_object_or_404
 from ninja import NinjaAPI, Schema
 from ninja.security import django_auth
 
-from apps.posts.models import Post, PostLike, PostRepost
+from apps.messaging.models import Conversation, Message
+from apps.posts.models import Post, PostLike, PostReport, PostRepost
 
 from .models import Follow, UserProfile
 
@@ -56,6 +57,24 @@ class PostIn(Schema):
 class ToggleOut(Schema):
     active: bool
     count: int
+
+
+class ConversationOut(Schema):
+    id: int
+    other_pseudo: str
+    created_at: datetime
+
+
+class MessageOut(Schema):
+    id: int
+    sender_pseudo: str
+    content: str
+    created_at: datetime
+    read_at: Optional[datetime] = None
+
+
+class MessageIn(Schema):
+    content: str
 
 
 # ── Utilitaire ────────────────────────────────────────────────────────────────
@@ -196,4 +215,125 @@ def get_me(request: HttpRequest):
         followers_count=Follow.objects.filter(followed=request.user).count(),
         following_count=Follow.objects.filter(follower=request.user).count(),
         posts_count=Post.objects.filter(author=request.user).count(),
+    )
+
+
+# ── Report / Follow ────────────────────────────────────────────────────────────
+
+@api.post("/posts/{post_id}/report/", auth=django_auth, response=ToggleOut, tags=["posts"], summary="Signaler / annuler un signalement")
+def toggle_report(request: HttpRequest, post_id: int):
+    post = get_object_or_404(Post, pk=post_id)
+    report, created = PostReport.objects.get_or_create(post=post, reporter=request.user)
+    if not created:
+        report.delete()
+    return ToggleOut(active=created, count=post.reports.count())
+
+
+@api.post("/follow/{pseudo}/", auth=django_auth, response=ToggleOut, tags=["profiles"], summary="Suivre / ne plus suivre un profil")
+def toggle_follow(request: HttpRequest, pseudo: str):
+    profile = get_object_or_404(UserProfile, pseudo=pseudo)
+    if profile.user == request.user:
+        from ninja.errors import HttpError
+        raise HttpError(400, "Tu ne peux pas te suivre toi-même.")
+    follow, created = Follow.objects.get_or_create(follower=request.user, followed=profile.user)
+    if not created:
+        follow.delete()
+    return ToggleOut(active=created, count=Follow.objects.filter(followed=profile.user).count())
+
+
+# ── Messaging ─────────────────────────────────────────────────────────────────
+
+def _conv_to_schema(conv, user) -> ConversationOut:
+    other = conv.other_participant(user)
+    return ConversationOut(
+        id=conv.id,
+        other_pseudo=other.profile.pseudo if hasattr(other, "profile") else str(other.pk),
+        created_at=conv.created_at,
+    )
+
+
+@api.get("/conversations/", auth=django_auth, response=List[ConversationOut], tags=["messaging"], summary="Mes conversations")
+def list_conversations(request: HttpRequest):
+    convs = (
+        Conversation.objects.filter(participants=request.user)
+        .prefetch_related("participants", "participants__profile")
+        .order_by("-created_at")
+    )
+    return [_conv_to_schema(c, request.user) for c in convs]
+
+
+@api.post("/conversations/", auth=django_auth, response=ConversationOut, tags=["messaging"], summary="Démarrer une conversation")
+def start_conversation(request: HttpRequest, pseudo: str):
+    profile = get_object_or_404(UserProfile, pseudo=pseudo)
+    if profile.user == request.user:
+        from ninja.errors import HttpError
+        raise HttpError(400, "Tu ne peux pas te parler à toi-même.")
+    existing = (
+        Conversation.objects.filter(participants=request.user)
+        .filter(participants=profile.user)
+        .prefetch_related("participants", "participants__profile")
+        .first()
+    )
+    if existing:
+        return _conv_to_schema(existing, request.user)
+    conv = Conversation.objects.create()
+    conv.participants.add(request.user, profile.user)
+    conv.refresh_from_db()
+    conv.participants.prefetch_related("profile")
+    return _conv_to_schema(conv, request.user)
+
+
+@api.get("/conversations/{conv_id}/messages/", auth=django_auth, response=List[MessageOut], tags=["messaging"], summary="Messages d'une conversation")
+def list_messages(request: HttpRequest, conv_id: int, limit: int = 50):
+    from ninja.errors import HttpError
+    conv = get_object_or_404(Conversation, pk=conv_id)
+    if not conv.participants.filter(pk=request.user.pk).exists():
+        raise HttpError(403, "Accès refusé.")
+    limit = min(limit, 200)
+    msgs = (
+        conv.messages.select_related("sender", "sender__profile")
+        .order_by("created_at")
+    )[-limit:]
+    return [
+        MessageOut(
+            id=m.id,
+            sender_pseudo=m.sender.profile.pseudo if hasattr(m.sender, "profile") else str(m.sender.pk),
+            content=m.content,
+            created_at=m.created_at,
+            read_at=m.read_at,
+        )
+        for m in msgs
+    ]
+
+
+@api.post("/conversations/{conv_id}/messages/", auth=django_auth, response=MessageOut, tags=["messaging"], summary="Envoyer un message")
+def send_message(request: HttpRequest, conv_id: int, payload: MessageIn):
+    from django.core.cache import cache
+    from ninja.errors import HttpError
+
+    conv = get_object_or_404(Conversation, pk=conv_id)
+    if not conv.participants.filter(pk=request.user.pk).exists():
+        raise HttpError(403, "Accès refusé.")
+
+    key = f"api_msg:{request.user.pk}"
+    count = cache.get(key, 0)
+    if count >= 30:
+        raise HttpError(429, "Trop de messages. Attends un peu.")
+    cache.set(key, count + 1, timeout=60)
+
+    content = payload.content.strip()
+    if not content or len(content) > 2000:
+        raise HttpError(400, "Contenu invalide (1-2000 caractères).")
+
+    msg = Message.objects.create(conversation=conv, sender=request.user, content=content)
+    try:
+        sender_pseudo = request.user.profile.pseudo
+    except Exception:
+        sender_pseudo = str(request.user.pk)
+    return MessageOut(
+        id=msg.id,
+        sender_pseudo=sender_pseudo,
+        content=msg.content,
+        created_at=msg.created_at,
+        read_at=msg.read_at,
     )

@@ -65,6 +65,21 @@ msgstr "Too many messages. Please wait."
 msgid "Trop de tentatives. Reessaie dans 5 minutes."
 msgstr "Too many attempts. Try again in 5 minutes."
 
+msgid "Mot de passe incorrect. Suppression annulée."
+msgstr "Incorrect password. Deletion cancelled."
+
+msgid "Ton compte a été supprimé définitivement."
+msgstr "Your account has been permanently deleted."
+
+msgid "Tu ne peux pas te faire confiance à toi-même."
+msgstr "You cannot add yourself to your trust list."
+
+msgid "Trop de réponses. Réessaie plus tard."
+msgstr "Too many responses. Try again later."
+
+msgid "Réponse invalide (1-1000 caractères)."
+msgstr "Invalid response (1-1000 characters)."
+
 msgid "Français"
 msgstr "French"
 
