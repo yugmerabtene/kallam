@@ -510,3 +510,41 @@ class SprintThreeGovernanceTests(TestCase):
     def test_survey_summary_anonymous_gets_404(self):
         response = self.client.get(reverse("accounts:survey_summary"))
         self.assertEqual(response.status_code, 404)
+
+
+class SprintFourMetricsTests(TestCase):
+    """Tests des métriques d'impact — Sprint 4."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="met@example.com",
+            email="met@example.com",
+            password="VeryStrongPass123!",
+        )
+        UserProfile.objects.create(user=self.user, pseudo="metuser")
+        self.staff = User.objects.create_user(
+            username="metstaff@example.com",
+            email="metstaff@example.com",
+            password="VeryStrongPass123!",
+            is_staff=True,
+        )
+        UserProfile.objects.create(user=self.staff, pseudo="metstaff")
+
+    def test_metrics_requires_staff(self):
+        self.client.force_login(self.user)
+        response = self.client.get(reverse("accounts:metrics"))
+        self.assertEqual(response.status_code, 404)
+
+    def test_metrics_anonymous_gets_404(self):
+        response = self.client.get(reverse("accounts:metrics"))
+        self.assertEqual(response.status_code, 404)
+
+    def test_metrics_accessible_by_staff(self):
+        self.client.force_login(self.staff)
+        response = self.client.get(reverse("accounts:metrics"))
+        self.assertEqual(response.status_code, 200)
+
+    def test_metrics_contains_user_count(self):
+        self.client.force_login(self.staff)
+        response = self.client.get(reverse("accounts:metrics"))
+        self.assertContains(response, "Participants")

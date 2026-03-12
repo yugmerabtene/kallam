@@ -1,6 +1,6 @@
 from django.urls import path
 
-from apps.governance.views import byod_view, charter_view, survey_summary_view, survey_view, trust_view, trusted_feed_view
+from apps.governance.views import byod_view, charter_view, metrics_view, survey_summary_view, survey_view, trust_view, trusted_feed_view
 from apps.messaging.views import conversation_view, inbox_view, start_conversation_view
 from apps.moderation.views import moderation_action_view, moderation_log_view, moderation_view
 from apps.posts.views import home_view, post_action_view, post_detail_view
@@ -49,4 +49,5 @@ urlpatterns = [
     path("enquete/", survey_view, name="survey"),
     path("enquete/synthese/", survey_summary_view, name="survey_summary"),
     path("byod/", byod_view, name="byod"),
+    path("metriques/", metrics_view, name="metrics"),
 ]

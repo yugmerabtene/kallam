@@ -1,0 +1,124 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}Métriques d'impact - Kallam{% endblock %}
+{% block body_class %}x-theme app-page{% endblock %}
+
+{% block content %}
+<section class="x-layout">
+  <aside class="left-rail">
+    <div class="rail-card nav-card">
+      <nav class="rail-nav" aria-label="Navigation staff">
+        <a href="{% url 'accounts:home' %}">🏠 Accueil</a>
+        <a href="{% url 'accounts:moderation' %}">🛡️ Modération</a>
+        <a href="{% url 'accounts:moderation_log' %}">📋 Journal</a>
+        <a href="{% url 'accounts:survey_summary' %}">📊 Synthèse enquête</a>
+        <a class="active" href="{% url 'accounts:metrics' %}">📈 Métriques</a>
+      </nav>
+    </div>
+  </aside>
+
+  <section class="timeline" aria-label="Métriques d'impact">
+    <header class="timeline-header">
+      <h1>Métriques d'impact</h1>
+      <p class="timeline-sub">Participation · Engagement · Apprentissages</p>
+    </header>
+
+    <div class="posts-grid">
+
+      <!-- Participation -->
+      <div class="tweet-card">
+        <p class="eyebrow" style="margin:0 0 0.8rem">Participation</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1rem">
+          <div style="text-align:center;padding:0.75rem;background:var(--surface-2);border-radius:var(--r-md)">
+            <p style="margin:0;font-size:2rem;font-weight:800;color:var(--accent)">{{ total_users }}</p>
+            <p style="margin:0.25rem 0 0;font-size:0.8rem;color:var(--text-2)">Comptes créés</p>
+          </div>
+          <div style="text-align:center;padding:0.75rem;background:var(--surface-2);border-radius:var(--r-md)">
+            <p style="margin:0;font-size:2rem;font-weight:800;color:var(--accent)">{{ total_posts }}</p>
+            <p style="margin:0.25rem 0 0;font-size:0.8rem;color:var(--text-2)">Publications</p>
+          </div>
+          <div style="text-align:center;padding:0.75rem;background:var(--surface-2);border-radius:var(--r-md)">
+            <p style="margin:0;font-size:2rem;font-weight:800;color:var(--accent)">{{ total_convs }}</p>
+            <p style="margin:0.25rem 0 0;font-size:0.8rem;color:var(--text-2)">Conversations</p>
+          </div>
+          <div style="text-align:center;padding:0.75rem;background:var(--surface-2);border-radius:var(--r-md)">
+            <p style="margin:0;font-size:2rem;font-weight:800;color:var(--accent)">{{ total_messages }}</p>
+            <p style="margin:0.25rem 0 0;font-size:0.8rem;color:var(--text-2)">Messages privés</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Engagement -->
+      <div class="tweet-card">
+        <p class="eyebrow" style="margin:0 0 0.8rem">Engagement</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1rem">
+          <div style="text-align:center;padding:0.75rem;background:var(--surface-2);border-radius:var(--r-md)">
+            <p style="margin:0;font-size:2rem;font-weight:800;color:#4ade80">{{ total_survey }}</p>
+            <p style="margin:0.25rem 0 0;font-size:0.8rem;color:var(--text-2)">Réponses enquête</p>
+          </div>
+          <div style="text-align:center;padding:0.75rem;background:var(--surface-2);border-radius:var(--r-md)">
+            <p style="margin:0;font-size:2rem;font-weight:800;color:#f59e0b">{{ total_reports }}</p>
+            <p style="margin:0.25rem 0 0;font-size:0.8rem;color:var(--text-2)">Signalements</p>
+          </div>
+          <div style="text-align:center;padding:0.75rem;background:var(--surface-2);border-radius:var(--r-md)">
+            <p style="margin:0;font-size:2rem;font-weight:800;color:#f87171">{{ total_mod_actions }}</p>
+            <p style="margin:0.25rem 0 0;font-size:0.8rem;color:var(--text-2)">Actions modération</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top attentes (dernières réponses enquête) -->
+      <div class="tweet-card">
+        <p class="eyebrow" style="margin:0 0 0.8rem">Attentes exprimées — 5 dernières réponses</p>
+        {% if recent_answers %}
+          <div style="display:grid;gap:0.5rem">
+            {% for ans in recent_answers %}
+              <div style="background:var(--surface-2);border-radius:var(--r-md);padding:0.6rem 0.8rem">
+                <p style="margin:0;font-size:0.88rem;color:var(--text-2)">{{ ans.answer }}</p>
+                <p style="margin:0.2rem 0 0;font-size:0.75rem;color:var(--text-3)">{{ ans.created_at|date:"d/m/Y H:i" }}</p>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p style="margin:0;font-size:0.88rem;color:var(--text-3);font-style:italic">Aucune réponse encore.</p>
+        {% endif %}
+      </div>
+
+      <!-- Top questions par volume -->
+      {% if top_questions %}
+      <div class="tweet-card">
+        <p class="eyebrow" style="margin:0 0 0.8rem">Questions les plus actives</p>
+        <div style="display:grid;gap:0.5rem">
+          {% for q in top_questions %}
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;background:var(--surface-2);border-radius:var(--r-md);padding:0.6rem 0.8rem">
+              <p style="margin:0;font-size:0.88rem;color:var(--text-2)">{{ q.text|truncatechars:80 }}</p>
+              <span style="flex-shrink:0;font-size:0.8rem;font-weight:800;color:var(--accent)">{{ q.response_count }}</span>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+  </section>
+
+  <aside class="right-rail">
+    <div class="rail-card">
+      <p class="eyebrow">Indicateurs clés</p>
+      <ul class="stat-list">
+        <li><strong>{{ total_users }}</strong><span>Participants</span></li>
+        <li><strong>{{ total_survey }}</strong><span>Réponses enquête</span></li>
+        <li><strong>{{ total_posts }}</strong><span>Publications</span></li>
+      </ul>
+    </div>
+    <div class="rail-card">
+      <p class="eyebrow">Liens rapides</p>
+      <div style="display:grid;gap:0.4rem;margin-top:0.5rem">
+        <a href="{% url 'accounts:survey_summary' %}" style="font-size:0.88rem;color:var(--accent);text-decoration:none;font-weight:700">📊 Synthèse enquête</a>
+        <a href="{% url 'accounts:moderation_log' %}" style="font-size:0.88rem;color:var(--accent);text-decoration:none;font-weight:700">📋 Journal modération</a>
+        <a href="{% url 'accounts:byod' %}" style="font-size:0.88rem;color:var(--accent);text-decoration:none;font-weight:700">📱 Page BYOD</a>
+      </div>
+    </div>
+  </aside>
+</section>
+{% endblock %}

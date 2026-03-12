@@ -132,3 +132,45 @@ def survey_summary_view(request):
         .order_by("-created_at")
     )
     return render(request, "accounts/survey_summary.html", {"questions": questions})
+
+
+@_staff_required
+@require_http_methods(["GET"])
+def metrics_view(request):
+    """Métriques d'impact : participation, engagement, apprentissages (staff uniquement)."""
+    from django.contrib.auth import get_user_model
+    from apps.messaging.models import Conversation, Message
+    from apps.moderation.models import ModerationLog
+    from apps.posts.models import Post, PostReport
+
+    User = get_user_model()
+
+    total_users      = User.objects.count()
+    total_posts      = Post.objects.count()
+    total_messages   = Message.objects.count()
+    total_reports    = PostReport.objects.count()
+    total_survey     = SurveyResponse.objects.count()
+    total_mod_actions = ModerationLog.objects.count()
+    total_convs      = Conversation.objects.count()
+
+    # Top 3 questions by response volume
+    top_questions = (
+        SurveyQuestion.objects.annotate(response_count=Count("responses"))
+        .order_by("-response_count")[:3]
+    )
+
+    # Recent survey answers (last 5) as proxy for "top attentes"
+    recent_answers = SurveyResponse.objects.order_by("-created_at")[:5]
+
+    ctx = {
+        "total_users": total_users,
+        "total_posts": total_posts,
+        "total_messages": total_messages,
+        "total_reports": total_reports,
+        "total_survey": total_survey,
+        "total_mod_actions": total_mod_actions,
+        "total_convs": total_convs,
+        "top_questions": top_questions,
+        "recent_answers": recent_answers,
+    }
+    return render(request, "accounts/metrics.html", ctx)
