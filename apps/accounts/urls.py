@@ -1,6 +1,6 @@
 from django.urls import path
 
-from apps.governance.views import byod_view, cgu_view, charter_view, metrics_view, survey_summary_view, survey_view, trust_view, trusted_feed_view
+from apps.governance.views import byod_view, cgu_view, charter_view, mentions_legales_view, metrics_view, survey_summary_view, survey_view, trust_view, trusted_feed_view
 from apps.messaging.views import conversation_view, inbox_view, start_conversation_view
 from apps.moderation.views import moderation_action_view, moderation_log_view, moderation_view
 from apps.posts.views import home_view, post_action_view, post_detail_view
@@ -51,4 +51,5 @@ urlpatterns = [
     path("byod/", byod_view, name="byod"),
     path("metriques/", metrics_view, name="metrics"),
     path("cgu/", cgu_view, name="cgu"),
+    path("mentions-legales/", mentions_legales_view, name="mentions_legales"),
 ]

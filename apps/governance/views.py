@@ -45,6 +45,12 @@ def cgu_view(request):
     return render(request, "accounts/cgu.html")
 
 
+@require_http_methods(["GET"])
+def mentions_legales_view(request):
+    """Mentions légales — page publique."""
+    return render(request, "accounts/mentions_legales.html")
+
+
 @login_required
 @require_http_methods(["POST"])
 def trust_view(request, pseudo):
