@@ -1,30 +1,31 @@
 {% extends "accounts/base.html" %}
+{% load i18n %}
 
-{% block title %}Messages - Kallam{% endblock %}
+{% block title %}{% trans "Messages" %} - Kallam{% endblock %}
 {% block body_class %}x-theme app-page{% endblock %}
 
 {% block content %}
 <section class="x-layout">
   <aside class="left-rail">
     <div class="rail-card nav-card">
-      <nav class="rail-nav" aria-label="Navigation secondaire">
-        <a href="{% url 'accounts:home' %}">Accueil</a>
+      <nav class="rail-nav" aria-label="{% trans 'Navigation secondaire' %}">
+        <a href="{% url 'accounts:home' %}">{% trans "Accueil" %}</a>
         {% if user_profile %}
-          <a href="{% url 'accounts:profile' pseudo=user_profile.pseudo %}">Profil</a>
+          <a href="{% url 'accounts:profile' pseudo=user_profile.pseudo %}">{% trans "Profil" %}</a>
         {% endif %}
-        <a class="active" href="{% url 'accounts:inbox' %}">Messages</a>
+        <a class="active" href="{% url 'accounts:inbox' %}">{% trans "Messages" %}</a>
       </nav>
       <form method="post" action="{% url 'accounts:logout' %}">
         {% csrf_token %}
-        <button type="submit" class="secondary rail-logout-btn">Déconnexion</button>
+        <button type="submit" class="secondary rail-logout-btn">{% trans "Déconnexion" %}</button>
       </form>
     </div>
   </aside>
 
-  <section class="timeline" aria-label="Messagerie">
+  <section class="timeline" aria-label="{% trans 'Messagerie' %}">
     <header class="timeline-header">
-      <h1>Messages</h1>
-      <p class="timeline-sub">Tes conversations privées</p>
+      <h1>{% trans "Messages" %}</h1>
+      <p class="timeline-sub">{% trans "Tes conversations privées" %}</p>
     </header>
 
     <div class="rail-card" style="padding:0;overflow:hidden">
@@ -39,12 +40,11 @@
                       {% if prof.avatar %}
                         <img src="{{ prof.avatar.url }}" class="avatar-badge avatar-img" style="flex-shrink:0" alt="">
                       {% else %}
-                        <span class="avatar-badge" style="flex-shrink:0">{{ other.first_name|default:other.username|slice:":1"|upper }}</span>
+                        <span class="avatar-badge" style="flex-shrink:0">{{ prof.pseudo|default:other.username|slice:":1"|upper }}</span>
                       {% endif %}
                       <div class="inbox-item-info">
                         <p class="inbox-item-name">
-                          {{ other.first_name }} {{ other.last_name }}
-                          <span class="muted" style="font-weight:400;font-size:0.82rem">@{{ prof.pseudo }}</span>
+                          @{{ prof.pseudo }}
                         </p>
                         {% if conv.last_preview %}
                           <p class="inbox-item-preview">{{ conv.last_preview|truncatechars:60 }}</p>
@@ -62,8 +62,8 @@
         </ul>
       {% else %}
         <div style="padding:2rem;text-align:center;color:var(--text-2)">
-          <p>Aucune conversation pour l'instant.</p>
-          <p style="font-size:0.88rem">Va sur le profil d'un utilisateur pour démarrer une conversation.</p>
+          <p>{% trans "Aucune conversation pour l'instant." %}</p>
+          <p style="font-size:0.88rem">{% trans "Va sur le profil d'un utilisateur pour démarrer une conversation." %}</p>
         </div>
       {% endif %}
     </div>
@@ -71,11 +71,11 @@
 
   <aside class="right-rail">
     <div class="rail-card stat-card">
-      <p class="eyebrow">Messages</p>
+      <p class="eyebrow">{% trans "Messages" %}</p>
       <ul class="stat-list">
-        <li><strong>{{ conversations|length }}</strong><span>Conversations</span></li>
+        <li><strong>{{ conversations|length }}</strong><span>{% trans "Conversations" %}</span></li>
         {% if unread_count %}
-          <li><strong>{{ unread_count }}</strong><span>Non lus</span></li>
+          <li><strong>{{ unread_count }}</strong><span>{% trans "Non lus" %}</span></li>
         {% endif %}
       </ul>
     </div>

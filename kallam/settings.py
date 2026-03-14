@@ -124,44 +124,12 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'fr'
 
 LANGUAGES = [
-    # Langues officielles de l'UE
-    ('bg', _('Bulgare')),
-    ('cs', _('Tchèque')),
-    ('da', _('Danois')),
-    ('de', _('Deutsch')),
-    ('el', _('Ελληνικά')),
-    ('en', _('English')),
-    ('es', _('Español')),
-    ('et', _('Eesti')),
-    ('fi', _('Suomi')),
     ('fr', _('Français')),
-    ('ga', _('Gaeilge')),
-    ('hr', _('Hrvatski')),
-    ('hu', _('Magyar')),
-    ('it', _('Italiano')),
-    ('lt', _('Lietuvių')),
-    ('lv', _('Latviešu')),
-    ('mt', _('Malti')),
-    ('nl', _('Nederlands')),
-    ('pl', _('Polski')),
-    ('pt', _('Português')),
-    ('ro', _('Română')),
-    ('sk', _('Slovenčina')),
-    ('sl', _('Slovenščina')),
-    ('sv', _('Svenska')),
-    # Autres langues européennes majeures
-    ('ca', _('Català')),
-    ('gl', _('Galego')),
-    ('is', _('Íslenska')),
-    ('lb', _('Lëtzebuergesch')),
-    ('mk', _('Македонски')),
-    ('nb', _('Norsk')),
-    ('sq', _('Shqip')),
-    ('sr', _('Српски')),
-    ('tr', _('Türkçe')),
-    ('uk', _('Українська')),
-    # Hors Europe
+    ('en', _('English')),
     ('ar', _('العربية')),
+    ('de', _('Deutsch')),
+    ('es', _('Español')),
+    ('it', _('Italiano')),
 ]
 
 LOCALE_PATHS = [BASE_DIR / 'locale']

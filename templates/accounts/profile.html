@@ -1,4 +1,5 @@
 {% extends "accounts/base.html" %}
+{% load i18n %}
 
 {% block title %}@{{ profile.pseudo }} - Kallam{% endblock %}
 {% block body_class %}x-theme app-page{% endblock %}
@@ -10,16 +11,15 @@
       {% if user.is_authenticated %}
         <div class="profile-head">
           {% if user_profile and user_profile.avatar %}
-            <span class="avatar-badge"><img src="{{ user_profile.avatar.url }}" class="avatar-img" alt="Mon avatar"></span>
+            <span class="avatar-badge"><img src="{{ user_profile.avatar.url }}" class="avatar-img" alt="{% trans 'Mon avatar' %}"></span>
           {% else %}
-            <span class="avatar-badge">{{ user.first_name|default:user.username|slice:":1"|upper }}</span>
+            <span class="avatar-badge">{{ user_profile.pseudo|default:user.username|slice:":1"|upper }}</span>
           {% endif %}
           <div>
-            <p class="profile-name">{{ user.first_name }} {{ user.last_name }}</p>
             {% if user_profile %}
-              <p class="profile-handle">@{{ user_profile.pseudo }}</p>
+              <p class="profile-name">@{{ user_profile.pseudo }}</p>
             {% else %}
-              <p class="profile-handle">{{ user.username }}</p>
+              <p class="profile-name">{{ user.username }}</p>
             {% endif %}
           </div>
         </div>
@@ -27,37 +27,35 @@
     </div>
 
     <div class="rail-card nav-card">
-      <nav class="rail-nav" aria-label="Navigation secondaire">
-        <a href="{% url 'accounts:home' %}">Accueil</a>
+      <nav class="rail-nav" aria-label="{% trans 'Navigation secondaire' %}">
+        <a href="{% url 'accounts:home' %}">{% trans "Accueil" %}</a>
         {% if user.is_authenticated and user_profile %}
-          <a href="{% url 'accounts:profile' pseudo=user_profile.pseudo %}">Mon profil</a>
+          <a href="{% url 'accounts:profile' pseudo=user_profile.pseudo %}">{% trans "Mon profil" %}</a>
         {% endif %}
-        <a href="#">Explorer</a>
-        <a href="#">Messages</a>
+        <a href="{% url 'accounts:inbox' %}">{% trans "Messages" %}</a>
       </nav>
       {% if user.is_authenticated %}
         <form method="post" action="{% url 'accounts:logout' %}">
           {% csrf_token %}
-          <button type="submit" class="secondary rail-logout-btn">Déconnexion</button>
+          <button type="submit" class="secondary rail-logout-btn">{% trans "Déconnexion" %}</button>
         </form>
       {% endif %}
     </div>
   </aside>
 
-  <section class="timeline" aria-label="Profil de @{{ profile.pseudo }}">
+  <section class="timeline" aria-label="{% trans 'Profil de' %} @{{ profile.pseudo }}">
     <header class="timeline-header">
       <div class="profile-cover-header">
         <div class="profile-cover-identity">
           {% if profile.avatar %}
-            <span class="avatar-badge avatar-lg"><img src="{{ profile.avatar.url }}" class="avatar-img" alt="Avatar de @{{ profile.pseudo }}"></span>
+            <span class="avatar-badge avatar-lg"><img src="{{ profile.avatar.url }}" class="avatar-img" alt="{% trans 'Avatar de' %} @{{ profile.pseudo }}"></span>
           {% else %}
             <span class="avatar-badge avatar-lg">{{ profile.pseudo|slice:":1"|upper }}</span>
           {% endif %}
           <div>
             <h1 class="profile-name" style="margin:0;font-size:1.2rem">
-              {{ profile.user.first_name }} {{ profile.user.last_name }}
+              @{{ profile.pseudo }}
             </h1>
-            <p class="profile-handle">@{{ profile.pseudo }}</p>
             {% if profile.bio %}
               <p class="profile-bio">{{ profile.bio }}</p>
             {% endif %}
@@ -68,22 +66,22 @@
         <div class="profile-cover-actions" style="display:flex;flex-direction:column;gap:0.5rem;align-items:flex-end">
           {% if user.is_authenticated %}
             {% if user == profile.user %}
-              <a href="{% url 'accounts:edit_profile' %}" class="secondary" style="display:inline-block;padding:0.5rem 1rem;border-radius:8px;text-decoration:none;border:1px solid var(--border);font-weight:600;font-size:0.88rem">Modifier le profil</a>
+              <a href="{% url 'accounts:edit_profile' %}" class="secondary" style="display:inline-block;padding:0.5rem 1rem;border-radius:8px;text-decoration:none;border:1px solid var(--border);font-weight:600;font-size:0.88rem">{% trans "Modifier le profil" %}</a>
             {% else %}
               <form method="post" action="{% url 'accounts:follow' pseudo=profile.pseudo %}">
                 {% csrf_token %}
                 <button type="submit" class="{% if is_following %}secondary{% else %}primary{% endif %}">
-                  {% if is_following %}Se désabonner{% else %}Suivre{% endif %}
+                  {% if is_following %}{% trans "Se désabonner" %}{% else %}{% trans "Suivre" %}{% endif %}
                 </button>
               </form>
               <form method="post" action="{% url 'accounts:start_conversation' pseudo=profile.pseudo %}">
                 {% csrf_token %}
-                <button type="submit" class="secondary" style="font-size:0.88rem">Message</button>
+                <button type="submit" class="secondary" style="font-size:0.88rem">{% trans "Message" %}</button>
               </form>
               <form method="post" action="{% url 'accounts:trust' pseudo=profile.pseudo %}">
                 {% csrf_token %}
                 <button type="submit" class="secondary" style="font-size:0.88rem">
-                  {% if is_trusted %}💙 De confiance{% else %}🤝 Faire confiance{% endif %}
+                  {% if is_trusted %}💙 {% trans "De confiance" %}{% else %}🤝 {% trans "Faire confiance" %}{% endif %}
                 </button>
               </form>
             {% endif %}
@@ -92,9 +90,9 @@
       </div>
 
       <div class="follow-stats">
-        <span><strong>{{ following_count }}</strong> abonnements</span>
-        <span><strong>{{ followers_count }}</strong> abonnés</span>
-        <span><strong>{{ posts|length }}</strong> publications</span>
+        <span><strong>{{ following_count }}</strong> {% trans "abonnements" %}</span>
+        <span><strong>{{ followers_count }}</strong> {% trans "abonnés" %}</span>
+        <span><strong>{{ posts|length }}</strong> {% trans "publications" %}</span>
       </div>
     </header>
 
@@ -108,7 +106,7 @@
                   {{ post.author_display_name }}
                   <span>{{ post.author_handle }}</span>
                 </p>
-                <p class="tweet-time">{{ post.created_at|timesince }} · {{ post.like_count }} likes</p>
+                <p class="tweet-time">{{ post.created_at|timesince }} · {{ post.like_count }} {% trans "likes" %}</p>
               </div>
             </header>
 
@@ -118,7 +116,7 @@
 
             {% if post.image %}
               <figure class="tweet-media">
-                <img src="{{ post.image.url }}" alt="Image publiée par {{ post.author_display_name }}" loading="lazy">
+                <img src="{{ post.image.url }}" alt="{% trans 'Image publiée par' %} {{ post.author_display_name }}" loading="lazy">
               </figure>
             {% endif %}
 
@@ -126,7 +124,7 @@
               <div class="tweet-video">
                 <iframe
                   src="{{ post.youtube_embed_url }}"
-                  title="Video YouTube"
+                  title="{% trans 'Vidéo YouTube' %}"
                   loading="lazy"
                   referrerpolicy="strict-origin-when-cross-origin"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -138,7 +136,7 @@
             {% if post.file_url %}
               <p class="tweet-file-link">
                 <a href="{{ post.file_url }}" target="_blank" rel="noopener noreferrer">
-                  &#128206; Fichier joint
+                  &#128206; {% trans "Fichier joint" %}
                 </a>
               </p>
             {% endif %}
@@ -165,7 +163,7 @@
                   {% csrf_token %}
                   <input type="hidden" name="next" value="{{ request.path }}#post-{{ post.id }}">
                   <button type="submit" class="action-btn report-btn {% if post.reported_by_me %}is-reported{% endif %}">
-                    🚩 {% if post.reported_by_me %}Reporté{% else %}Signaler{% endif %}
+                    🚩 {% if post.reported_by_me %}{% trans "Reporté" %}{% else %}{% trans "Signaler" %}{% endif %}
                   </button>
                 </form>
               </div>
@@ -174,7 +172,7 @@
         {% endfor %}
       {% else %}
         <article class="tweet-card empty-feed">
-          <p class="tweet-text">Aucune publication pour le moment.</p>
+          <p class="tweet-text">{% trans "Aucune publication pour le moment." %}</p>
         </article>
       {% endif %}
     </section>
@@ -182,11 +180,11 @@
 
   <aside class="right-rail">
     <div class="rail-card stat-card">
-      <p class="eyebrow">Statistiques</p>
+      <p class="eyebrow">{% trans "Statistiques" %}</p>
       <ul class="stat-list">
-        <li><strong>{{ posts|length }}</strong><span>Publications</span></li>
-        <li><strong>{{ followers_count }}</strong><span>Abonnés</span></li>
-        <li><strong>{{ following_count }}</strong><span>Abonnements</span></li>
+        <li><strong>{{ posts|length }}</strong><span>{% trans "Publications" %}</span></li>
+        <li><strong>{{ followers_count }}</strong><span>{% trans "Abonnés" %}</span></li>
+        <li><strong>{{ following_count }}</strong><span>{% trans "Abonnements" %}</span></li>
       </ul>
     </div>
   </aside>

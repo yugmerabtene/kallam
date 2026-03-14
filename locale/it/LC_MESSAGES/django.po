@@ -1,135 +1,135 @@
-# English translations for Kallam
+# Italian translations for Kallam
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: en\n"
+"Language: it\n"
 
 # Navigation
 msgid "Accueil"
 msgstr "Home"
 
 msgid "Messages"
-msgstr "Messages"
+msgstr "Messaggi"
 
 msgid "Profil"
-msgstr "Profile"
+msgstr "Profilo"
 
 msgid "Modération"
-msgstr "Moderation"
+msgstr "Moderazione"
 
 msgid "Journal"
-msgstr "Log"
+msgstr "Registro"
 
 msgid "Connexion"
-msgstr "Login"
+msgstr "Accedi"
 
 msgid "Inscription"
-msgstr "Register"
+msgstr "Registrati"
 
 msgid "Déconnexion"
-msgstr "Logout"
+msgstr "Disconnetti"
 
 msgid "Charte"
-msgstr "Charter"
+msgstr "Statuto"
 
 msgid "Enquête"
-msgstr "Survey"
+msgstr "Sondaggio"
 
 msgid "Mentions légales"
-msgstr "Legal notice"
+msgstr "Note legali"
 
 msgid "Projet d'école — Projet d'excellence européen."
-msgstr "School project — European excellence project."
+msgstr "Progetto scolastico — Progetto di eccellenza europea."
 
 # Home
 msgid "Mon avatar"
-msgstr "My avatar"
+msgstr "Il mio avatar"
 
 msgid "abonnements"
-msgstr "following"
+msgstr "seguiti"
 
 msgid "abonnés"
-msgstr "followers"
+msgstr "follower"
 
 msgid "Mon profil"
-msgstr "My profile"
+msgstr "Il mio profilo"
 
 msgid "Créer mon profil"
-msgstr "Create my profile"
+msgstr "Crea il mio profilo"
 
 msgid "Navigation"
-msgstr "Navigation"
+msgstr "Navigazione"
 
 msgid "Navigation secondaire"
-msgstr "Side navigation"
+msgstr "Navigazione laterale"
 
 msgid "Fil principal"
-msgstr "Main feed"
+msgstr "Feed principale"
 
 msgid "Fil d'actualité"
-msgstr "Feed"
+msgstr "Ultime notizie"
 
 msgid "publication"
 msgstr "post"
 
 msgid "Image"
-msgstr "Image"
+msgstr "Immagine"
 
 msgid "URL de fichier"
-msgstr "File URL"
+msgstr "URL del file"
 
 msgid "Joindre image ou fichier"
-msgstr "Attach image or file"
+msgstr "Allega immagine o file"
 
 msgid "Publier"
-msgstr "Publish"
+msgstr "Pubblica"
 
 msgid "Bienvenue sur Kallam. Publie ton premier message ci-dessus."
-msgstr "Welcome to Kallam. Post your first message above."
+msgstr "Benvenuto su Kallam. Pubblica il tuo primo messaggio qui sopra."
 
 msgid "Image de"
-msgstr "Image by"
+msgstr "Immagine di"
 
 msgid "Vidéo YouTube"
-msgstr "YouTube video"
+msgstr "Video YouTube"
 
 msgid "Fichier joint"
-msgstr "Attached file"
+msgstr "File allegato"
 
 msgid "Répondre"
-msgstr "Reply"
+msgstr "Rispondi"
 
 msgid "Statistiques"
-msgstr "Stats"
+msgstr "Statistiche"
 
 msgid "Publications"
-msgstr "Posts"
+msgstr "Post"
 
 msgid "Abonnés"
-msgstr "Followers"
+msgstr "Follower"
 
 msgid "Abonnements"
-msgstr "Following"
+msgstr "Seguiti"
 
 msgid "Tendances"
-msgstr "Trends"
+msgstr "Tendenze"
 
 # Login
 msgid "Kallam réseau social"
 msgstr "Kallam social network"
 
 msgid "Partage maintenant, sans friction."
-msgstr "Share now, friction-free."
+msgstr "Condividi ora, senza ostacoli."
 
 msgid "Connecte-toi pour publier, répondre et suivre ton fil en temps réel."
-msgstr "Log in to post, reply and follow your feed in real time."
+msgstr "Accedi per pubblicare, rispondere e seguire il tuo feed in tempo reale."
 
 msgid "Bon retour"
-msgstr "Welcome back"
+msgstr "Bentornato"
 
 msgid "Entre ton email et ton mot de passe."
-msgstr "Enter your email and password."
+msgstr "Inserisci email e password."
 
 msgid "Email"
 msgstr "Email"
@@ -138,141 +138,141 @@ msgid "Mot de passe"
 msgstr "Password"
 
 msgid "Afficher"
-msgstr "Show"
+msgstr "Mostra"
 
 msgid "Se connecter"
-msgstr "Log in"
+msgstr "Accedi"
 
 msgid "Pas encore de compte ?"
-msgstr "No account yet?"
+msgstr "Non hai ancora un account?"
 
 msgid "Créer un compte"
-msgstr "Create an account"
+msgstr "Crea un account"
 
 # Register
 msgid "Nouvel utilisateur"
-msgstr "New user"
+msgstr "Nuovo utente"
 
 msgid "Crée ton compte et lance la conversation."
-msgstr "Create your account and start the conversation."
+msgstr "Crea il tuo account e inizia la conversazione."
 
 msgid "Inscription rapide avec pseudonyme, email et mot de passe."
-msgstr "Quick sign-up with username, email and password."
+msgstr "Registrazione rapida con pseudonimo, email e password."
 
 msgid "Rejoins Kallam en moins de 2 minutes."
-msgstr "Join Kallam in under 2 minutes."
+msgstr "Unisciti a Kallam in meno di 2 minuti."
 
 msgid "Créer ton compte"
-msgstr "Create your account"
+msgstr "Crea il tuo account"
 
 msgid "Pseudonyme"
-msgstr "Username"
+msgstr "Pseudonimo"
 
 msgid "Confirmer le mot de passe"
-msgstr "Confirm password"
+msgstr "Conferma password"
 
 msgid "Les mots de passe ne correspondent pas."
-msgstr "Passwords do not match."
+msgstr "Le password non corrispondono."
 
 msgid "J'ai lu et j'accepte les"
-msgstr "I have read and accept the"
+msgstr "Ho letto e accetto i"
 
 msgid "Conditions Générales d'Utilisation"
-msgstr "Terms of Service"
+msgstr "Termini di utilizzo"
 
 msgid "Créer mon compte"
-msgstr "Create my account"
+msgstr "Crea il mio account"
 
 msgid "Déjà inscrit ?"
-msgstr "Already registered?"
+msgstr "Già registrato?"
 
 # Profile
 msgid "Profil de"
-msgstr "Profile of"
+msgstr "Profilo di"
 
 msgid "Avatar de"
-msgstr "Avatar of"
+msgstr "Avatar di"
 
 msgid "Modifier le profil"
-msgstr "Edit profile"
+msgstr "Modifica profilo"
 
 msgid "Se désabonner"
-msgstr "Unfollow"
+msgstr "Smetti di seguire"
 
 msgid "Suivre"
-msgstr "Follow"
+msgstr "Segui"
 
 msgid "Message"
-msgstr "Message"
+msgstr "Messaggio"
 
 msgid "De confiance"
-msgstr "Trusted"
+msgstr "Affidabile"
 
 msgid "Faire confiance"
-msgstr "Trust"
+msgstr "Aggiungi alla lista di fiducia"
 
 msgid "publications"
-msgstr "posts"
+msgstr "post"
 
 msgid "likes"
-msgstr "likes"
+msgstr "mi piace"
 
 msgid "Image publiée par"
-msgstr "Image posted by"
+msgstr "Immagine pubblicata da"
 
 msgid "Reporté"
-msgstr "Reported"
+msgstr "Segnalato"
 
 msgid "Signaler"
-msgstr "Report"
+msgstr "Segnala"
 
 msgid "Aucune publication pour le moment."
-msgstr "No posts yet."
+msgstr "Nessun post al momento."
 
 # Inbox
 msgid "Messagerie"
-msgstr "Messaging"
+msgstr "Messaggistica"
 
 msgid "Tes conversations privées"
-msgstr "Your private conversations"
+msgstr "Le tue conversazioni private"
 
 msgid "Aucune conversation pour l'instant."
-msgstr "No conversations yet."
+msgstr "Nessuna conversazione al momento."
 
 msgid "Va sur le profil d'un utilisateur pour démarrer une conversation."
-msgstr "Go to a user's profile to start a conversation."
+msgstr "Vai al profilo di un utente per iniziare una conversazione."
 
 msgid "Conversations"
-msgstr "Conversations"
+msgstr "Conversazioni"
 
 msgid "Non lus"
-msgstr "Unread"
+msgstr "Non letti"
 
 # Conversation
 msgid "Conversation avec"
-msgstr "Conversation with"
+msgstr "Conversazione con"
 
 msgid "Conversation"
-msgstr "Conversation"
+msgstr "Conversazione"
 
 msgid "Dis bonjour pour démarrer la conversation !"
-msgstr "Say hello to start the conversation!"
+msgstr "Di' ciao per iniziare la conversazione!"
 
 msgid "Écris ton message…"
-msgstr "Write your message…"
+msgstr "Scrivi il tuo messaggio…"
 
 msgid "Envoyer"
-msgstr "Send"
+msgstr "Invia"
 
 # Edit profile
 msgid "Personnalise ton identité Kallam."
-msgstr "Customise your Kallam identity."
+msgstr "Personalizza la tua identità su Kallam."
 
 msgid "Choisis ton pseudonyme, ta bio et ta langue préférée."
-msgstr "Choose your username, bio and preferred language."
+msgstr "Scegli il tuo pseudonimo, la bio e la lingua preferita."
 
 msgid "Modifier mon profil"
-msgstr "Edit my profile"
+msgstr "Modifica il mio profilo"
 
 msgid "Bio"
 msgstr "Bio"
@@ -281,133 +281,133 @@ msgid "Avatar"
 msgstr "Avatar"
 
 msgid "Avatar actuel"
-msgstr "Current avatar"
+msgstr "Avatar attuale"
 
 msgid "Langue préférée"
-msgstr "Preferred language"
+msgstr "Lingua preferita"
 
 msgid "Sauvegarder"
-msgstr "Save"
+msgstr "Salva"
 
 msgid "Annuler"
-msgstr "Cancel"
+msgstr "Annulla"
 
 msgid "Zone de danger"
-msgstr "Danger zone"
+msgstr "Zona di pericolo"
 
 msgid "La suppression de compte est irréversible. Toutes tes données seront effacées."
-msgstr "Account deletion is irreversible. All your data will be erased."
+msgstr "L'eliminazione dell'account è irreversibile. Tutti i tuoi dati saranno cancellati."
 
 msgid "Supprimer mon compte"
-msgstr "Delete my account"
+msgstr "Elimina il mio account"
 
 # Legal
 msgid "Juridique"
-msgstr "Legal"
+msgstr "Legale"
 
 msgid "Projet pédagogique — INEAD / FEDE"
-msgstr "Educational project — INEAD / FEDE"
+msgstr "Progetto educativo — INEAD / FEDE"
 
 msgid "Éditeur du site"
-msgstr "Site publisher"
+msgstr "Editore del sito"
 
 msgid "Hébergement"
 msgstr "Hosting"
 
 msgid "Propriété intellectuelle"
-msgstr "Intellectual property"
+msgstr "Proprietà intellettuale"
 
 msgid "Données personnelles (RGPD)"
-msgstr "Personal data (GDPR)"
+msgstr "Dati personali (RGPD)"
 
 msgid "Cookies"
-msgstr "Cookies"
+msgstr "Cookie"
 
 msgid "Limitation de responsabilité"
-msgstr "Limitation of liability"
+msgstr "Limitazione di responsabilità"
 
 msgid "Droit applicable"
-msgstr "Applicable law"
+msgstr "Diritto applicabile"
 
 msgid "Voir les CGU"
-msgstr "View Terms of Service"
+msgstr "Vedi i termini di utilizzo"
 
 msgid "Voir la charte"
-msgstr "View charter"
+msgstr "Vedi lo statuto"
 
-# Flash messages (views.py)
+# Flash messages
 msgid "Message publie."
-msgstr "Post published."
+msgstr "Post pubblicato."
 
 msgid "Impossible de publier ce message."
-msgstr "Unable to publish this post."
+msgstr "Impossibile pubblicare il post."
 
 msgid "Inscription reussie."
-msgstr "Registration successful."
+msgstr "Registrazione avvenuta con successo."
 
 msgid "Connexion reussie."
-msgstr "Logged in successfully."
+msgstr "Accesso effettuato con successo."
 
 msgid "Vous etes deconnecte."
-msgstr "You have been logged out."
+msgstr "Disconnesso."
 
 msgid "Profil mis a jour."
-msgstr "Profile updated."
+msgstr "Profilo aggiornato."
 
 msgid "Publication signalee."
-msgstr "Post reported."
+msgstr "Post segnalato."
 
 msgid "Publication deja signalee."
-msgstr "Post already reported."
+msgstr "Post già segnalato."
 
 msgid "Action non supportee."
-msgstr "Action not supported."
+msgstr "Azione non supportata."
 
 msgid "Trop de publications. Attends un peu."
-msgstr "Too many posts. Please wait."
+msgstr "Troppi post. Attendi un momento."
 
 msgid "Trop de messages. Attends un peu."
-msgstr "Too many messages. Please wait."
+msgstr "Troppi messaggi. Attendi un momento."
 
 msgid "Trop de tentatives. Reessaie dans 5 minutes."
-msgstr "Too many attempts. Try again in 5 minutes."
+msgstr "Troppi tentativi. Riprova tra 5 minuti."
 
 msgid "Mot de passe incorrect. Suppression annulée."
-msgstr "Incorrect password. Deletion cancelled."
+msgstr "Password errata. Eliminazione annullata."
 
 msgid "Ton compte a été supprimé définitivement."
-msgstr "Your account has been permanently deleted."
+msgstr "Il tuo account è stato eliminato definitivamente."
 
 msgid "Tu ne peux pas te faire confiance à toi-même."
-msgstr "You cannot add yourself to your trust list."
+msgstr "Non puoi aggiungere te stesso alla lista di fiducia."
 
 msgid "Trop de réponses. Réessaie plus tard."
-msgstr "Too many responses. Try again later."
+msgstr "Troppe risposte. Riprova più tardi."
 
 msgid "Réponse invalide (1-1000 caractères)."
-msgstr "Invalid response (1–1000 characters)."
+msgstr "Risposta non valida (1–1000 caratteri)."
 
 msgid "Identifiants invalides."
-msgstr "Invalid credentials."
+msgstr "Credenziali non valide."
 
 msgid "Trop de tentatives de connexion. Réessaie dans 5 minutes."
-msgstr "Too many login attempts. Try again in 5 minutes."
+msgstr "Troppi tentativi di accesso. Riprova tra 5 minuti."
 
 # Languages
 msgid "Français"
-msgstr "French"
+msgstr "Francese"
 
 msgid "English"
-msgstr "English"
+msgstr "Inglese"
 
 msgid "العربية"
-msgstr "Arabic"
+msgstr "Arabo"
 
 msgid "Deutsch"
-msgstr "German"
+msgstr "Tedesco"
 
 msgid "Español"
-msgstr "Spanish"
+msgstr "Spagnolo"
 
 msgid "Italiano"
-msgstr "Italian"
+msgstr "Italiano"

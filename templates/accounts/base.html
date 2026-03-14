@@ -21,24 +21,24 @@
 
       <nav class="site-nav" aria-label="Navigation principale">
         {% if user.is_authenticated %}
-          <a href="{% url 'accounts:home' %}">Accueil</a>
+          <a href="{% url 'accounts:home' %}">{% trans "Accueil" %}</a>
           {% if user.is_staff %}
-            <a href="{% url 'accounts:moderation' %}">Modération</a>
-            <a href="{% url 'accounts:moderation_log' %}">Journal</a>
+            <a href="{% url 'accounts:moderation' %}">{% trans "Modération" %}</a>
+            <a href="{% url 'accounts:moderation_log' %}">{% trans "Journal" %}</a>
           {% endif %}
           <a href="{% url 'accounts:inbox' %}" style="position:relative">
-            Messages
+            {% trans "Messages" %}
             {% if unread_count %}
               <span class="unread-badge" style="position:absolute;top:-6px;right:-10px">{{ unread_count }}</span>
             {% endif %}
           </a>
           <form method="post" action="{% url 'accounts:logout' %}" class="inline-form">
             {% csrf_token %}
-            <button type="submit" class="link-button">Déconnexion</button>
+            <button type="submit" class="link-button">{% trans "Déconnexion" %}</button>
           </form>
         {% else %}
-          <a href="{% url 'accounts:login' %}">Connexion</a>
-          <a class="site-nav-cta" href="{% url 'accounts:register' %}">Inscription</a>
+          <a href="{% url 'accounts:login' %}">{% trans "Connexion" %}</a>
+          <a class="site-nav-cta" href="{% url 'accounts:register' %}">{% trans "Inscription" %}</a>
         {% endif %}
 
         <div class="header-controls">
@@ -73,10 +73,10 @@
 
   <footer class="site-footer">
     <div class="footer-inner">
-      <p>Projet d'ecole - Projet d'excellence europeen.</p>
-      <a href="{% url 'accounts:charter' %}">Charte</a>
-      <a href="{% url 'accounts:survey' %}">Enquête</a>
-      <a href="{% url 'accounts:mentions_legales' %}">Mentions légales</a>
+      <p>{% trans "Projet d'école — Projet d'excellence européen." %}</p>
+      <a href="{% url 'accounts:charter' %}">{% trans "Charte" %}</a>
+      <a href="{% url 'accounts:survey' %}">{% trans "Enquête" %}</a>
+      <a href="{% url 'accounts:mentions_legales' %}">{% trans "Mentions légales" %}</a>
     </div>
   </footer>
 

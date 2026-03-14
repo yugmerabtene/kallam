@@ -1,21 +1,22 @@
 {% extends "accounts/base.html" %}
+{% load i18n %}
 
-{% block title %}Inscription - Kallam{% endblock %}
+{% block title %}{% trans "Inscription" %} - Kallam{% endblock %}
 {% block body_class %}x-theme auth-page{% endblock %}
 
 {% block content %}
 <section class="auth-shell">
   <aside class="auth-hero">
     <div class="auth-hero-mark">K</div>
-    <p class="auth-hero-kicker">Nouvel utilisateur</p>
-    <h1>Cree ton compte et lance la conversation.</h1>
-    <p class="auth-hero-text">Inscription rapide avec pseudonyme, email et mot de passe.</p>
+    <p class="auth-hero-kicker">{% trans "Nouvel utilisateur" %}</p>
+    <h1>{% trans "Crée ton compte et lance la conversation." %}</h1>
+    <p class="auth-hero-text">{% trans "Inscription rapide avec pseudonyme, email et mot de passe." %}</p>
   </aside>
 
   <section class="auth-card">
-    <p class="eyebrow">Inscription</p>
-    <h2>Creer ton compte</h2>
-    <p class="lead">Rejoins Kallam en moins de 2 minutes.</p>
+    <p class="eyebrow">{% trans "Inscription" %}</p>
+    <h2>{% trans "Créer ton compte" %}</h2>
+    <p class="lead">{% trans "Rejoins Kallam en moins de 2 minutes." %}</p>
 
     <form method="post" class="form-grid auth-form" data-register-form>
       {% csrf_token %}
@@ -24,50 +25,50 @@
       {% endif %}
 
       <div class="field">
-        <label for="{{ form.pseudo.id_for_label }}">Pseudonyme</label>
+        <label for="{{ form.pseudo.id_for_label }}">{% trans "Pseudonyme" %}</label>
         {{ form.pseudo }}
         {% if form.pseudo.help_text %}<small class="muted">{{ form.pseudo.help_text }}</small>{% endif %}
         {% if form.pseudo.errors %}<small class="error">{{ form.pseudo.errors|striptags }}</small>{% endif %}
       </div>
 
       <div class="field">
-        <label for="{{ form.email.id_for_label }}">Email</label>
+        <label for="{{ form.email.id_for_label }}">{% trans "Email" %}</label>
         {{ form.email }}
         {% if form.email.errors %}<small class="error">{{ form.email.errors|striptags }}</small>{% endif %}
       </div>
 
       <div class="field">
-        <label for="{{ form.password.id_for_label }}">Mot de passe</label>
+        <label for="{{ form.password.id_for_label }}">{% trans "Mot de passe" %}</label>
         <div class="input-inline">
           {{ form.password }}
-          <button type="button" class="secondary" data-toggle-password="{{ form.password.id_for_label }}">Afficher</button>
+          <button type="button" class="secondary" data-toggle-password="{{ form.password.id_for_label }}">{% trans "Afficher" %}</button>
         </div>
         {% if form.password.errors %}<small class="error">{{ form.password.errors|striptags }}</small>{% endif %}
       </div>
 
       <div class="field">
-        <label for="{{ form.password_confirm.id_for_label }}">Confirmer le mot de passe</label>
+        <label for="{{ form.password_confirm.id_for_label }}">{% trans "Confirmer le mot de passe" %}</label>
         <div class="input-inline">
           {{ form.password_confirm }}
-          <button type="button" class="secondary" data-toggle-password="{{ form.password_confirm.id_for_label }}">Afficher</button>
+          <button type="button" class="secondary" data-toggle-password="{{ form.password_confirm.id_for_label }}">{% trans "Afficher" %}</button>
         </div>
-        <small class="error" data-password-match hidden>Les mots de passe ne correspondent pas.</small>
+        <small class="error" data-password-match hidden>{% trans "Les mots de passe ne correspondent pas." %}</small>
         {% if form.password_confirm.errors %}<small class="error">{{ form.password_confirm.errors|striptags }}</small>{% endif %}
       </div>
 
       <div class="field" style="flex-direction:row;align-items:flex-start;gap:0.6rem">
         {{ form.cgu_accepted }}
         <label for="{{ form.cgu_accepted.id_for_label }}" style="font-size:0.9rem;cursor:pointer;margin:0">
-          J'ai lu et j'accepte les
-          <a href="{% url 'accounts:cgu' %}" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:underline">Conditions Générales d'Utilisation</a>
+          {% trans "J'ai lu et j'accepte les" %}
+          <a href="{% url 'accounts:cgu' %}" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:underline">{% trans "Conditions Générales d'Utilisation" %}</a>
         </label>
         {% if form.cgu_accepted.errors %}<small class="error" style="display:block;margin-top:0.25rem">{{ form.cgu_accepted.errors|striptags }}</small>{% endif %}
       </div>
 
-      <button type="submit" class="primary">Creer mon compte</button>
+      <button type="submit" class="primary">{% trans "Créer mon compte" %}</button>
     </form>
 
-    <p class="muted auth-footer">Deja inscrit ? <a href="{% url 'accounts:login' %}">Se connecter</a></p>
+    <p class="muted auth-footer">{% trans "Déjà inscrit ?" %} <a href="{% url 'accounts:login' %}">{% trans "Se connecter" %}</a></p>
   </section>
 </section>
 {% endblock %}

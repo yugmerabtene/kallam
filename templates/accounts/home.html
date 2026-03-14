@@ -1,6 +1,7 @@
 {% extends "accounts/base.html" %}
+{% load i18n %}
 
-{% block title %}Accueil - Kallam{% endblock %}
+{% block title %}{% trans "Accueil" %} - Kallam{% endblock %}
 {% block body_class %}x-theme app-page{% endblock %}
 
 {% block content %}
@@ -11,41 +12,40 @@
     <div class="rail-card profile-card">
       <div class="profile-head">
         {% if user_profile and user_profile.avatar %}
-          <span class="avatar-badge"><img src="{{ user_profile.avatar.url }}" class="avatar-img" alt="Mon avatar"></span>
+          <span class="avatar-badge"><img src="{{ user_profile.avatar.url }}" class="avatar-img" alt="{% trans 'Mon avatar' %}"></span>
         {% else %}
-          <span class="avatar-badge">{{ user.first_name|default:user.username|slice:":1"|upper }}</span>
+          <span class="avatar-badge">{{ user_profile.pseudo|default:user.username|slice:":1"|upper }}</span>
         {% endif %}
         <div>
-          <p class="profile-name">{{ user.first_name }} {{ user.last_name }}</p>
           {% if user_profile %}
-            <p class="profile-handle">@{{ user_profile.pseudo }}</p>
+            <p class="profile-name">@{{ user_profile.pseudo }}</p>
           {% else %}
-            <p class="profile-handle">{{ user.username }}</p>
+            <p class="profile-name">{{ user.username }}</p>
           {% endif %}
         </div>
       </div>
       {% if user_profile %}
         <div class="follow-stats">
-          <span><strong>{{ following_count }}</strong> abonnements</span>
-          <span><strong>{{ followers_count }}</strong> abonnés</span>
+          <span><strong>{{ following_count }}</strong> {% trans "abonnements" %}</span>
+          <span><strong>{{ followers_count }}</strong> {% trans "abonnés" %}</span>
         </div>
-        <a href="{% url 'accounts:profile' pseudo=user_profile.pseudo %}" class="rail-profile-link">Mon profil</a>
+        <a href="{% url 'accounts:profile' pseudo=user_profile.pseudo %}" class="rail-profile-link">{% trans "Mon profil" %}</a>
       {% else %}
-        <a href="{% url 'accounts:edit_profile' %}" class="rail-profile-link">Créer mon profil</a>
+        <a href="{% url 'accounts:edit_profile' %}" class="rail-profile-link">{% trans "Créer mon profil" %}</a>
       {% endif %}
     </div>
 
     <div class="rail-card nav-card">
-      <nav class="rail-nav" aria-label="Navigation">
-        <a class="active" href="{% url 'accounts:home' %}">🏠 Accueil</a>
+      <nav class="rail-nav" aria-label="{% trans 'Navigation' %}">
+        <a class="active" href="{% url 'accounts:home' %}">🏠 {% trans "Accueil" %}</a>
         {% if user_profile %}
-          <a href="{% url 'accounts:profile' pseudo=user_profile.pseudo %}">👤 Profil</a>
+          <a href="{% url 'accounts:profile' pseudo=user_profile.pseudo %}">👤 {% trans "Profil" %}</a>
         {% endif %}
-        <a href="{% url 'accounts:inbox' %}">✉️ Messages</a>
+        <a href="{% url 'accounts:inbox' %}">✉️ {% trans "Messages" %}</a>
       </nav>
       <form method="post" action="{% url 'accounts:logout' %}">
         {% csrf_token %}
-        <button type="submit" class="secondary rail-logout-btn">Déconnexion</button>
+        <button type="submit" class="secondary rail-logout-btn">{% trans "Déconnexion" %}</button>
       </form>
     </div>
   </aside>
@@ -53,7 +53,6 @@
   {# ── Colonne centrale ──────────────────────────────── #}
   <div class="feed-column">
 
-    {# Composer — carte indépendante, toujours visible #}
     <div class="composer-card" id="composer">
       <form method="post" enctype="multipart/form-data" data-composer-form>
         {% csrf_token %}
@@ -62,7 +61,7 @@
           {% if user_profile and user_profile.avatar %}
             <span class="avatar-badge composer-avatar"><img src="{{ user_profile.avatar.url }}" class="avatar-img" alt=""></span>
           {% else %}
-            <span class="avatar-badge composer-avatar">{{ user.first_name|default:user.username|slice:":1"|upper }}</span>
+            <span class="avatar-badge composer-avatar">{{ user_profile.pseudo|default:user.username|slice:":1"|upper }}</span>
           {% endif %}
 
           <div class="composer-body">
@@ -78,12 +77,12 @@
             <div id="composer-attachments" class="attach-panel" data-attach-panel
               {% if not post_form.image.errors and not post_form.attachment_url.errors %}hidden{% endif %}>
               <div class="field">
-                <label for="{{ post_form.image.id_for_label }}">Image</label>
+                <label for="{{ post_form.image.id_for_label }}">{% trans "Image" %}</label>
                 {{ post_form.image }}
                 {% if post_form.image.errors %}<small class="error">{{ post_form.image.errors|striptags }}</small>{% endif %}
               </div>
               <div class="field">
-                <label for="{{ post_form.attachment_url.id_for_label }}">URL de fichier</label>
+                <label for="{{ post_form.attachment_url.id_for_label }}">{% trans "URL de fichier" %}</label>
                 {{ post_form.attachment_url }}
                 {% if post_form.attachment_url.errors %}<small class="error">{{ post_form.attachment_url.errors|striptags }}</small>{% endif %}
               </div>
@@ -96,21 +95,20 @@
             <button type="button" class="tool-btn" data-attach-toggle
               aria-controls="composer-attachments"
               aria-expanded="{% if post_form.image.errors or post_form.attachment_url.errors %}true{% else %}false{% endif %}"
-              title="Joindre image ou fichier">
+              title="{% trans 'Joindre image ou fichier' %}">
               📎
             </button>
             <span class="char-counter" data-char-count>0/280</span>
           </div>
-          <button class="primary composer-submit" type="submit" data-publish-btn disabled>Publier</button>
+          <button class="primary composer-submit" type="submit" data-publish-btn disabled>{% trans "Publier" %}</button>
         </div>
       </form>
     </div>
 
-    {# Fil de posts #}
-    <section class="timeline" aria-label="Fil principal">
+    <section class="timeline" aria-label="{% trans 'Fil principal' %}">
       <div class="feed-label">
-        <span>Fil d'actualité</span>
-        <span class="feed-count">{{ posts|length }} publication{% if posts|length != 1 %}s{% endif %}</span>
+        <span>{% trans "Fil d'actualité" %}</span>
+        <span class="feed-count">{{ posts|length }} {% trans "publication" %}{% if posts|length != 1 %}s{% endif %}</span>
       </div>
 
       <div class="posts-grid">
@@ -118,7 +116,6 @@
           {% for post in posts %}
             <article class="tweet-card" id="post-{{ post.id }}">
               <div class="tweet-layout">
-                {# Avatar colonne gauche #}
                 <div class="tweet-avatar-col">
                   {% with prof=post.author.profile %}
                     {% if prof and prof.avatar %}
@@ -137,7 +134,6 @@
                   {% endwith %}
                 </div>
 
-                {# Corps du post #}
                 <div class="tweet-body">
                   <div class="tweet-meta">
                     <span class="tweet-author">{{ post.author_display_name }}</span>
@@ -152,13 +148,13 @@
 
                   {% if post.image %}
                     <figure class="tweet-media">
-                      <img src="{{ post.image.url }}" alt="Image de {{ post.author_display_name }}" loading="lazy">
+                      <img src="{{ post.image.url }}" alt="{% trans 'Image de' %} {{ post.author_display_name }}" loading="lazy">
                     </figure>
                   {% endif %}
 
                   {% if post.youtube_embed_url %}
                     <div class="tweet-video">
-                      <iframe src="{{ post.youtube_embed_url }}" title="Video YouTube" loading="lazy"
+                      <iframe src="{{ post.youtube_embed_url }}" title="{% trans 'Vidéo YouTube' %}" loading="lazy"
                         referrerpolicy="strict-origin-when-cross-origin"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         allowfullscreen></iframe>
@@ -167,13 +163,13 @@
 
                   {% if post.file_url %}
                     <p class="tweet-file-link">
-                      <a href="{{ post.file_url }}" target="_blank" rel="noopener noreferrer">📎 Fichier joint</a>
+                      <a href="{{ post.file_url }}" target="_blank" rel="noopener noreferrer">📎 {% trans "Fichier joint" %}</a>
                     </p>
                   {% endif %}
 
                   <div class="tweet-actions">
                     <button type="button" class="action-btn reply-btn" data-reply-handle="{{ post.author_handle }}">
-                      💬 <span>Répondre</span>
+                      💬 <span>{% trans "Répondre" %}</span>
                     </button>
 
                     <form method="post" action="{% url 'accounts:post_action' post.id 'repost' %}" class="inline-form">
@@ -207,7 +203,7 @@
         {% else %}
           <div class="empty-feed">
             <p style="font-size:2rem;margin:0">✨</p>
-            <p>Bienvenue sur Kallam. Publie ton premier message ci-dessus.</p>
+            <p>{% trans "Bienvenue sur Kallam. Publie ton premier message ci-dessus." %}</p>
           </div>
         {% endif %}
       </div>
@@ -217,15 +213,15 @@
   {# ── Rail droit ───────────────────────────────────── #}
   <aside class="right-rail">
     <div class="rail-card stat-card">
-      <p class="eyebrow">Statistiques</p>
+      <p class="eyebrow">{% trans "Statistiques" %}</p>
       <ul class="stat-list">
-        <li><strong>{{ user.posts.count }}</strong><span>Publications</span></li>
-        <li><strong>{{ followers_count }}</strong><span>Abonnés</span></li>
-        <li><strong>{{ following_count }}</strong><span>Abonnements</span></li>
+        <li><strong>{{ user.posts.count }}</strong><span>{% trans "Publications" %}</span></li>
+        <li><strong>{{ followers_count }}</strong><span>{% trans "Abonnés" %}</span></li>
+        <li><strong>{{ following_count }}</strong><span>{% trans "Abonnements" %}</span></li>
       </ul>
     </div>
     <div class="rail-card">
-      <p class="eyebrow">Tendances</p>
+      <p class="eyebrow">{% trans "Tendances" %}</p>
       <ul class="trends">
         <li>#Kallam</li>
         <li>#Citoyens</li>

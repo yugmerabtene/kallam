@@ -1,20 +1,21 @@
 {% extends "accounts/base.html" %}
+{% load i18n %}
 
-{% block title %}Modifier le profil - Kallam{% endblock %}
+{% block title %}{% trans "Modifier le profil" %} - Kallam{% endblock %}
 {% block body_class %}x-theme auth-page{% endblock %}
 
 {% block content %}
 <section class="auth-shell">
   <aside class="auth-hero">
     <div class="auth-hero-mark">K</div>
-    <p class="auth-hero-kicker">Mon profil</p>
-    <h1>Personnalise ton identité Kallam.</h1>
-    <p class="auth-hero-text">Choisis ton pseudonyme, ta bio et ta langue préférée.</p>
+    <p class="auth-hero-kicker">{% trans "Mon profil" %}</p>
+    <h1>{% trans "Personnalise ton identité Kallam." %}</h1>
+    <p class="auth-hero-text">{% trans "Choisis ton pseudonyme, ta bio et ta langue préférée." %}</p>
   </aside>
 
   <section class="auth-card">
-    <p class="eyebrow">Profil</p>
-    <h2>Modifier mon profil</h2>
+    <p class="eyebrow">{% trans "Profil" %}</p>
+    <h2>{% trans "Modifier mon profil" %}</h2>
 
     <form method="post" enctype="multipart/form-data" class="form-grid auth-form">
       {% csrf_token %}
@@ -23,7 +24,7 @@
       {% endif %}
 
       <div class="field">
-        <label for="{{ form.pseudo.id_for_label }}">Pseudonyme</label>
+        <label for="{{ form.pseudo.id_for_label }}">{% trans "Pseudonyme" %}</label>
         {{ form.pseudo }}
         {% if form.pseudo.help_text %}
           <small class="muted">{{ form.pseudo.help_text }}</small>
@@ -34,7 +35,7 @@
       </div>
 
       <div class="field">
-        <label for="{{ form.bio.id_for_label }}">Bio <span class="muted">(160 max)</span></label>
+        <label for="{{ form.bio.id_for_label }}">{% trans "Bio" %} <span class="muted">(160 max)</span></label>
         {{ form.bio }}
         {% if form.bio.errors %}
           <small class="error">{{ form.bio.errors|striptags }}</small>
@@ -42,11 +43,11 @@
       </div>
 
       <div class="field">
-        <label for="{{ form.avatar.id_for_label }}">Avatar</label>
+        <label for="{{ form.avatar.id_for_label }}">{% trans "Avatar" %}</label>
         {% if profile and profile.avatar %}
           <img src="{{ profile.avatar.url }}"
                style="width:60px;height:60px;border-radius:50%;object-fit:cover;display:block;margin-bottom:8px"
-               alt="Avatar actuel">
+               alt="{% trans 'Avatar actuel' %}">
         {% endif %}
         {{ form.avatar }}
         {% if form.avatar.errors %}
@@ -55,38 +56,38 @@
       </div>
 
       <div class="field">
-        <label for="{{ form.langue.id_for_label }}">Langue préférée</label>
+        <label for="{{ form.langue.id_for_label }}">{% trans "Langue préférée" %}</label>
         {{ form.langue }}
         {% if form.langue.errors %}
           <small class="error">{{ form.langue.errors|striptags }}</small>
         {% endif %}
       </div>
 
-      <button type="submit" class="primary">Sauvegarder</button>
+      <button type="submit" class="primary">{% trans "Sauvegarder" %}</button>
 
       {% if profile %}
         <a href="{% url 'accounts:profile' pseudo=profile.pseudo %}"
            class="secondary"
            style="display:inline-block;text-align:center;padding:0.62rem 1.1rem;border-radius:10px;text-decoration:none;border:1px solid var(--border);font-weight:600">
-          Annuler
+          {% trans "Annuler" %}
         </a>
       {% else %}
         <a href="{% url 'accounts:home' %}"
            class="secondary"
            style="display:inline-block;text-align:center;padding:0.62rem 1.1rem;border-radius:10px;text-decoration:none;border:1px solid var(--border);font-weight:600">
-          Annuler
+          {% trans "Annuler" %}
         </a>
       {% endif %}
     </form>
 
     <hr style="margin:2rem 0;border:none;border-top:1px solid var(--border)">
-    <p class="eyebrow" style="color:var(--error,#e53e3e)">Zone de danger</p>
+    <p class="eyebrow" style="color:var(--error,#e53e3e)">{% trans "Zone de danger" %}</p>
     <p style="font-size:0.9rem;color:var(--text-muted);margin-bottom:1rem">
-      La suppression de compte est irréversible. Toutes tes données seront effacées.
+      {% trans "La suppression de compte est irréversible. Toutes tes données seront effacées." %}
     </p>
     <a href="{% url 'accounts:delete_account' %}"
        style="display:inline-block;padding:0.55rem 1rem;border-radius:10px;text-decoration:none;border:1px solid var(--error,#e53e3e);color:var(--error,#e53e3e);font-weight:600;font-size:0.9rem">
-      Supprimer mon compte
+      {% trans "Supprimer mon compte" %}
     </a>
   </section>
 </section>

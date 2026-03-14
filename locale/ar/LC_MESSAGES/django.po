@@ -5,6 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ar\n"
 
+# Navigation
 msgid "Accueil"
 msgstr "الرئيسية"
 
@@ -17,6 +18,9 @@ msgstr "الملف الشخصي"
 msgid "Modération"
 msgstr "الإشراف"
 
+msgid "Journal"
+msgstr "سجل الإشراف"
+
 msgid "Connexion"
 msgstr "تسجيل الدخول"
 
@@ -26,9 +30,312 @@ msgstr "التسجيل"
 msgid "Déconnexion"
 msgstr "تسجيل الخروج"
 
+msgid "Charte"
+msgstr "الميثاق"
+
+msgid "Enquête"
+msgstr "استبيان"
+
+msgid "Mentions légales"
+msgstr "إشعار قانوني"
+
+msgid "Projet d'école — Projet d'excellence européen."
+msgstr "مشروع أكاديمي — مشروع التميز الأوروبي."
+
+# Home
+msgid "Mon avatar"
+msgstr "صورتي الشخصية"
+
+msgid "abonnements"
+msgstr "متابَعون"
+
+msgid "abonnés"
+msgstr "متابِعون"
+
+msgid "Mon profil"
+msgstr "ملفي الشخصي"
+
+msgid "Créer mon profil"
+msgstr "إنشاء ملفي الشخصي"
+
+msgid "Navigation"
+msgstr "التنقل"
+
+msgid "Navigation secondaire"
+msgstr "التنقل الجانبي"
+
+msgid "Fil principal"
+msgstr "التغذية الرئيسية"
+
+msgid "Fil d'actualité"
+msgstr "آخر المنشورات"
+
+msgid "publication"
+msgstr "منشور"
+
+msgid "Image"
+msgstr "صورة"
+
+msgid "URL de fichier"
+msgstr "رابط الملف"
+
+msgid "Joindre image ou fichier"
+msgstr "إرفاق صورة أو ملف"
+
 msgid "Publier"
 msgstr "نشر"
 
+msgid "Bienvenue sur Kallam. Publie ton premier message ci-dessus."
+msgstr "مرحباً بك في كلام. انشر أول رسالة لك أعلاه."
+
+msgid "Image de"
+msgstr "صورة من"
+
+msgid "Vidéo YouTube"
+msgstr "فيديو يوتيوب"
+
+msgid "Fichier joint"
+msgstr "ملف مرفق"
+
+msgid "Répondre"
+msgstr "رد"
+
+msgid "Statistiques"
+msgstr "إحصاءات"
+
+msgid "Publications"
+msgstr "المنشورات"
+
+msgid "Abonnés"
+msgstr "المتابِعون"
+
+msgid "Abonnements"
+msgstr "المتابَعون"
+
+msgid "Tendances"
+msgstr "الاتجاهات"
+
+# Login
+msgid "Kallam réseau social"
+msgstr "كلام - شبكة اجتماعية"
+
+msgid "Partage maintenant, sans friction."
+msgstr "شارك الآن، بلا عوائق."
+
+msgid "Connecte-toi pour publier, répondre et suivre ton fil en temps réel."
+msgstr "سجّل دخولك للنشر والرد ومتابعة تغذيتك في الوقت الفعلي."
+
+msgid "Bon retour"
+msgstr "أهلاً بعودتك"
+
+msgid "Entre ton email et ton mot de passe."
+msgstr "أدخل بريدك الإلكتروني وكلمة المرور."
+
+msgid "Email"
+msgstr "البريد الإلكتروني"
+
+msgid "Mot de passe"
+msgstr "كلمة المرور"
+
+msgid "Afficher"
+msgstr "إظهار"
+
+msgid "Se connecter"
+msgstr "تسجيل الدخول"
+
+msgid "Pas encore de compte ?"
+msgstr "ليس لديك حساب بعد؟"
+
+msgid "Créer un compte"
+msgstr "إنشاء حساب"
+
+# Register
+msgid "Nouvel utilisateur"
+msgstr "مستخدم جديد"
+
+msgid "Crée ton compte et lance la conversation."
+msgstr "أنشئ حسابك وابدأ المحادثة."
+
+msgid "Inscription rapide avec pseudonyme, email et mot de passe."
+msgstr "تسجيل سريع باسم مستعار وبريد إلكتروني وكلمة مرور."
+
+msgid "Rejoins Kallam en moins de 2 minutes."
+msgstr "انضم إلى كلام في أقل من دقيقتين."
+
+msgid "Créer ton compte"
+msgstr "إنشاء حسابك"
+
+msgid "Pseudonyme"
+msgstr "الاسم المستعار"
+
+msgid "Confirmer le mot de passe"
+msgstr "تأكيد كلمة المرور"
+
+msgid "Les mots de passe ne correspondent pas."
+msgstr "كلمتا المرور غير متطابقتين."
+
+msgid "J'ai lu et j'accepte les"
+msgstr "لقد قرأت وأوافق على"
+
+msgid "Conditions Générales d'Utilisation"
+msgstr "شروط الاستخدام"
+
+msgid "Créer mon compte"
+msgstr "إنشاء حسابي"
+
+msgid "Déjà inscrit ?"
+msgstr "مسجّل بالفعل؟"
+
+# Profile
+msgid "Profil de"
+msgstr "ملف"
+
+msgid "Avatar de"
+msgstr "صورة"
+
+msgid "Modifier le profil"
+msgstr "تعديل الملف الشخصي"
+
+msgid "Se désabonner"
+msgstr "إلغاء المتابعة"
+
+msgid "Suivre"
+msgstr "متابعة"
+
+msgid "Message"
+msgstr "رسالة"
+
+msgid "De confiance"
+msgstr "موثوق"
+
+msgid "Faire confiance"
+msgstr "إضافة للثقة"
+
+msgid "publications"
+msgstr "منشورات"
+
+msgid "likes"
+msgstr "إعجابات"
+
+msgid "Image publiée par"
+msgstr "صورة نشرها"
+
+msgid "Reporté"
+msgstr "مُبلَّغ عنه"
+
+msgid "Signaler"
+msgstr "الإبلاغ"
+
+msgid "Aucune publication pour le moment."
+msgstr "لا توجد منشورات حتى الآن."
+
+# Inbox
+msgid "Messagerie"
+msgstr "المراسلة"
+
+msgid "Tes conversations privées"
+msgstr "محادثاتك الخاصة"
+
+msgid "Aucune conversation pour l'instant."
+msgstr "لا توجد محادثات حتى الآن."
+
+msgid "Va sur le profil d'un utilisateur pour démarrer une conversation."
+msgstr "انتقل إلى ملف مستخدم لبدء محادثة."
+
+msgid "Conversations"
+msgstr "المحادثات"
+
+msgid "Non lus"
+msgstr "غير مقروء"
+
+# Conversation
+msgid "Conversation avec"
+msgstr "محادثة مع"
+
+msgid "Conversation"
+msgstr "محادثة"
+
+msgid "Dis bonjour pour démarrer la conversation !"
+msgstr "قل مرحباً لبدء المحادثة!"
+
+msgid "Écris ton message…"
+msgstr "اكتب رسالتك…"
+
+msgid "Envoyer"
+msgstr "إرسال"
+
+# Edit profile
+msgid "Personnalise ton identité Kallam."
+msgstr "خصّص هويتك على كلام."
+
+msgid "Choisis ton pseudonyme, ta bio et ta langue préférée."
+msgstr "اختر اسمك المستعار ونبذتك ولغتك المفضلة."
+
+msgid "Modifier mon profil"
+msgstr "تعديل ملفي الشخصي"
+
+msgid "Bio"
+msgstr "نبذة"
+
+msgid "Avatar"
+msgstr "الصورة الشخصية"
+
+msgid "Avatar actuel"
+msgstr "الصورة الحالية"
+
+msgid "Langue préférée"
+msgstr "اللغة المفضلة"
+
+msgid "Sauvegarder"
+msgstr "حفظ"
+
+msgid "Annuler"
+msgstr "إلغاء"
+
+msgid "Zone de danger"
+msgstr "منطقة خطر"
+
+msgid "La suppression de compte est irréversible. Toutes tes données seront effacées."
+msgstr "حذف الحساب لا رجعة فيه. ستُمحى جميع بياناتك."
+
+msgid "Supprimer mon compte"
+msgstr "حذف حسابي"
+
+# Legal
+msgid "Juridique"
+msgstr "قانوني"
+
+msgid "Projet pédagogique — INEAD / FEDE"
+msgstr "مشروع تعليمي — INEAD / FEDE"
+
+msgid "Éditeur du site"
+msgstr "ناشر الموقع"
+
+msgid "Hébergement"
+msgstr "الاستضافة"
+
+msgid "Propriété intellectuelle"
+msgstr "الملكية الفكرية"
+
+msgid "Données personnelles (RGPD)"
+msgstr "البيانات الشخصية (RGPD)"
+
+msgid "Cookies"
+msgstr "ملفات تعريف الارتباط"
+
+msgid "Limitation de responsabilité"
+msgstr "تحديد المسؤولية"
+
+msgid "Droit applicable"
+msgstr "القانون المطبّق"
+
+msgid "Voir les CGU"
+msgstr "عرض شروط الاستخدام"
+
+msgid "Voir la charte"
+msgstr "عرض الميثاق"
+
+# Flash messages (views.py)
 msgid "Message publie."
 msgstr "تم نشر المنشور."
 
@@ -80,6 +387,13 @@ msgstr "ردود كثيرة جداً. أعد المحاولة لاحقاً."
 msgid "Réponse invalide (1-1000 caractères)."
 msgstr "رد غير صالح (1-1000 حرف)."
 
+msgid "Identifiants invalides."
+msgstr "بيانات اعتماد غير صحيحة."
+
+msgid "Trop de tentatives de connexion. Réessaie dans 5 minutes."
+msgstr "محاولات تسجيل دخول كثيرة. أعد المحاولة بعد 5 دقائق."
+
+# Languages
 msgid "Français"
 msgstr "الفرنسية"
 
@@ -88,3 +402,12 @@ msgstr "الإنجليزية"
 
 msgid "العربية"
 msgstr "العربية"
+
+msgid "Deutsch"
+msgstr "الألمانية"
+
+msgid "Español"
+msgstr "الإسبانية"
+
+msgid "Italiano"
+msgstr "الإيطالية"
