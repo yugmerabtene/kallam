@@ -229,8 +229,6 @@ def export_data_view(request):
         "export_date": timezone.now().isoformat(),
         "user": {
             "email": user.email,
-            "first_name": user.first_name,
-            "last_name": user.last_name,
             "date_joined": user.date_joined.isoformat(),
         },
         "profile": profile_data,

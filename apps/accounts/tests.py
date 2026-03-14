@@ -20,8 +20,6 @@ class AuthFlowTests(TestCase):
             reverse("accounts:register"),
             data={
                 "pseudo": "janedoe",
-                "first_name": "Doe",
-                "last_name": "Jane",
                 "email": "jane@example.com",
                 "password": "VeryStrongPass123!",
                 "password_confirm": "VeryStrongPass123!",
@@ -37,8 +35,6 @@ class AuthFlowTests(TestCase):
     def test_login_and_logout(self):
         User.objects.create_user(
             username="john@example.com",
-            first_name="John",
-            last_name="Doe",
             email="john@example.com",
             password="VeryStrongPass123!",
         )
@@ -57,8 +53,6 @@ class AuthFlowTests(TestCase):
     def test_register_rejects_duplicate_email(self):
         User.objects.create_user(
             username="taken@example.com",
-            first_name="A",
-            last_name="B",
             email="taken@example.com",
             password="VeryStrongPass123!",
         )
@@ -66,8 +60,6 @@ class AuthFlowTests(TestCase):
             reverse("accounts:register"),
             data={
                 "pseudo": "cduser",
-                "first_name": "C",
-                "last_name": "D",
                 "email": "taken@example.com",
                 "password": "VeryStrongPass123!",
                 "password_confirm": "VeryStrongPass123!",
@@ -79,8 +71,6 @@ class AuthFlowTests(TestCase):
     def test_authenticated_user_can_publish_on_wall(self):
         user = User.objects.create_user(
             username="wall@example.com",
-            first_name="Wall",
-            last_name="User",
             email="wall@example.com",
             password="VeryStrongPass123!",
         )
@@ -97,15 +87,11 @@ class AuthFlowTests(TestCase):
     def test_like_and_repost_toggle(self):
         author = User.objects.create_user(
             username="author@example.com",
-            first_name="Author",
-            last_name="One",
             email="author@example.com",
             password="VeryStrongPass123!",
         )
         actor = User.objects.create_user(
             username="actor@example.com",
-            first_name="Actor",
-            last_name="Two",
             email="actor@example.com",
             password="VeryStrongPass123!",
         )
@@ -133,15 +119,11 @@ class AuthFlowTests(TestCase):
     def test_report_is_created_once(self):
         author = User.objects.create_user(
             username="author2@example.com",
-            first_name="Author",
-            last_name="Two",
             email="author2@example.com",
             password="VeryStrongPass123!",
         )
         actor = User.objects.create_user(
             username="actor2@example.com",
-            first_name="Actor",
-            last_name="Three",
             email="actor2@example.com",
             password="VeryStrongPass123!",
         )
@@ -160,8 +142,6 @@ class AuthFlowTests(TestCase):
     def test_user_can_publish_image_only(self):
         user = User.objects.create_user(
             username="image@example.com",
-            first_name="Img",
-            last_name="User",
             email="image@example.com",
             password="VeryStrongPass123!",
         )
@@ -191,8 +171,6 @@ class AuthFlowTests(TestCase):
     def test_user_can_publish_youtube_link_and_render_embed(self):
         user = User.objects.create_user(
             username="video@example.com",
-            first_name="Video",
-            last_name="User",
             email="video@example.com",
             password="VeryStrongPass123!",
         )
@@ -213,8 +191,6 @@ class AuthFlowTests(TestCase):
     def test_user_can_publish_file_url_attachment(self):
         user = User.objects.create_user(
             username="file@example.com",
-            first_name="File",
-            last_name="User",
             email="file@example.com",
             password="VeryStrongPass123!",
         )
@@ -236,8 +212,6 @@ class AuthFlowTests(TestCase):
     def test_rejects_non_file_attachment_url(self):
         user = User.objects.create_user(
             username="badurl@example.com",
-            first_name="Bad",
-            last_name="Url",
             email="badurl@example.com",
             password="VeryStrongPass123!",
         )
@@ -257,15 +231,11 @@ class MessagingTests(TestCase):
         self.alice = User.objects.create_user(
             username="alice@example.com",
             email="alice@example.com",
-            first_name="Alice",
-            last_name="A",
             password="VeryStrongPass123!",
         )
         self.bob = User.objects.create_user(
             username="bob@example.com",
             email="bob@example.com",
-            first_name="Bob",
-            last_name="B",
             password="VeryStrongPass123!",
         )
         UserProfile.objects.create(user=self.alice, pseudo="alice")

@@ -26,28 +26,6 @@ class RegisterForm(forms.Form):
         ),
         help_text="3-50 caractères : lettres minuscules, chiffres, _",
     )
-    first_name = forms.CharField(
-        max_length=150,
-        label="Prenom",
-        widget=forms.TextInput(
-            attrs={
-                "placeholder": "Ton prenom",
-                "autocomplete": "given-name",
-                "class": "form-input",
-            }
-        ),
-    )
-    last_name = forms.CharField(
-        max_length=150,
-        label="Nom",
-        widget=forms.TextInput(
-            attrs={
-                "placeholder": "Ton nom",
-                "autocomplete": "family-name",
-                "class": "form-input",
-            }
-        ),
-    )
     email = forms.EmailField(
         label="Email",
         widget=forms.EmailInput(
@@ -124,8 +102,6 @@ class RegisterForm(forms.Form):
         user = User.objects.create_user(
             username=email,
             email=email,
-            first_name=self.cleaned_data["first_name"].strip(),
-            last_name=self.cleaned_data["last_name"].strip(),
             password=self.cleaned_data["password"],
         )
         UserProfile.objects.create(user=user, pseudo=self.cleaned_data["pseudo"])

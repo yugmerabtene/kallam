@@ -19,8 +19,6 @@ def _make_user(email, is_staff=False):
     u = User.objects.create_user(
         username=email,
         email=email,
-        first_name="Test",
-        last_name="User",
         password="StrongPass123!",
         is_staff=is_staff,
     )

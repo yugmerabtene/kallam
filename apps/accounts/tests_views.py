@@ -23,8 +23,6 @@ def _create_user(email, is_staff=False, pseudo=None):
     u = User.objects.create_user(
         username=email,
         email=email,
-        first_name="Test",
-        last_name="User",
         password="StrongPass123!",
         is_staff=is_staff,
     )
@@ -191,6 +189,8 @@ class ExportDataViewTests(TestCase):
         r = self.client.get(reverse("accounts:export_data"))
         data = json.loads(r.content)
         self.assertEqual(data["user"]["email"], "export@test.com")
+        self.assertNotIn("first_name", data["user"])
+        self.assertNotIn("last_name", data["user"])
         self.assertEqual(data["profile"]["pseudo"], "exportuser")
         self.assertEqual(len(data["posts"]), 1)
         self.assertEqual(data["posts"][0]["content"], "Post à exporter")

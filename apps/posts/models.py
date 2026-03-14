@@ -109,8 +109,7 @@ class Post(models.Model):
 
     @property
     def author_display_name(self):
-        full_name = f"{self.author.first_name} {self.author.last_name}".strip()
-        return full_name or self.author_handle
+        return self.author_handle
 
     @property
     def youtube_embed_url(self):

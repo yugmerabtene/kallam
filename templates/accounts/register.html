@@ -9,7 +9,7 @@
     <div class="auth-hero-mark">K</div>
     <p class="auth-hero-kicker">Nouvel utilisateur</p>
     <h1>Cree ton compte et lance la conversation.</h1>
-    <p class="auth-hero-text">Inscription rapide avec nom, prenom, email et mot de passe.</p>
+    <p class="auth-hero-text">Inscription rapide avec pseudonyme, email et mot de passe.</p>
   </aside>
 
   <section class="auth-card">
@@ -28,19 +28,6 @@
         {{ form.pseudo }}
         {% if form.pseudo.help_text %}<small class="muted">{{ form.pseudo.help_text }}</small>{% endif %}
         {% if form.pseudo.errors %}<small class="error">{{ form.pseudo.errors|striptags }}</small>{% endif %}
-      </div>
-
-      <div class="field field-double">
-        <div>
-          <label for="{{ form.first_name.id_for_label }}">Prenom</label>
-          {{ form.first_name }}
-          {% if form.first_name.errors %}<small class="error">{{ form.first_name.errors|striptags }}</small>{% endif %}
-        </div>
-        <div>
-          <label for="{{ form.last_name.id_for_label }}">Nom</label>
-          {{ form.last_name }}
-          {% if form.last_name.errors %}<small class="error">{{ form.last_name.errors|striptags }}</small>{% endif %}
-        </div>
       </div>
 
       <div class="field">

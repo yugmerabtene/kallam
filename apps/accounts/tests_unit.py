@@ -20,8 +20,6 @@ class RegisterFormUnitTests(TestCase):
         form = RegisterForm(
             data={
                 "pseudo": "janedoe",
-                "first_name": "Jane",
-                "last_name": "Doe",
                 "email": "jane@test.com",
                 "password": "VeryStrongPass123!",
                 "password_confirm": "DifferentPass123!",
@@ -34,8 +32,6 @@ class RegisterFormUnitTests(TestCase):
         form = RegisterForm(
             data={
                 "pseudo": "janedoe",
-                "first_name": "Jane",
-                "last_name": "Doe",
                 "email": "Jane@Test.Com",
                 "password": "VeryStrongPass123!",
                 "password_confirm": "VeryStrongPass123!",
@@ -51,14 +47,12 @@ class PostModelUnitTests(TestCase):
         user = User.objects.create_user(
             username="writer@example.com",
             email="writer@example.com",
-            first_name="Amina",
-            last_name="K",
             password="VeryStrongPass123!",
         )
         post = Post.objects.create(author=user, content="hello")
 
         self.assertEqual(post.author_handle, "@writer")
-        self.assertEqual(post.author_display_name, "Amina K")
+        self.assertEqual(post.author_display_name, "@writer")
 
     def test_extract_youtube_video_id(self):
         self.assertEqual(
