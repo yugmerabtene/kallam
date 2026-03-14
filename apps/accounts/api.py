@@ -320,10 +320,10 @@ def list_messages(request: HttpRequest, conv_id: int, limit: int = 50):
     if not conv.participants.filter(pk=request.user.pk).exists():
         raise HttpError(403, "Accès refusé.")
     limit = min(limit, 200)
-    msgs = (
+    msgs = list(
         conv.messages.select_related("sender", "sender__profile")
-        .order_by("created_at")
-    )[-limit:]
+        .order_by("-created_at")[:limit]
+    )[::-1]
     return [
         MessageOut(
             id=m.id,
