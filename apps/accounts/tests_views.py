@@ -352,6 +352,10 @@ class LoginRateLimitTests(TestCase):
             password="StrongPass123!",
         )
 
+    def tearDown(self):
+        from django.core.cache import cache
+        cache.delete("login:127.0.0.1")
+
     def test_login_blocked_after_5_failed_attempts(self):
         from django.core.cache import cache
         # Injecter directement le compteur au-dessus du seuil
