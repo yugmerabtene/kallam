@@ -1,58 +1,93 @@
-# KALLAM
+# Kallam
 
-Réseau social multilingue privacy-by-design — prototype pour la liberté d'expression, la vie privée et la dignité en ligne.
+**Réseau social multilingue, privacy-by-design.**
+
+Kallam est une plateforme de microblogging pensée pour la liberté d'expression, la vie privée et la dignité en ligne. Entièrement pseudonyme, sans collecte de données civiles, avec chiffrement des messages privés et conformité RGPD native.
+
+> Projet pédagogique — INEAD / FEDE, programme d'excellence européen.
+
+---
+
+## Fonctionnalités
+
+| Domaine | Fonctionnalités |
+|---|---|
+| **Comptes** | Inscription pseudonyme (pseudo + email + mot de passe uniquement), suppression de compte, export RGPD |
+| **Publications** | Fil principal, fil de confiance, likes, reposts, pièces jointes (image / URL / YouTube), signalement |
+| **Messagerie** | Conversations privées, messages chiffrés au repos (Fernet / AES-128-CBC) |
+| **Modération** | Journal horodaté, actions staff (supprimer / ignorer), tableau de bord |
+| **Gouvernance** | Charte communautaire versionnée, listes de confiance, enquête anonyme, métriques d'impact |
+| **i18n** | Interface disponible en 6 langues : Français, English, العربية, Deutsch, Español, Italiano |
+| **API REST** | Endpoints complets via Django Ninja (`/api/docs`) |
+
+---
+
+## Stack technique
+
+- **Backend** : Django 6.0, Django Ninja (REST), SQLite
+- **Sécurité** : `cryptography` (Fernet), rate limiting par cache, CSRF
+- **Internationalisation** : `django.middleware.locale.LocaleMiddleware`, fichiers `.po`/`.mo`
+- **Serveur** : Gunicorn + Whitenoise
+- **CI/CD** : GitHub Actions
+- **Conteneurisation** : Docker / Docker Compose
+
+---
 
 ## Démarrage rapide
 
 ### Sans Docker
 
 ```bash
-python3 -m pip install --break-system-packages -r requirements.txt
+python3 -m pip install -r requirements.txt
 python3 manage.py migrate
 python3 manage.py runserver
 ```
 
-### Docker (conteneur unique)
+### Docker
 
 ```bash
 docker compose up --build
 ```
 
-Application disponible sur `http://localhost:8000`.
+Application accessible sur **http://localhost:8000**.
 
 ---
 
 ## Variables d'environnement
 
-| Variable | Défaut | Description |
+| Variable | Défaut | Rôle |
 |---|---|---|
-| `DJANGO_SECRET_KEY` | — | Clé secrète Django (obligatoire en prod) |
+| `DJANGO_SECRET_KEY` | *(obligatoire en prod)* | Clé secrète Django |
 | `DJANGO_DEBUG` | `False` | Mode debug |
-| `DJANGO_ALLOWED_HOSTS` | `localhost` | Hôtes autorisés, séparés par des virgules |
-| `DJANGO_DB_PATH` | `data/db.sqlite3` | Chemin vers la base SQLite |
-| `FERNET_KEY` | auto-généré | Clé de chiffrement Fernet pour les messages privés |
+| `DJANGO_ALLOWED_HOSTS` | `localhost` | Hôtes autorisés (virgule) |
+| `DJANGO_DB_PATH` | `data/db.sqlite3` | Chemin base SQLite |
+| `FERNET_KEY` | auto-généré | Clé de chiffrement des messages privés |
+| `KALLAM_PORT` | `8000` | Port exposé par Docker |
+| `GUNICORN_WORKERS` | `2` | Workers Gunicorn |
+| `GUNICORN_THREADS` | `4` | Threads Gunicorn |
 
 ---
 
 ## Architecture
 
 ```
+kallam/               Configuration Django (settings, urls, wsgi)
 apps/
-  accounts/    Comptes, pseudonymes, profils, follow, export RGPD
-  posts/       Publications, likes, reposts, signalements
-  messaging/   Conversations privées, messages chiffrés Fernet
-  moderation/  Journal de modération, actions staff
-  governance/  Charte versionnée, listes de confiance, enquête anonyme
+  accounts/           Comptes, profils, pseudonymes, follow, export RGPD
+  posts/              Publications, likes, reposts, signalements
+  messaging/          Conversations privées, messages chiffrés
+  moderation/         Journal de modération, actions staff
+  governance/         Charte versionnée, listes de confiance, enquête
+locale/               Fichiers de traduction (.po / .mo) — fr, en, ar, de, es, it
+templates/            Templates HTML (base, home, profil, messagerie…)
 ```
 
-Toutes les URLs sont regroupées sous le namespace `accounts` dans `apps/accounts/urls.py`.
-L'API REST est exposée sous `/api/` via Django Ninja (`apps/accounts/api.py`).
+Toutes les vues HTML sont regroupées sous le namespace `accounts`.
+L'API REST est exposée sous `/api/` (documentation Swagger : `/api/docs`).
 
 ---
 
 ## API REST
-
-Documentation interactive : `http://localhost:8000/api/docs`
 
 | Méthode | Endpoint | Auth | Description |
 |---|---|---|---|
@@ -61,7 +96,7 @@ Documentation interactive : `http://localhost:8000/api/docs`
 | POST | `/api/posts/{id}/like/` | Oui | Liker / unliker |
 | POST | `/api/posts/{id}/repost/` | Oui | Reposter |
 | POST | `/api/posts/{id}/report/` | Oui | Signaler |
-| GET | `/api/profiles/{pseudo}/` | Non | Profil utilisateur |
+| GET | `/api/profiles/{pseudo}/` | Non | Profil public |
 | GET | `/api/me/` | Oui | Mon profil |
 | POST | `/api/follow/{pseudo}/` | Oui | Suivre / ne plus suivre |
 | GET | `/api/conversations/` | Oui | Mes conversations |
@@ -75,18 +110,19 @@ Documentation interactive : `http://localhost:8000/api/docs`
 
 ---
 
-## Sécurité
+## Sécurité & vie privée
 
-- **Chiffrement** : messages privés chiffrés au repos (Fernet / AES-128-CBC)
-- **Pseudonymat** : aucune identité civile requise
-- **Rate limiting** : login 5/5 min, posts 20/min, messages 30/min, enquête 3/h
-- **Rétention** : `python3 manage.py clean_old_messages --days=90` (cron recommandé)
-- **RGPD** : export complet des données (`/mes-donnees/`), suppression de compte (`/supprimer-mon-compte/`)
-- **Modération** : journal horodaté de toutes les actions staff
+- **Pseudonymat complet** : l'inscription ne collecte aucune donnée civile (pas de prénom, pas de nom)
+- **Chiffrement au repos** : tous les messages privés sont chiffrés avec Fernet (AES-128-CBC + HMAC-SHA256)
+- **Rate limiting** : login 5/5 min, publications 20/min, messages 30/min, enquête 3/h
+- **RGPD** : export JSON des données personnelles (`/mes-donnees/`), suppression définitive du compte
+- **Rétention** : suppression automatique des messages anciens via commande de gestion
+- **Modération** : journal horodaté de toutes les actions staff, accessible uniquement aux utilisateurs `is_staff`
+- **CSRF** : protection native Django sur toutes les vues POST
 
 ---
 
-## Guide d'exploitation
+## Exploitation
 
 ### Créer un compte staff
 
@@ -94,52 +130,37 @@ Documentation interactive : `http://localhost:8000/api/docs`
 python3 manage.py createsuperuser
 ```
 
-### Interfaces staff
+### Interfaces de gestion
 
-| URL | Description |
-|---|---|
-| `/moderation/` | Posts signalés à traiter |
-| `/moderation/journal/` | Journal de toutes les actions |
-| `/enquete/synthese/` | Tableau de synthèse des réponses anonymes |
-| `/metriques/` | Métriques d'impact (participation, engagement) |
-| `/admin/` | Interface d'administration Django |
+| URL | Accès | Description |
+|---|---|---|
+| `/moderation/` | Staff | Posts signalés en attente |
+| `/moderation/journal/` | Staff | Journal de toutes les actions |
+| `/enquete/synthese/` | Staff | Synthèse des réponses anonymes |
+| `/metriques/` | Staff | Métriques d'impact (participation, engagement) |
+| `/admin/` | Superuser | Interface d'administration Django |
 
 ### Rétention des messages
 
 ```bash
-# Voir ce qui serait supprimé (dry-run)
+# Simulation (dry-run)
 python3 manage.py clean_old_messages --days=90 --dry-run
 
-# Supprimer les messages de plus de 90 jours
+# Suppression effective
 python3 manage.py clean_old_messages --days=90
 ```
 
-Ajouter en cron (exemple) :
+Exemple de cron (suppression quotidienne à 3h) :
 ```
 0 3 * * * cd /app && python3 manage.py clean_old_messages --days=90
 ```
 
-### Charte communautaire
-
-La version courante de la charte est stockée en base (`CharterVersion`).
-Pour publier une nouvelle version via le shell Django :
+### Publier une nouvelle version de la charte
 
 ```python
 from apps.governance.models import CharterVersion
 CharterVersion.objects.filter(is_current=True).update(is_current=False)
 CharterVersion.objects.create(version="1.1")
-```
-
----
-
-## CI
-
-Le workflow GitHub Actions (`.github/workflows/pipeline.yml`) exécute à chaque push :
-
-```bash
-python3 manage.py check
-python3 manage.py collectstatic --noinput
-python3 manage.py test apps.accounts
 ```
 
 ---
@@ -150,4 +171,27 @@ python3 manage.py test apps.accounts
 python3 manage.py test apps.accounts
 ```
 
-55 tests couvrant : auth, profils, posts, messagerie chiffrée, modération, gouvernance, API REST, permissions.
+**167 tests** couvrant :
+- Authentification, inscription, profils, suppression de compte
+- Publications, likes, reposts, signalements
+- Messagerie privée (chiffrement, conversations)
+- Modération (actions staff, journal)
+- Gouvernance (charte, listes de confiance, enquête)
+- API REST (endpoints publics et authentifiés, permissions staff)
+- Intégration : `/mentions-legales/`, commutation des 6 langues, pseudonymat, export RGPD
+
+---
+
+## CI/CD
+
+Le workflow GitHub Actions (`.github/workflows/pipeline.yml`) s'exécute à chaque push sur `main` :
+
+1. `python3 manage.py check` — vérification de la configuration
+2. `python3 manage.py collectstatic --noinput` — génération des fichiers statiques
+3. `python3 manage.py test apps.accounts` — suite de tests complète
+
+---
+
+## Licence
+
+Voir [LICENSE](LICENSE).
