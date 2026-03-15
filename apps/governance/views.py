@@ -6,31 +6,10 @@ from django.utils.translation import gettext as _
 from django.views.decorators.http import require_http_methods
 
 from apps.accounts.models import UserProfile
+from apps.common.utils import get_client_ip, rate_limit, staff_required as _staff_required
 from apps.posts.models import Post, PostLike, PostReport, PostRepost
 
 from .models import CharterVersion, SurveyQuestion, SurveyResponse, TrustList
-
-
-def _rate_limit(key, limit, window):
-    from django.core.cache import cache
-    count = cache.get(key, 0)
-    if count >= limit:
-        return True
-    cache.set(key, count + 1, timeout=window)
-    return False
-
-
-def _staff_required(view_fn):
-    from functools import wraps
-
-    @wraps(view_fn)
-    def wrapper(request, *args, **kwargs):
-        if not request.user.is_authenticated or not request.user.is_staff:
-            from django.http import Http404
-            raise Http404
-        return view_fn(request, *args, **kwargs)
-
-    return wrapper
 
 
 @require_http_methods(["GET"])
@@ -113,7 +92,7 @@ def survey_view(request):
         )
     submitted = False
     if request.method == "POST":
-        if _rate_limit(f"survey:{request.META.get('REMOTE_ADDR','x')}", limit=3, window=3600):
+        if rate_limit(f"survey:{get_client_ip(request)}", limit=3, window=3600):
             messages.error(request, _("Trop de réponses. Réessaie plus tard."))
         else:
             answer = request.POST.get("answer", "").strip()

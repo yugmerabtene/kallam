@@ -42,6 +42,12 @@ class PostForm(forms.Form):
     def clean_content(self):
         return (self.cleaned_data.get("content") or "").strip()
 
+    def clean_image(self):
+        image = self.cleaned_data.get("image")
+        if image and image.size > 10 * 1024 * 1024:
+            raise ValidationError("L'image doit faire moins de 10 Mo.")
+        return image
+
     def clean(self):
         cleaned_data = super().clean()
         content = (cleaned_data.get("content") or "").strip()

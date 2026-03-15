@@ -3,27 +3,18 @@ import json
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.core.cache import cache
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_http_methods
 
+from apps.common.utils import get_client_ip, rate_limit
 from apps.governance.models import TrustList
 from apps.posts.models import Post
 
 from .forms import LoginForm, ProfileForm, RegisterForm
 from .models import Follow, UserProfile
-
-
-def _rate_limit(key, limit, window):
-    """Return True if the request should be blocked (limit exceeded)."""
-    count = cache.get(key, 0)
-    if count >= limit:
-        return True
-    cache.set(key, count + 1, timeout=window)
-    return False
 
 
 @require_http_methods(["GET", "POST"])
@@ -48,8 +39,8 @@ def login_view(request):
 
     form = LoginForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
-        ip = request.META.get("REMOTE_ADDR", "unknown")
-        if _rate_limit(f"login:{ip}", limit=5, window=300):
+        ip = get_client_ip(request)
+        if rate_limit(f"login:{ip}", limit=5, window=300):
             form.add_error(None, _("Trop de tentatives. Reessaie dans 5 minutes."))
             return render(request, "accounts/login.html", {"form": form})
 
@@ -176,10 +167,10 @@ def follow_view(request, pseudo):
 def delete_account_view(request):
     if request.method == "POST":
         password = request.POST.get("password", "")
-        user = authenticate(request, username=request.user.email, password=password)
-        if user is None:
+        if authenticate(request, username=request.user.email, password=password) is None:
             messages.error(request, _("Mot de passe incorrect. Suppression annulée."))
             return render(request, "accounts/delete_account.html")
+        user = request.user
         logout(request)
         user.delete()
         messages.success(request, _("Ton compte a été supprimé définitivement."))

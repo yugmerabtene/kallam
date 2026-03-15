@@ -8,6 +8,7 @@ from django.utils.translation import gettext as _
 from django.views.decorators.http import require_http_methods
 
 from apps.accounts.models import Follow, UserProfile
+from apps.common.utils import rate_limit
 
 from .forms import PostForm
 from .models import Post, PostLike, PostReport, PostRepost
@@ -31,21 +32,12 @@ def _annotate_posts(qs, user):
     )
 
 
-def _rate_limit(key, limit, window):
-    from django.core.cache import cache
-    count = cache.get(key, 0)
-    if count >= limit:
-        return True
-    cache.set(key, count + 1, timeout=window)
-    return False
-
-
 @login_required
 @require_http_methods(["GET", "POST"])
 def home_view(request):
     post_form = PostForm(request.POST or None, request.FILES or None)
     if request.method == "POST":
-        if _rate_limit(f"post:{request.user.pk}", limit=20, window=60):
+        if rate_limit(f"post:{request.user.pk}", limit=20, window=60):
             messages.error(request, _("Trop de publications. Attends un peu."))
             return redirect("accounts:home")
         if post_form.is_valid():

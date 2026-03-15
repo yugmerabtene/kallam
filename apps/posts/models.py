@@ -2,6 +2,7 @@ import re
 from urllib.parse import parse_qs, urlparse
 
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
 
@@ -103,7 +104,7 @@ class Post(models.Model):
     def author_handle(self):
         try:
             return f"@{self.author.profile.pseudo}"
-        except Exception:
+        except (AttributeError, ObjectDoesNotExist):
             raw = self.author.username or self.author.email or "user"
             return f"@{raw.split('@')[0].lower()}"
 

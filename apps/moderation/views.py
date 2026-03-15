@@ -2,23 +2,10 @@ from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_http_methods
 
+from apps.common.utils import staff_required as _staff_required
 from apps.posts.models import Post, PostReport
 
 from .models import ModerationLog
-
-
-def _staff_required(view_fn):
-    """Restreint l'accès aux membres du staff (is_staff=True)."""
-    from functools import wraps
-
-    @wraps(view_fn)
-    def wrapper(request, *args, **kwargs):
-        if not request.user.is_authenticated or not request.user.is_staff:
-            from django.http import Http404
-            raise Http404
-        return view_fn(request, *args, **kwargs)
-
-    return wrapper
 
 
 @_staff_required

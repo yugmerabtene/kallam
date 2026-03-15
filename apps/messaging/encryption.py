@@ -1,23 +1,34 @@
 """
 Chiffrement symétrique des champs sensibles (Fernet / AES-128-CBC).
 
-La clé est dérivée de DJANGO_SECRET_KEY si MESSAGE_ENCRYPTION_KEY n'est pas
-défini explicitement. En production, fixer MESSAGE_ENCRYPTION_KEY dans les
-variables d'environnement (valeur base64-urlsafe de 32 octets).
+En production, définir MESSAGE_ENCRYPTION_KEY dans les variables d'environnement
+(valeur base64-urlsafe de 32 octets générée avec : python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())")
+
+Si MESSAGE_ENCRYPTION_KEY est absent, la clé est dérivée de SECRET_KEY (fallback
+dev uniquement). Un warning est émis pour alerter en production.
 """
 import base64
 import hashlib
-import os
+import logging
+import warnings
 
 from cryptography.fernet import Fernet, InvalidToken
 from django.conf import settings
 from django.db.models import TextField
 
+logger = logging.getLogger(__name__)
+
 
 def _get_fernet() -> Fernet:
     key = getattr(settings, "MESSAGE_ENCRYPTION_KEY", None)
     if not key:
-        # Derive a stable 32-byte key from SECRET_KEY
+        if not getattr(settings, "DEBUG", True):
+            warnings.warn(
+                "MESSAGE_ENCRYPTION_KEY non défini en production. "
+                "La clé est dérivée de SECRET_KEY — configurer MESSAGE_ENCRYPTION_KEY.",
+                RuntimeWarning,
+                stacklevel=2,
+            )
         raw = settings.SECRET_KEY.encode("utf-8")
         derived = hashlib.sha256(raw).digest()
         key = base64.urlsafe_b64encode(derived)
@@ -37,7 +48,7 @@ def decrypt(token: str) -> str:
         return token
     try:
         return _get_fernet().decrypt(token.encode("utf-8")).decode("utf-8")
-    except (InvalidToken, Exception):
+    except (InvalidToken, UnicodeDecodeError, ValueError):
         # Fallback: return as-is (covers unencrypted legacy data)
         return token
 

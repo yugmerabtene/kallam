@@ -201,15 +201,22 @@ def toggle_repost(request: HttpRequest, post_id: int):
 
 @api.get("/profiles/{pseudo}/", response=ProfileOut, tags=["profiles"], summary="Profil utilisateur")
 def get_profile(request: HttpRequest, pseudo: str):
-    profile = get_object_or_404(UserProfile, pseudo=pseudo)
+    profile = get_object_or_404(
+        UserProfile.objects.annotate(
+            followers_count=Count("user__followers", distinct=True),
+            following_count=Count("user__following", distinct=True),
+            posts_count=Count("user__post", distinct=True),
+        ),
+        pseudo=pseudo,
+    )
     return ProfileOut(
         pseudo=profile.pseudo,
         bio=profile.bio,
         langue=profile.langue,
         avatar_url=profile.avatar.url if profile.avatar else None,
-        followers_count=Follow.objects.filter(followed=profile.user).count(),
-        following_count=Follow.objects.filter(follower=profile.user).count(),
-        posts_count=Post.objects.filter(author=profile.user).count(),
+        followers_count=profile.followers_count,
+        following_count=profile.following_count,
+        posts_count=profile.posts_count,
     )
 
 
@@ -233,7 +240,11 @@ def get_profile_posts(request: HttpRequest, pseudo: str, limit: int = 50):
 @api.get("/me/", auth=django_auth, response=ProfileOut, tags=["me"], summary="Mon profil")
 def get_me(request: HttpRequest):
     try:
-        profile = request.user.profile
+        profile = UserProfile.objects.annotate(
+            followers_count=Count("user__followers", distinct=True),
+            following_count=Count("user__following", distinct=True),
+            posts_count=Count("user__post", distinct=True),
+        ).get(user=request.user)
     except UserProfile.DoesNotExist:
         from ninja.errors import HttpError
         raise HttpError(404, "Profil non configuré.")
@@ -242,9 +253,9 @@ def get_me(request: HttpRequest):
         bio=profile.bio,
         langue=profile.langue,
         avatar_url=profile.avatar.url if profile.avatar else None,
-        followers_count=Follow.objects.filter(followed=request.user).count(),
-        following_count=Follow.objects.filter(follower=request.user).count(),
-        posts_count=Post.objects.filter(author=request.user).count(),
+        followers_count=profile.followers_count,
+        following_count=profile.following_count,
+        posts_count=profile.posts_count,
     )
 
 

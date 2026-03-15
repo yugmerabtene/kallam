@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.db.models import Count
 
 from .models import Post, PostLike, PostReport, PostRepost
 
@@ -10,17 +11,25 @@ class PostAdmin(admin.ModelAdmin):
     search_fields = ("author__email", "content")
     readonly_fields = ("created_at",)
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate(
+            _likes_count=Count("likes", distinct=True),
+            _reports_count=Count("reports", distinct=True),
+        )
+
     def content_preview(self, obj):
         return obj.content[:60]
     content_preview.short_description = "Contenu"
 
     def likes_count(self, obj):
-        return obj.likes.count()
+        return obj._likes_count
     likes_count.short_description = "Likes"
+    likes_count.admin_order_field = "_likes_count"
 
     def reports_count(self, obj):
-        return obj.reports.count()
+        return obj._reports_count
     reports_count.short_description = "Signalements"
+    reports_count.admin_order_field = "_reports_count"
 
 
 @admin.register(PostLike)
