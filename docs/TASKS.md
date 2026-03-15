@@ -34,7 +34,7 @@
 
 ## Sprint 4 - Preparation de soutenance
 
-- [ ] Finaliser feuille de cadrage KALLAM-01 completee
-- [ ] Rediger la section limites et modele de menace
-- [ ] Produire metriques d'impact (participation, apprentissages, attentes)
-- [ ] Stabiliser documentation technique et guide d'exploitation
+- [x] Finaliser feuille de cadrage KALLAM-01 completee
+- [x] Rediger la section limites et modele de menace
+- [x] Produire metriques d'impact (participation, apprentissages, attentes)
+- [x] Stabiliser documentation technique et guide d'exploitation

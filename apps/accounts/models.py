@@ -7,6 +7,9 @@ class UserProfile(models.Model):
         ("fr", "Français"),
         ("en", "English"),
         ("ar", "العربية"),
+        ("de", "Deutsch"),
+        ("es", "Español"),
+        ("it", "Italiano"),
     ]
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
